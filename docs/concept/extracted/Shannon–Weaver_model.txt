@@ -1,0 +1,211 @@
+The five essential parts of the Shannon–Weaver
+model: A source uses a transmitter to translate a
+message into a signal, which is sent through a
+channel and translated back by a receiver until it
+reaches its destination.[1]Shannon–Weaver model
+The Shannon–W eaver  model  is one of the first
+models of communication . Initially published in the
+1948 paper "A Mathematical Theory of
+Communication ", it explains communication  in terms
+of five basic components: a source, a transmitter , a
+channel , a receiver , and a destination. The source
+produces the original message. The transmitter
+translates the message into a signal , which is sent
+using a channel. The receiver transla tes the signal
+back into the original message and makes it available
+to the destination. For a landline phone call, the
+person calling is the source. They use the telephone as
+a transmitter , which produces an electric signal that is
+sent through the wire as a channel. The person receiving the call is the destination and their telephone is
+the receiver .
+Shannon and Weaver distinguish three types of problems of communication: technical, semantic , and
+effectiveness problems. They focus on the technical level, which concerns the problem of how to use a
+signal to accurately reproduce a message from one location to another locati on. The difficulty in this
+regard is that noise  may distort  the signal. They discuss redundancy  as a solution to this problem: if the
+original message is redundant then the distortions can be detected, which makes it possible to reconstruct
+the source's original intention .
+The Shannon–W eaver model of communication has been influential in various fields, including
+communication theory  and information theory . Many later theorists have built their own models on its
+insights. However , it is often criticized based on the claim that it oversimplifies communication. One
+common objection is that communication should not be understood as a one-way process but as a
+dynamic interaction of messages going back and forth between both participants. Another criticism
+rejects the idea that the message exists prior to the communication and argues instead that the encoding is
+itself a creative  process that creates the content.
+The Shannon–W eaver model is one of the earliest models of communication .[2][3][4] It was initially
+published by Claude Shannon  in his 1948 paper "A Mathematical Theory of Communication ".[5] The
+model was further developed together with Warren Weaver  in their co-authored 1949 book The
+Mathematical Theory of Communicatio n.[6][7] It aims to provide a formal represent ation of the basic
+elements and relations involved in the process of communication .[8]Overview and basic components
+In successful face-to-face
+communication, a message is translated
+into a sound wave, which is transmitted
+through the air and translated back to the
+original message when it is heard by the
+other party.The model consists of five basic components: a source, a
+transmitter , a channel , a receiver , and a destination.[5][2][9]
+The source of information  is usually a person and decides
+which message to send. The message can take various forms,
+such as a sequence of letters, sounds, or images. The
+transmitter is responsible for translating the message into a
+signal . To send the signal, a channel is required.[2][5][10][7]
+Channels are ways of transmitting signals, like light, sound
+waves, radio waves, and electrical wires.[10] The receiver
+performs the opposite function of the transmitter: it translates
+the signal back into a message and makes it available to the
+destination. The destination is the person for whom the
+message was intended.[5][2][10]
+Shannon and Weaver focus on telephonic conversation as the
+paradigmatic case of how messages are produced and
+transmitted through a channel. But their model is intended as
+a general model that can be applied to any form of
+communication.[9][10][11] For a regular face-to-face conversatio n, the person talking is the source, the
+mouth is the transmitter , the air is the channel transmitting the sound waves, the listener is the destination,
+and the ear is the receiver . In the case of a landline  phone call, the source is the person calling, the
+transmitter is their telephone, the channel is the wire, the receiver is another telephone and the destination
+is the person using the second telephone.[10][2][5] To apply this model accurately to real-life cases, some
+of the components may have to be repeated. For the telephone call, for example, the mouth is also a
+transmitter before the telephone itself as a second transmitter .[10]
+Shannon and Weaver identify and address problems in the study of communication at three basic levels:
+technical, semantic, and effectiveness problems (referred to as levels A, B, and C).[12][10] Shannon and
+Weaver hold that models of communication should provide good responses to all three problems, ideally
+by showing how to make communicatio n more accurate and efficient.[10] The prime focus of their model
+is the technical level, which concerns the issue of how to accurately reproduce a message from one
+location to another location.[5][10] For this problem, it is not relevant what meaning the message carries.
+By contrast, it is only relevant that the message can be distinguished from different possible messages
+that could have been sent instead of it.[5]
+Semantic problems go beyond the symbols themselves and ask how they conve y meaning. Shannon and
+Weaver assumed that the meaning is already contained in the message but many subsequent
+communication theorists  have further problematized this point by including the influence of cultura l
+factors and the context in their models. The effectiveness problem is based on the idea that the person
+sending the message has some goal in mind concerning how the person receiving the message is going to
+react. In this regard, effectivity means that the reaction matches the speaker's goal.[12][10]The problem of
+effectivity concerns the question of how to achieve this. Many critics have rejected this aspect of
+Shannon and Weaver's theory since it seems to equate communication  with manipulation  or
+propaganda .[10]Problems of communication
+Some theorists reject the linear nature of
+the Shannon–Weaver model and include
+a two-way exchange of messages
+instead.To solve the technical problem at level A, it is necessary for the receiver to reconstruct the original
+message from the signal. However , various forms of noise  can interfere and distort it.[10][12][7][11] Noise
+is not intended by the source and makes it harder for the receiver to reconstruct the source's intention
+found in the original message. Crackling sounds during a telephone call or snow  on a television screen
+are examples of noise. One way to solve this problem is to make the information in the message partially
+redundant . This way, distortions  can often be identified and the original meaning can be reconstructed. A
+very basic form of redundancy is to repeat the same message several times. But redundancy can take
+various other forms as well. For example, the English language  is redundant in the sense that many
+possible combinations of letters are meaningless. So the term "comming" does not have a distinct
+meaning. For this reason, it can be identified as a misspelling of the term "coming", thus revealing the
+source's original intention. Redundancy makes it easier to detect distortions but its drawback is that
+messages carry less information.[10][12]
+The Shannon–W eaver model of communication has been influential, inspiring subsequent work in the
+field of communication studies .[10][13][11] Erik Hollnagel and David D. Woods even characterize it as the
+"mother of all models."[14] It has been widely adopted in variou s other fields, including information
+theory , organizational analysis, and psychology . Many later theorists expanded this model by including
+additional elements in order to take into account other aspects of communication. For example, Wilbur
+Schramm  includes a feedback loop to understand communication as an interactive process and Geor ge
+Gerbner  emphasizes the relation between communication and the reality to which the communication
+refers. Some of these models, like Gerbner's, are equally universal in that they apply to any form of
+communication. Others apply to more specific areas. For example, Lasswell's  model and Westley and
+MacLean's model are specifically formulated for mass media .[13] Shannon's concepts were also
+popularized in John Robinson Pierce 's Symbols, Signals, and Noise , which introduces the topic to non-
+specialists.[15]
+Many criticisms of the Shannon–W eaver model focus on its
+simplicity by pointing out that it leaves out vital aspects of
+communication. In this regard, it has been characterized as
+"inappropriate for analyzing social processes"[16] and as a
+"misleading misrepresentation of the nature of human
+communication".[17] A common objection is based on the fact
+that it is a linear transmission model: it conceptualizes
+communication as a one-way process going from a source to
+a destination. Against this approach, it is argued that
+communication is usually more interactive with messages and
+feedback going back and forth between the participants. This
+approach is implemented by non-linear transmission models,
+also termed interaction models.[18][3][19] They include Wilbur
+Schramm's model , Frank Dance's helical-spiral model, aNoise and redundancy
+Influence and criticism
+circular model developed by Lee Thayer, and the "sawtooth" model due to Paul Watzlawick , Janet
+Beavin , and Don Jackson.[9][20] These approaches emphasize the dynamic nature of communication by
+showing how the process evolves as a multi-directional exchange of messages.[21][3][20]
+Another criticism focuses on the fact that Shannon and Weaver understand the message as a form of
+preexisting information. I. A. Richards  criticizes this approach for treating  the message as a
+preestablished entity that is merely packaged by the transmitter and later unpac kaged by the receiver .[13]
+This outlook is characteristic of all transmission models. They contrast with constitutive models,[18]
+which see meanings as "reflexively constructed, maintained, or negotiated in the act of
+communicating".[22] Richards argues that the message does not exist before it is articulated. This means
+that the encoding is itself a creative  process that creates the content. Before it, there is a need to articulate
+oneself but no precise pre-existing content.[13] The communicative process may not just affect the
+meaning of the message but also the social identities  of the communicators, which are established and
+modified in the ongoing communicative process.[22]
+1. Shannon, C. E. (July 1948). "A  Mathematical Theory of Communication". Bell System
+Technical Journal . 27 (3): 381. doi:10.1002/j.1538-7305.1948.tb01338.x  (https://doi.org/10.1
+002%2Fj.1538-7305.1948.tb01338.x) .
+2. Chandler , Daniel; Munday , Rod (10 February 2011). "Shannon and W eaver's model". A
+Dictionary of Media and Communication  (https://books.google.com/books?id=nLuJz-ZB828
+C). OUP  Oxford. ISBN  978-0-19-956875-8 .
+3. McQuail, Denis (2008). "Models of communication". In Donsbach, W olfgang (ed.). The
+International Encyclopedia of Communication, 12 V olume Set  (https://www .wiley .com/en-us/
+The+International+Encyclopedia+of+Communication%2C+12+V olume+Set-p-97814051319
+95). Wiley-Blackwell. ISBN  978-1-405-13199-5 .
+4. Li, Hong Ling (September 2007). "From Shannon-W eaver to Boisot: A Review on the
+Research of Knowledge Transfer Model". 2007 International Conference on W ireless
+Communications, Networking and Mobile Computing . pp. 5439– 5442.
+doi:10.1109/WICOM.2007.1332  (https://doi.org/10.1109%2FWICOM.2007.1332) . ISBN  978-
+1-4244-1311-9 . S2CID  15690224  (https://api.semanticscholar .org/CorpusID:15690224) .
+5. Shannon, C. E. (July 1948). "A  Mathematical Theory of Communication". Bell System
+Technical Journal . 27 (3): 379– 423. doi:10.1002/j.1538-7305.1948.tb01338.x  (https://doi.org/
+10.1002%2Fj.1538-7305.1948.tb01338.x) .
+6. Shannon, Claude E.; W eaver , Warren (1 September 1998). The Mathematical Theory of
+Communication  (https://books.google.com/books?id=fRrvAAAAMAAJ) . University of Illinois
+Press. ISBN  978-0-252-72546-3 .
+7. Narula, Uma (2006). Handbook of Communication Models, Perspectives, Strategies  (https://
+books.google.com/books?id=AuRyXwyAJ78C&pg=P A26) . Atlantic Publishers & Dist. p. 26.
+ISBN  978-81-269-0513-3 .
+8. Chandler , Daniel; Munday , Rod (10 February 2011). "communication models". A Dictionary
+of Media and Communication  (https://books.google.com/books?id=nLuJz-ZB828C) . OUP
+Oxford. ISBN  978-0-19-956875-8 .
+9. Ruben, Brent D. (2001). "Models Of Communication". Encyclopedia of Communication and
+Information  (https://www .encyclopedia.com/media/encyclopedias-almanacs-transcripts-and-
+maps/models-communication) .Refer ences
+10. Fiske, John (2011). "1. Communication theory". Introduction to Communication Studies  (http
+s://www .routledge.com/Introduction-to-Communication-Studies/Fiske/p/book/978041559649
+7). Routledge.
+11. Januszewski, Alan (2001). Educational T echnology: The Development of a Concept  (https://
+books.google.com/books?id=mlZsIIoOaSYC&pg=P A29) . Libraries Unlimited. p. 29.
+ISBN  978-1-56308-749-3 .
+12. Weaver , Warren (1 September 1998). "Recent Contributions to the Mathematical Theory of
+Communication". The Mathematical Theory of Communication  (https://books.google.com/bo
+oks?id=fRrvAAAAMAAJ) . University of Illinois Press. ISBN  978-0-252-72546-3 .
+13. Fiske, John (2011). "2. Other models". Introduction to Communication Studies  (https://www .r
+outledge.com/Introduction-to-Communication-Studies/Fiske/p/book/9780415596497) .
+Routledge.
+14. Erik Hollnagel and David D. W oods (2005). Joint Cognitive Systems: Foundations of
+Cognitive Systems Engineering  (https://books.google.com/books?id=IwRHwOK2IzYC&dq=
+Shannon%E2%80%93W eaver+model&pg=P A11) . Boca Raton, FL: Taylor & Francis.
+ISBN  978-0-8493-2821-3 .
+15. John Robinson Pierce (1980). An Introduction to Information Theory: Symbols, Signals &
+Noise  (https://archive.org/details/introductiontoin00john) . Courier Dover Publications.
+ISBN  978-0-486-24061-9 .
+16. U.S. Congress, Of fice of Technology Assessment (1995). Herdman, Roger C. (ed.). Global
+communications: opportunities for trade and aid  (https://books.google.com/books?id=MuhaV
+uB-21MC) . U.S. Government Printing Of fice. p. 77. ISBN  978-1-4289-2021-7 .
+17. Daniel Chandler , The T ransmission Model of communications  (https://archive.today/201207
+16111950/http://www .aber .ac.uk/media/Documents/short/trans.html) , archived from the
+original  (https://www .aber .ac.uk/media/Documents/short/trans.html)  on 2012-07-16
+18. Chandler , Daniel; Munday , Rod (10 February 2011). "transmission models". A Dictionary of
+Media and Communication  (https://books.google.com/books?id=nLuJz-ZB828C) . OUP
+Oxford. ISBN  978-0-19-956875-8 .
+19. Marsh, Patrick O. (1983). Messages that Work: A Guide to Communication Design  (https://b
+ooks.google.com/books?id=2Wtpgvb6o94C&pg=P A358) . Educational Technology . p. 358.
+ISBN  978-0-87778-184-4 .
+20. David, Schwartz (30 September 2005). Encyclopedia of Knowledge Management  (https://bo
+oks.google.com/books?id=sbP16CXUev8C&pg=P A501) . Idea Group Inc (IGI). p. 501.
+ISBN  978-1-59140-574-0 .
+21. Chandler , Daniel; Munday , Rod (10 February 2011). "interaction models". A Dictionary of
+Media and Communication  (https://books.google.com/books?id=nLuJz-ZB828C) . OUP
+Oxford. ISBN  978-0-19-956875-8 .
+22. Chandler , Daniel; Munday , Rod (10 February 2011). "constitutive models". A Dictionary of
+Media and Communication  (https://books.google.com/books?id=nLuJz-ZB828C) . OUP
+Oxford. ISBN  978-0-19-956875-8 .
+Retrieved from "https://en.wikipedia.org/w/index.php?title=Shannon–Weaver_model&oldid=1319533425"
+
