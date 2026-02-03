@@ -15,7 +15,11 @@ class GeminiService:
         self.api_key = os.getenv("GOOGLE_API_KEY")
         if self.api_key:
             genai.configure(api_key=self.api_key)
-            self.model = genai.GenerativeModel('gemini-1.5-flash')
+            try:
+                self.model = genai.GenerativeModel('gemini-1.5-pro')
+            except Exception as e:
+                logger.error(f"Failed to initialize model: {e}")
+                self.model = None
         else:
             logger.warning("GOOGLE_API_KEY not found. Gemini Service will fail if called.")
             self.model = None
@@ -53,4 +57,8 @@ class GeminiService:
 
         except Exception as e:
             logger.error(f"Gemini Analysis Failed: {str(e)}")
+            if "404" in str(e):
+                logger.error("Listing available models for debugging:")
+                for m in genai.list_models():
+                    logger.error(f"Available model: {m.name}")
             raise e
