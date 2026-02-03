@@ -1,0 +1,65 @@
+import uuid
+from typing import Any
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
+from sqlalchemy.orm import Session
+
+from app import schemas, models
+from app.db.session import SessionLocal
+
+router = APIRouter()
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@router.post("/analyze", response_model=schemas.Analysis)
+async def analyze_resume(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db)
+) -> Any:
+    """
+    Analyze a resume PDF.
+    
+    1. Uploads file to S3 (Stub)
+    2. Creates Resume record
+    3. Triggers AI Analysis (Stub: Returns Mock Data)
+    4. Saves Analysis record
+    """
+    if file.content_type != "application/pdf":
+        raise HTTPException(status_code=400, detail="File must be a PDF")
+    
+    # 1. Create Resume Record
+    session_id = uuid.uuid4() # In real app, get from headers
+    db_resume = models.Resume(
+        session_id=session_id,
+        client_info={"filename": file.filename, "content_type": file.content_type}
+    )
+    db.add(db_resume)
+    db.commit()
+    db.refresh(db_resume)
+    
+    # 2. Mock AI Analysis (Placeholder for now)
+    # We will replace this with real Gemini call later
+    mock_layers = {
+        "format": {"score": 8, "status": "good", "issues": []},
+        "impact": {"score": 4, "status": "critical", "issues": [{"type": "Weak Verb", "fix": "Use 'Architected'"}]}
+    }
+    
+    db_analysis = models.Analysis(
+        resume_id=db_resume.id,
+        rms_score=62,
+        cpi="Full Stack Developer",
+        predicted_grad_date="May 2026",
+        skills_detected=["Python", "React", "FastAPI"],
+        top_errors=["Weak Verbs", "Missing Metrics"],
+        raw_json={"layers": mock_layers}
+    )
+    db.add(db_analysis)
+    db.commit()
+    db.refresh(db_analysis)
+    
+    return db_analysis

@@ -1,5 +1,6 @@
 import { Navbar } from '@/components/ui/Navbar';
 import { TypewriterEffect } from '@/components/ui/TypewriterEffect';
+import { ResumeUpload } from '@/components/ui/ResumeUpload';
 import Link from 'next/link';
 
 export default function Home() {
@@ -41,22 +42,8 @@ export default function Home() {
                             </Link>
                         </div>
 
-                        {/* Drag Drop Placeholder */}
-                        <div className="mt-12 p-12 border-2 border-dashed border-gray-700 rounded-2xl bg-surface/30 backdrop-blur-sm hover:border-blue-500/50 hover:bg-surface/50 transition-all cursor-pointer group max-w-xl mx-auto">
-                            <div className="text-center">
-                                <div className="mx-auto h-12 w-12 text-gray-400 group-hover:text-blue-400 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                                    </svg>
-                                </div>
-                                <div className="mt-4 flex text-sm leading-6 text-gray-400 justify-center">
-                                    <span className="font-semibold text-blue-400">
-                                        Drag & Drop PDF here
-                                    </span>
-                                </div>
-                                <p className="text-xs leading-5 text-gray-500 mt-2">No account needed initially</p>
-                            </div>
-                        </div>
+                        {/* Functional Drag & Drop */}
+                        <ResumeUpload />
 
                         <div className="mt-20">
                             <p className="text-xl font-serif italic text-gray-400 tracking-wide mb-6">making weak things become strong</p>
