@@ -73,7 +73,9 @@ export default function Dashboard() {
             <Navbar />
 
             <div className="pt-24 pb-12 px-6 max-w-7xl mx-auto">
-                <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
+                <h1 className="text-3xl font-bold mb-8">
+                    {data.candidate_name ? `Analysis for ${data.candidate_name}` : 'Dashboard'}
+                </h1>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* Main Score Card */}

@@ -18,6 +18,8 @@ Your goal is to provide a detailed audit, a Quantitative Risk-Mitigation Score (
 
 # JSON Schema
 {
+  "candidate_name": "String (First Last)",
+  "candidate_email": "String (email@example.com)",
   "cpi": "String (The 6-Second Label, e.g., 'Full Stack Engineer')",
   "rms_score": Integer (0-100),
   "predicted_grad_date": "String (e.g., 'May 2026' or 'Unknown')",
