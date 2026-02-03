@@ -1,4 +1,5 @@
 import { Navbar } from '@/components/ui/Navbar';
+import { TypewriterEffect } from '@/components/ui/TypewriterEffect';
 import Link from 'next/link';
 
 export default function Home() {
@@ -10,14 +11,25 @@ export default function Home() {
                 <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
                     <div className="mx-auto max-w-2xl text-center">
 
-                        {/* Wireframe Headline: Code Style */}
-                        <div className="font-mono text-left inline-block bg-surface/50 p-6 sm:p-10 rounded-xl border border-white/10 shadow-2xl backdrop-blur-sm mb-8 transform hover:scale-[1.02] transition-transform duration-500">
-                            <p className="text-emerald-400 text-xl sm:text-4xl font-bold tracking-tight mb-4">
-                                passed_ats_filters = <span className="text-blue-400">True</span>
-                            </p>
-                            <p className="text-emerald-400 text-xl sm:text-4xl font-bold tracking-tight">
-                                human_impressed = <span className="text-blue-400">True</span>
-                            </p>
+                        {/* Wireframe Headline: CLI / Terminal Code Style */}
+                        <div className="font-mono text-left inline-block bg-slate-950 p-6 rounded-lg border border-slate-800 shadow-2xl mb-8 min-w-[300px] sm:min-w-[450px]">
+                            {/* Terminal Dots */}
+                            <div className="flex gap-2 mb-4 opacity-50">
+                                <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
+                                <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+                                <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
+                            </div>
+
+                            <div className="space-y-2 text-sm sm:text-base">
+                                <p className="text-emerald-500">
+                                    <span className="text-slate-500 mr-2">$</span>
+                                    <TypewriterEffect text="pass_ats_filters = True" delay={40} />
+                                </p>
+                                <p className="text-emerald-500">
+                                    <span className="text-slate-500 mr-2">$</span>
+                                    <TypewriterEffect text="impress_human = True" delay={40} startDelay={1000} />
+                                </p>
+                            </div>
                         </div>
 
                         <div className="mt-10 flex items-center justify-center gap-x-6">
