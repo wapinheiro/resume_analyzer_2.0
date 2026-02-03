@@ -15,7 +15,7 @@ class GeminiService:
         self.api_key = os.getenv("GOOGLE_API_KEY")
         if self.api_key:
             genai.configure(api_key=self.api_key)
-            self.model = genai.GenerativeModel('gemini-1.5-pro-latest')
+            self.model = genai.GenerativeModel('gemini-1.5-flash')
         else:
             logger.warning("GOOGLE_API_KEY not found. Gemini Service will fail if called.")
             self.model = None
