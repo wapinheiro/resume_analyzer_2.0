@@ -1,4 +1,10 @@
-export function OptimizedResumePreview() {
+interface OptimizedResumePreviewProps {
+    candidateName?: string | null;
+    candidateEmail?: string | null;
+    cpi?: string | null;
+}
+
+export function OptimizedResumePreview({ candidateName, candidateEmail, cpi }: OptimizedResumePreviewProps) {
     return (
         <div className="bg-white text-black p-8 rounded-lg shadow-lg min-h-[800px] font-sans text-sm border-2 border-emerald-500/50 relative overflow-hidden">
 
@@ -9,8 +15,12 @@ export function OptimizedResumePreview() {
 
             {/* Header */}
             <div className="border-b-2 border-black pb-4 mb-4">
-                <h1 className="text-3xl font-bold uppercase tracking-widest text-center">Alex Johnson</h1>
-                <p className="text-center mt-2">alex@example.com | (555) 123-4567 | github.com/alexj</p>
+                <h1 className="text-3xl font-bold uppercase tracking-widest text-center">
+                    {candidateName || "Candidate Name"}
+                </h1>
+                <p className="text-center mt-2 text-gray-600">
+                    {candidateEmail || "email@example.com"} | {cpi || "Role Target"}
+                </p>
             </div>
 
             {/* Education */}

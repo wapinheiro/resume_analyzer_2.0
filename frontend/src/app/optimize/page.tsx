@@ -2,8 +2,23 @@ import { Navbar } from '@/components/ui/Navbar';
 import { ResumePreview } from '@/components/ui/ResumePreview';
 import { OptimizedResumePreview } from '@/components/ui/OptimizedResumePreview';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function OptimizePage() {
+    const [data, setData] = useState<any>(null);
+
+    useEffect(() => {
+        const stored = localStorage.getItem('analysisResult');
+        if (stored) {
+            setData(JSON.parse(stored));
+        }
+    }, []);
+
+    // Helper to get safe values
+    const candidateName = data?.candidate_name || data?.raw_json?.candidate_name;
+    const candidateEmail = data?.candidate_email || data?.raw_json?.candidate_email;
+    const cpi = data?.cpi || data?.raw_json?.cpi;
+
     return (
         <main className="min-h-screen bg-background flex flex-col">
             <Navbar />
@@ -36,10 +51,14 @@ export default function OptimizePage() {
                     <div className="flex flex-col gap-4">
                         <div className="flex justify-between items-center px-4">
                             <span className="text-gray-400 font-medium">Original</span>
-                            <span className="text-red-400 font-mono text-sm">Score: 62</span>
+                            <span className="text-red-400 font-mono text-sm">Score: {data?.rms_score || 0}</span>
                         </div>
                         <div className="bg-white rounded-lg shadow-xl overflow-hidden opacity-80 scale-[0.98]">
-                            <ResumePreview />
+                            <ResumePreview
+                                candidateName={candidateName}
+                                candidateEmail={candidateEmail}
+                                cpi={cpi}
+                            />
                         </div>
                     </div>
 
@@ -52,7 +71,11 @@ export default function OptimizePage() {
                             <span className="text-emerald-400 font-mono text-sm">Score: 94</span>
                         </div>
                         <div className="bg-white rounded-lg shadow-2xl overflow-hidden ring-4 ring-emerald-500/20 shadow-emerald-500/20">
-                            <OptimizedResumePreview />
+                            <OptimizedResumePreview
+                                candidateName={candidateName}
+                                candidateEmail={candidateEmail}
+                                cpi={cpi}
+                            />
                         </div>
                     </div>
 
