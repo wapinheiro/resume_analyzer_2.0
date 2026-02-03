@@ -10,21 +10,40 @@ import { analyzeResume } from '@/services/api';
 export default function Home() {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
+    const [loadingStep, setLoadingStep] = useState('');
     const router = useRouter();
 
     const handleAnalyze = async () => {
         if (!selectedFile) return;
 
         setIsAnalyzing(true);
+        setLoadingStep('Uploading PDF...');
+
+        // Simulate progress steps while waiting for real response
+        const steps = ['Extracting Text...', 'AI Analyzing Profile...', 'Calculating Score...', 'Finalizing Report...'];
+        let stepIndex = 0;
+
+        const progressInterval = setInterval(() => {
+            if (stepIndex < steps.length) {
+                setLoadingStep(steps[stepIndex]);
+                stepIndex++;
+            }
+        }, 2000); // Update text every 2 seconds
+
         try {
             const data = await analyzeResume(selectedFile);
+            clearInterval(progressInterval);
+            setLoadingStep('Done! Redirecting...');
+
             console.log('Analysis result:', data);
             localStorage.setItem('analysisResult', JSON.stringify(data));
             router.push('/dashboard');
         } catch (error) {
+            clearInterval(progressInterval);
             console.error(error);
             alert('Analysis failed. Please try again.');
             setIsAnalyzing(false);
+            setLoadingStep('');
         }
     };
 
@@ -61,7 +80,7 @@ export default function Home() {
                             <button
                                 onClick={handleAnalyze}
                                 disabled={!selectedFile || isAnalyzing}
-                                className={`rounded-full px-8 py-3.5 text-base font-semibold text-white shadow-lg transition-all
+                                className={`rounded-full px-8 py-3.5 text-base font-semibold text-white shadow-lg transition-all min-w-[200px]
                                     ${!selectedFile
                                         ? 'bg-gray-600 opacity-50 cursor-not-allowed'
                                         : 'bg-blue-600 shadow-blue-500/30 hover:bg-blue-500 hover:scale-105'
@@ -69,7 +88,7 @@ export default function Home() {
                                     ${isAnalyzing ? 'animate-pulse cursor-wait' : ''}
                                 `}
                             >
-                                {isAnalyzing ? 'Analyzing...' : 'Analyze My Resume'}
+                                {isAnalyzing ? loadingStep : 'Analyze My Resume'}
                             </button>
                         </div>
 
