@@ -1,3 +1,5 @@
+'use client';
+
 import { Navbar } from '@/components/ui/Navbar';
 import { ResumePreview } from '@/components/ui/ResumePreview';
 import { OptimizedResumePreview } from '@/components/ui/OptimizedResumePreview';
