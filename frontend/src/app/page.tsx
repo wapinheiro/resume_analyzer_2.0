@@ -19,6 +19,7 @@ export default function Home() {
         try {
             const data = await analyzeResume(selectedFile);
             console.log('Analysis result:', data);
+            localStorage.setItem('analysisResult', JSON.stringify(data));
             router.push('/dashboard');
         } catch (error) {
             console.error(error);
