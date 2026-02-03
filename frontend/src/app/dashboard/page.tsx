@@ -1,3 +1,5 @@
+'use client';
+
 import { Navbar } from '@/components/ui/Navbar';
 import { MOCK_ANALYSIS } from '@/data/mock';
 import Link from 'next/link';
