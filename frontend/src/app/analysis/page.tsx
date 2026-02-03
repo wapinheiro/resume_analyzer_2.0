@@ -7,11 +7,32 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function AnalysisPage() {
-    const { layers } = MOCK_ANALYSIS;
+    const [data, setData] = useState<any>(null);
     const [activeLayer, setActiveLayer] = useState('impact');
 
-    const layerList = Object.values(layers);
-    const activeLayerData = layerList.find(l => l.id === activeLayer) || layers.format;
+    useEffect(() => {
+        const stored = localStorage.getItem('analysisResult');
+        if (stored) {
+            setData(JSON.parse(stored));
+        } else {
+            setData(MOCK_ANALYSIS);
+        }
+    }, []);
+
+    if (!data) return <div className="min-h-screen bg-background flex items-center justify-center text-white">Loading...</div>;
+
+    const layers = data.raw_json?.layers || data.layers || MOCK_ANALYSIS.layers;
+
+    // Convert to array and ensure ID property exists (backend might key it but not include id in value)
+    const layerList = Object.entries(layers).map(([key, value]: [string, any]) => ({
+        id: key,
+        name: key.charAt(0).toUpperCase() + key.slice(1),
+        score: value.score,
+        status: value.status,
+        issues: value.issues || []
+    }));
+
+    const activeLayerData = layerList.find(l => l.id === activeLayer) || layerList[0];
 
     return (
         <main className="min-h-screen bg-background flex flex-col">
