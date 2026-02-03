@@ -4,7 +4,7 @@ import { Navbar } from '@/components/ui/Navbar';
 import { ResumePreview } from '@/components/ui/ResumePreview';
 import { MOCK_ANALYSIS } from '@/data/mock';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function AnalysisPage() {
     const { layers } = MOCK_ANALYSIS;
@@ -31,8 +31,8 @@ export default function AnalysisPage() {
                                 key={layer.id}
                                 onClick={() => setActiveLayer(layer.id)}
                                 className={`w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-all flex justify-between items-center ${activeLayer === layer.id
-                                        ? 'bg-blue-600/20 text-blue-400 border border-blue-600/50'
-                                        : 'text-gray-400 hover:bg-surface hover:text-white'
+                                    ? 'bg-blue-600/20 text-blue-400 border border-blue-600/50'
+                                    : 'text-gray-400 hover:bg-surface hover:text-white'
                                     }`}
                             >
                                 <span>{layer.name}</span>
@@ -74,7 +74,7 @@ export default function AnalysisPage() {
                             <div className="flex items-center gap-2 text-sm text-gray-400 mb-4">
                                 <span>Status:</span>
                                 <span className={`uppercase font-bold ${activeLayerData.status === 'good' ? 'text-emerald-500' :
-                                        activeLayerData.status === 'warning' ? 'text-amber-500' : 'text-red-500'
+                                    activeLayerData.status === 'warning' ? 'text-amber-500' : 'text-red-500'
                                     }`}>{activeLayerData.status}</span>
                             </div>
 
