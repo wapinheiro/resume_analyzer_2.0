@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Brand Colors (Premium/Modern) */
+  --primary: #2563eb;       /* Royal Blue */
+  --primary-glow: #60a5fa;  /* Lighter Blue for gradients */
+  --background: #0f172a;    /* Deep Navy/Black */
+  --surface: #1e293b;       /* Card Background */
+  --text-main: #f8fafc;     /* Off-white */
+  --text-muted: #94a3b8;    /* Slate */
+  
+  /* Status Colors */
+  --score-high: #10b981;    /* Emerald */
+  --score-med: #f59e0b;     /* Amber */
+  --score-low: #ef4444;     /* Red */
+
+  /* Spacing & Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 24px;
+}
+
+body {
+  color: var(--text-main);
+  background: var(--background);
+  font-family: var(--font-inter), sans-serif;
+  overflow-x: hidden;
+}
+
+/* Base Typography */
+h1, h2, h3 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+h1 { font-size: 2.5rem; line-height: 1.2; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+
+/* Utilities */
+.glass-panel {
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.text-gradient {
+  background: linear-gradient(to right, #60a5fa, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
