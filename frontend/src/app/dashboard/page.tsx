@@ -64,8 +64,12 @@ export default function Dashboard() {
 
     // Normalize data (backend might use snake_case vs mock camelCase)
     // Backend returns: rms_score, cpi...
+    // Normalize data (backend might use snake_case vs mock camelCase)
+    // Backend returns: rms_score, cpi, raw_json...
     const score = data.rms_score || data.rms || 0;
     const identityTitle = data.cpi || data.identity?.title || "Unknown";
+    // Check top level first, then inside raw_json, then null
+    const candidateName = data.candidate_name || data.raw_json?.candidate_name || null;
     const confidence = 85; // Backend doesn't return confidence yet, hardcode for UI
 
     return (
@@ -74,7 +78,7 @@ export default function Dashboard() {
 
             <div className="pt-24 pb-12 px-6 max-w-7xl mx-auto">
                 <h1 className="text-3xl font-bold mb-8">
-                    {data.candidate_name ? `Analysis for ${data.candidate_name}` : 'Dashboard'}
+                    {candidateName ? `Analysis for ${candidateName}` : 'Dashboard'}
                 </h1>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
