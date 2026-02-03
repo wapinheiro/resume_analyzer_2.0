@@ -81,7 +81,11 @@ export default function AnalysisPage() {
                     {/* Middle: Resume Preview */}
                     <div className="flex-1 min-w-0">
                         <div className="bg-white rounded-lg shadow-xl overflow-hidden opacity-95">
-                            <ResumePreview />
+                            <ResumePreview
+                                candidateName={data.candidate_name || data.raw_json?.candidate_name}
+                                candidateEmail={data.candidate_email || data.raw_json?.candidate_email}
+                                cpi={data.cpi || data.raw_json?.cpi}
+                            />
                         </div>
                     </div>
 

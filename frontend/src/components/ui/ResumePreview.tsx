@@ -1,14 +1,31 @@
-export function ResumePreview() {
+interface ResumePreviewProps {
+    candidateName?: string | null;
+    candidateEmail?: string | null;
+    cpi?: string | null;
+}
+
+export function ResumePreview({ candidateName, candidateEmail, cpi }: ResumePreviewProps) {
     return (
-        <div className="bg-white text-black p-8 rounded-lg shadow-lg min-h-[800px] font-sans text-sm">
+        <div className="bg-white text-black p-8 rounded-lg shadow-lg min-h-[800px] font-sans text-sm relative">
+            {/* Disclaimer Overlay */}
+            <div className="absolute top-0 right-0 p-2 opacity-50 hover:opacity-100 transition-opacity">
+                <span className="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded border border-amber-300">
+                    Visualizer Demo (Layout Mock)
+                </span>
+            </div>
+
             {/* Header */}
             <div className="border-b-2 border-black pb-4 mb-4">
-                <h1 className="text-3xl font-bold uppercase tracking-widest text-center">Alex Johnson</h1>
-                <p className="text-center mt-2">alex@example.com | (555) 123-4567 | github.com/alexj</p>
+                <h1 className="text-3xl font-bold uppercase tracking-widest text-center">
+                    {candidateName || "Candidate Name"}
+                </h1>
+                <p className="text-center mt-2 text-gray-600">
+                    {candidateEmail || "email@example.com"} | {cpi || "Role Target"}
+                </p>
             </div>
 
             {/* Education */}
-            <div className="mb-6">
+            <div className="mb-6 opacity-75 blur-[1px] hover:blur-0 transition-all duration-500">
                 <h2 className="text-lg font-bold uppercase border-b border-gray-300 mb-2">Education</h2>
                 <div className="flex justify-between font-bold">
                     <span>Brigham Young University</span>
@@ -22,7 +39,7 @@ export function ResumePreview() {
             </div>
 
             {/* Experience */}
-            <div className="mb-6">
+            <div className="mb-6 opacity-75 blur-[1px] hover:blur-0 transition-all duration-500">
                 <h2 className="text-lg font-bold uppercase border-b border-gray-300 mb-2">Experience</h2>
 
                 {/* Google Intern */}
@@ -46,7 +63,7 @@ export function ResumePreview() {
             </div>
 
             {/* Projects */}
-            <div className="mb-6">
+            <div className="mb-6 opacity-75 blur-[1px] hover:blur-0 transition-all duration-500">
                 <h2 className="text-lg font-bold uppercase border-b border-gray-300 mb-2">Projects</h2>
 
                 <div className="mb-4">
@@ -61,6 +78,11 @@ export function ResumePreview() {
                         </li>
                     </ul>
                 </div>
+            </div>
+
+            <div className="mt-8 p-4 bg-blue-50 text-blue-800 text-center rounded border border-blue-200 text-xs">
+                <p><strong>Note:</strong> This visualizer is a demo of how your resume <em>could</em> look with optimization.</p>
+                <p>Layout engine integration coming in Phase 4.</p>
             </div>
         </div>
     );
