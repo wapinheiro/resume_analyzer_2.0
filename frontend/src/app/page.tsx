@@ -59,15 +59,7 @@ export default function Home() {
                         </div>
 
                         <div className="mt-20">
-                            <p className="text-lg font-serif italic text-gray-500 tracking-wide mb-6">making weak things become strong</p>
-                            <div className="flex justify-center gap-8 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-                                {/* Trust Badges: Text based for strict wireframe match */}
-                                <div className="flex gap-4 sm:gap-12">
-                                    <span className="text-xl font-bold text-gray-300 font-serif">[ BYU ]</span>
-                                    <span className="text-xl font-bold text-gray-300 font-serif">[ MIT ]</span>
-                                    <span className="text-xl font-bold text-gray-300 font-serif">[ Stanford ]</span>
-                                </div>
-                            </div>
+                            <p className="text-xl font-serif italic text-gray-400 tracking-wide mb-6">making weak things become strong</p>
                         </div>
                     </div>
                 </div>
