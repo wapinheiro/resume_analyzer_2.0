@@ -37,7 +37,7 @@ export default function Home() {
                                 href="/dashboard"
                                 className="rounded-full bg-blue-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-blue-500/30 hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-all hover:scale-105"
                             >
-                                Analyze My Resume (Free)
+                                Analyze My Resume
                             </Link>
                         </div>
 
@@ -59,7 +59,7 @@ export default function Home() {
                         </div>
 
                         <div className="mt-20">
-                            <p className="text-sm font-semibold text-gray-500 tracking-wider mb-6 uppercase">Trusted by students at</p>
+                            <p className="text-lg font-serif italic text-gray-500 tracking-wide mb-6">making weak things become strong</p>
                             <div className="flex justify-center gap-8 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
                                 {/* Trust Badges: Text based for strict wireframe match */}
                                 <div className="flex gap-4 sm:gap-12">
