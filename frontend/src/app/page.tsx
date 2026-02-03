@@ -1,9 +1,30 @@
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Navbar } from '@/components/ui/Navbar';
 import { TypewriterEffect } from '@/components/ui/TypewriterEffect';
 import { ResumeUpload } from '@/components/ui/ResumeUpload';
-import Link from 'next/link';
+import { analyzeResume } from '@/services/api';
 
 export default function Home() {
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [isAnalyzing, setIsAnalyzing] = useState(false);
+    const router = useRouter();
+
+    const handleAnalyze = async () => {
+        if (!selectedFile) return;
+
+        setIsAnalyzing(true);
+        try {
+            const data = await analyzeResume(selectedFile);
+            console.log('Analysis result:', data);
+            router.push('/dashboard');
+        } catch (error) {
+            console.error(error);
+            alert('Analysis failed. Please try again.');
+            setIsAnalyzing(false);
+        }
+    };
+
     return (
         <main className="min-h-screen bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]">
             <Navbar />
@@ -34,16 +55,23 @@ export default function Home() {
                         </div>
 
                         <div className="mt-10 flex items-center justify-center gap-x-6">
-                            <Link
-                                href="/dashboard"
-                                className="rounded-full bg-blue-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-blue-500/30 hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-all hover:scale-105"
+                            <button
+                                onClick={handleAnalyze}
+                                disabled={!selectedFile || isAnalyzing}
+                                className={`rounded-full px-8 py-3.5 text-base font-semibold text-white shadow-lg transition-all
+                                    ${!selectedFile
+                                        ? 'bg-gray-600 opacity-50 cursor-not-allowed'
+                                        : 'bg-blue-600 shadow-blue-500/30 hover:bg-blue-500 hover:scale-105'
+                                    }
+                                    ${isAnalyzing ? 'animate-pulse cursor-wait' : ''}
+                                `}
                             >
-                                Analyze My Resume
-                            </Link>
+                                {isAnalyzing ? 'Analyzing...' : 'Analyze My Resume'}
+                            </button>
                         </div>
 
                         {/* Functional Drag & Drop */}
-                        <ResumeUpload />
+                        <ResumeUpload onFileSelect={setSelectedFile} selectedFile={selectedFile} />
 
                         <div className="mt-20">
                             <p className="text-xl font-serif italic text-gray-400 tracking-wide mb-6">making weak things become strong</p>

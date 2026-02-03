@@ -1,14 +1,15 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import { analyzeResume } from '@/services/api';
 
-export function ResumeUpload() {
+export interface ResumeUploadProps {
+    onFileSelect: (file: File | null) => void;
+    selectedFile: File | null;
+}
+
+export function ResumeUpload({ onFileSelect, selectedFile }: ResumeUploadProps) {
     const [isDragging, setIsDragging] = useState(false);
-    const [isUploading, setIsUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const router = useRouter();
 
     const handleDragOver = (e: React.DragEvent) => {
         e.preventDefault();
@@ -20,12 +21,12 @@ export function ResumeUpload() {
         setIsDragging(false);
     };
 
-    const handleDrop = async (e: React.DragEvent) => {
+    const handleDrop = (e: React.DragEvent) => {
         e.preventDefault();
         setIsDragging(false);
         const files = e.dataTransfer.files;
         if (files?.length) {
-            handleFile(files[0]);
+            validateAndSelect(files[0]);
         }
     };
 
@@ -35,29 +36,16 @@ export function ResumeUpload() {
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files?.length) {
-            handleFile(e.target.files[0]);
+            validateAndSelect(e.target.files[0]);
         }
     };
 
-    const handleFile = async (file: File) => {
+    const validateAndSelect = (file: File) => {
         if (file.type !== 'application/pdf') {
             alert('Please upload a PDF file.');
             return;
         }
-
-        setIsUploading(true);
-        try {
-            const data = await analyzeResume(file);
-            console.log('Analysis result:', data);
-            // In a real app, we'd store this in global state/context
-            // For now, let's just push to dashboard
-            router.push('/dashboard');
-        } catch (error) {
-            console.error(error);
-            alert('Upload failed. Is the backend running?');
-        } finally {
-            setIsUploading(false);
-        }
+        onFileSelect(file);
     };
 
     return (
@@ -68,7 +56,7 @@ export function ResumeUpload() {
             onDrop={handleDrop}
             className={`mt-12 p-12 border-2 border-dashed rounded-2xl backdrop-blur-sm transition-all cursor-pointer group max-w-xl mx-auto
                 ${isDragging ? 'border-blue-500 bg-surface/50' : 'border-gray-700 bg-surface/30'}
-                ${isUploading ? 'opacity-50 pointer-events-none' : 'hover:border-blue-500/50 hover:bg-surface/50'}
+                ${selectedFile ? 'border-emerald-500/50 bg-emerald-500/10' : 'hover:border-blue-500/50 hover:bg-surface/50'}
             `}
         >
             <input
@@ -80,18 +68,19 @@ export function ResumeUpload() {
             />
 
             <div className="text-center">
-                {isUploading ? (
-                    <div className="animate-pulse">
-                        <div className="mx-auto h-12 w-12 text-blue-400">
-                            {/* Spinner or similar icon */}
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="animate-spin">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                {selectedFile ? (
+                    <>
+                        <div className="mx-auto h-12 w-12 text-emerald-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
-                        <div className="mt-4 text-sm font-semibold text-blue-400">
-                            Analyzing...
+                        <div className="mt-4 text-sm font-semibold text-emerald-400">
+                            Ready to Analyze
                         </div>
-                    </div>
+                        <p className="text-xs leading-5 text-gray-400 mt-2">{selectedFile.name}</p>
+                        <p className="text-xs leading-5 text-gray-500 mt-1">Click to change file</p>
+                    </>
                 ) : (
                     <>
                         <div className="mx-auto h-12 w-12 text-gray-400 group-hover:text-blue-400 transition-colors">
