@@ -4,6 +4,8 @@ import logging
 import google.generativeai as genai
 from typing import Dict, Any, Optional
 from pathlib import Path
+from tenacity import retry, stop_after_attempt, wait_exponential, before_sleep_log
+
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -12,12 +14,12 @@ PROMPT_PATH = Path(__file__).parent.parent / "prompts" / "analyzer_system.md"
 
 class GeminiService:
     def __init__(self):
-        self.api_key = os.getenv("GOOGLE_API_KEY")
+        self.api_key = settings.GOOGLE_API_KEY
         if self.api_key:
             genai.configure(api_key=self.api_key)
             self.model = genai.GenerativeModel('gemini-flash-latest')
         else:
-            logger.warning("GOOGLE_API_KEY not found. Gemini Service will fail if called.")
+            logger.warning("GOOGLE_API_KEY not found in settings. Gemini Service will fail if called.")
             self.model = None
 
     def _load_prompt_template(self) -> str:
@@ -25,6 +27,11 @@ class GeminiService:
             raise FileNotFoundError(f"Prompt file not found at {PROMPT_PATH}")
         return PROMPT_PATH.read_text()
 
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=4, max=10),
+        before_sleep=before_sleep_log(logger, logging.WARNING)
+    )
     async def analyze_resume(self, resume_text: str) -> Dict[str, Any]:
         if not self.model:
             raise ValueError("Google API Key is missing. Cannot perform analysis.")

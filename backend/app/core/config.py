@@ -12,9 +12,12 @@ class Settings(BaseSettings):
     
     # GCP Cloud Storage
     GCS_BUCKET_NAME: str = "byu-resumes-bucket"
+    GCS_BUCKET_NAME: str = "byu-resumes-bucket"
     GOOGLE_APPLICATION_CREDENTIALS: str = "backend/gcp-key.json"
+    GOOGLE_API_KEY: str | None = None
 
     class Config:
         case_sensitive = True
+        env_file = ".env"
 
 settings = Settings()

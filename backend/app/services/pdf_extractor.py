@@ -11,7 +11,9 @@ async def extract_text_from_pdf(file: UploadFile) -> str:
     """
     try:
         # pypdf expects a file-like object
-        pdf = PdfReader(file.file)
+        # Handle FastAPI UploadFile (has .file) or generic file-like object
+        source_file = file.file if hasattr(file, "file") else file
+        pdf = PdfReader(source_file)
         text = ""
         for page in pdf.pages:
             page_text = page.extract_text()

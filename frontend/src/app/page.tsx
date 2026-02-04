@@ -19,27 +19,16 @@ export default function Home() {
         setIsAnalyzing(true);
         setLoadingStep('Uploading PDF...');
 
-        // Simulate progress steps while waiting for real response
-        const steps = ['Extracting Text...', 'AI Analyzing Profile...', 'Calculating Score...', 'Finalizing Report...'];
-        let stepIndex = 0;
-
-        const progressInterval = setInterval(() => {
-            if (stepIndex < steps.length) {
-                setLoadingStep(steps[stepIndex]);
-                stepIndex++;
-            }
-        }, 2000); // Update text every 2 seconds
-
         try {
-            const data = await analyzeResume(selectedFile);
-            clearInterval(progressInterval);
-            setLoadingStep('Done! Redirecting...');
+            // Pass a callback to update status in real-time
+            const data = await analyzeResume(selectedFile, (message) => {
+                setLoadingStep(message);
+            });
 
             console.log('Analysis result:', data);
             localStorage.setItem('analysisResult', JSON.stringify(data));
             router.push('/dashboard');
         } catch (error) {
-            clearInterval(progressInterval);
             console.error(error);
             alert('Analysis failed. Please try again.');
             setIsAnalyzing(false);

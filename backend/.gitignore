@@ -6,3 +6,6 @@ venv/
 .pytest_cache/
 
 gcp-key.json
+logs/
+*.log
+*.db
