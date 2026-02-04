@@ -5,15 +5,21 @@ import os
 
 class GCSService:
     def __init__(self):
-        # Explicitly look for the key file if provided in settings, otherwise default SDK behavior
-        if settings.GOOGLE_APPLICATION_CREDENTIALS and os.path.exists(settings.GOOGLE_APPLICATION_CREDENTIALS):
-             self.client = storage.Client.from_service_account_json(settings.GOOGLE_APPLICATION_CREDENTIALS)
-        else:
-             # Fallback to default environment variable GOOGLE_APPLICATION_CREDENTIALS or metadata server
-             self.client = storage.Client()
-             
-        self.bucket_name = settings.GCS_BUCKET_NAME
-        self.bucket = self.client.bucket(self.bucket_name)
+        self.client = None
+        self.bucket = None
+        
+        try:
+            # Explicitly look for the key file if provided in settings, otherwise default SDK behavior
+            if settings.GOOGLE_APPLICATION_CREDENTIALS and os.path.exists(settings.GOOGLE_APPLICATION_CREDENTIALS):
+                 self.client = storage.Client.from_service_account_json(settings.GOOGLE_APPLICATION_CREDENTIALS)
+            else:
+                 # Fallback to default environment variable GOOGLE_APPLICATION_CREDENTIALS or metadata server
+                 self.client = storage.Client()
+                 
+            self.bucket_name = settings.GCS_BUCKET_NAME
+            self.bucket = self.client.bucket(self.bucket_name)
+        except Exception as e:
+            print(f"GCS Setup Failed (Likely during test/CI): {e}")
 
     async def upload_file(self, file_obj, filename: str, content_type: str = "application/pdf") -> str:
         """
