@@ -9,3 +9,4 @@ pytest
 httpx
 google-generativeai
 pypdf
+google-cloud-storage

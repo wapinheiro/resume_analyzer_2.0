@@ -32,11 +32,32 @@ async def analyze_resume(
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="File must be a PDF")
     
-    # 1. Create Resume Record
+    
+    # 1. Upload to GCS
+    try:
+        gcs_filename = f"{uuid.uuid4()}/{file.filename}"
+        public_url = await services.gcs_service.upload_file(file.file, gcs_filename, file.content_type)
+        
+        # Reset file pointer for local extraction
+        await file.seek(0)
+    except Exception as e:
+        print(f"GCS Upload Failed: {e}")
+        # Continue with local analysis even if upload fails? 
+        # For now, let's log and continue, or fail? 
+        # Let's fail if storage is critical, but maybe soft fail for dev?
+        # Re-raising for now as storage is 'Phase 4' goal.
+        raise HTTPException(status_code=500, detail=f"Storage Error: {str(e)}")
+
+    # 2. Create Resume Record
     session_id = uuid.uuid4() # In real app, get from headers
     db_resume = models.Resume(
         session_id=session_id,
-        client_info={"filename": file.filename, "content_type": file.content_type}
+        client_info={
+            "filename": file.filename, 
+            "content_type": file.content_type,
+            "gcs_uri": public_url,
+            "gcs_blob": gcs_filename
+        }
     )
     db.add(db_resume)
     db.commit()

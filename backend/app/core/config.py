@@ -10,6 +10,10 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = "postgresql://postgres:postgres@localhost:5432/resume_analyzer"
     
+    # GCP Cloud Storage
+    GCS_BUCKET_NAME: str = "byu-resumes-bucket"
+    GOOGLE_APPLICATION_CREDENTIALS: str = "backend/gcp-key.json"
+
     class Config:
         case_sensitive = True
 
