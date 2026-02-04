@@ -1,11 +1,14 @@
-import asyncio
 from logging.config import fileConfig
 
+from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-from sqlalchemy.engine import Connection
-from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
+import sys
+import os
+
+# Add the project root to the python path
+sys.path.append(os.getcwd())
 
 # Import settings and Base
 from app.core.config import settings
@@ -58,15 +61,11 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    connectable = config.attributes.get("connection", None)
-
-    if connectable is None:
-        # standard sync engine
-        from sqlalchemy import create_engine
-        connectable = create_engine(
-            settings.DATABASE_URL,
-            poolclass=pool.NullPool,
-        )
+    connectable = engine_from_config(
+        config.get_section(config.config_ini_section, {}),
+        prefix="sqlalchemy.",
+        poolclass=pool.NullPool,
+    )
 
     with connectable.connect() as connection:
         context.configure(
