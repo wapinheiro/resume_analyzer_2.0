@@ -122,7 +122,7 @@ export default function AnalysisPage() {
                                         <div className="bg-black/30 p-3 rounded-lg border-l-2 border-emerald-500">
                                             <p className="text-xs text-gray-500 mb-1">Suggestion:</p>
                                             <p className="text-sm text-emerald-100 font-medium">
-                                                "{issue.fix}"
+                                                {issue.fix}
                                             </p>
                                         </div>
                                     </div>
