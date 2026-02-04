@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { UserButton, SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 
 export function Navbar() {
     return (
@@ -11,13 +12,22 @@ export function Navbar() {
                         </Link>
                     </div>
                     <div className="hidden md:block">
-                        <div className="ml-10 flex items-baseline space-x-4">
+                        <div className="ml-10 flex items-center space-x-4">
                             <Link href="/dashboard" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
                                 Dashboard
                             </Link>
-                            <Link href="#" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">
-                                Login
-                            </Link>
+
+                            <SignedOut>
+                                <SignInButton mode="modal">
+                                    <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                                        Login
+                                    </button>
+                                </SignInButton>
+                            </SignedOut>
+
+                            <SignedIn>
+                                <UserButton afterSignOutUrl="/" />
+                            </SignedIn>
                         </div>
                     </div>
                 </div>

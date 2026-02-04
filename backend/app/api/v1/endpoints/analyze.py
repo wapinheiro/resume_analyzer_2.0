@@ -1,32 +1,25 @@
 import uuid
-from typing import Any
+from typing import Any, Optional
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from sqlalchemy.orm import Session
 
 from app import schemas, models, services
-from app.db.session import SessionLocal
+from app.api import deps
 
 router = APIRouter()
-
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.post("/analyze", response_model=schemas.Analysis)
 async def analyze_resume(
     file: UploadFile = File(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(deps.get_db),
+    user_id: Optional[str] = Depends(deps.get_optional_user_id)
 ) -> Any:
     """
     Analyze a resume PDF.
     
-    1. Uploads file to S3 (Stub)
-    2. Creates Resume record
-    3. Triggers AI Analysis (Stub: Returns Mock Data)
+    1. Uploads file to GCS
+    2. Creates Resume record (linked to user if logged in)
+    3. Triggers AI Analysis
     4. Saves Analysis record
     """
     if file.content_type != "application/pdf":
@@ -50,14 +43,21 @@ async def analyze_resume(
 
     # 2. Create Resume Record
     session_id = uuid.uuid4() # In real app, get from headers
+    
+    client_info = {
+        "filename": file.filename, 
+        "content_type": file.content_type,
+        "gcs_uri": public_url,
+        "gcs_blob": gcs_filename
+    }
+    
+    # Add User ID if authenticated
+    if user_id:
+        client_info["user_id"] = user_id
+
     db_resume = models.Resume(
         session_id=session_id,
-        client_info={
-            "filename": file.filename, 
-            "content_type": file.content_type,
-            "gcs_uri": public_url,
-            "gcs_blob": gcs_filename
-        }
+        client_info=client_info
     )
     db.add(db_resume)
     db.commit()

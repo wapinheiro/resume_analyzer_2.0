@@ -5,6 +5,7 @@ alembic==1.13.1
 psycopg2-binary==2.9.9
 pydantic-settings==2.2.1
 python-multipart
+python-jose[cryptography]
 pytest
 httpx
 google-generativeai
