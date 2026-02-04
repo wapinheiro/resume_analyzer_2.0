@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     BACKEND_CORS_ORIGINS: list[str] = ["http://localhost:3000", "https://resume-analyzer-2-0-flax.vercel.app"]
 
     # Database
-    DATABASE_URL: str = "postgresql://postgres:postgres@localhost:5432/resume_analyzer"
+    DATABASE_URL: str = "sqlite:///./sql_app.db"
     
     # GCP Cloud Storage
     GCS_BUCKET_NAME: str = "byu-resumes-bucket"

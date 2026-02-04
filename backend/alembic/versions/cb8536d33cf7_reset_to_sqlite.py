@@ -1,18 +1,18 @@
-"""Initial Schema
+"""reset_to_sqlite
 
-Revision ID: eb108c90b385
+Revision ID: cb8536d33cf7
 Revises: 
-Create Date: 2026-02-04 11:16:50.511147
+Create Date: 2026-02-04 12:40:21.460177
 
 """
 from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.dialects import postgresql
+
 
 # revision identifiers, used by Alembic.
-revision: str = 'eb108c90b385'
+revision: str = 'cb8536d33cf7'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -23,7 +23,7 @@ def upgrade() -> None:
     op.create_table('resumes',
     sa.Column('id', sa.UUID(), nullable=False),
     sa.Column('session_id', sa.UUID(), nullable=True),
-    sa.Column('client_info', postgresql.JSONB(astext_type=Text()), nullable=True),
+    sa.Column('client_info', sa.JSON(), nullable=True),
     sa.Column('uploaded_at', sa.DateTime(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
@@ -34,9 +34,9 @@ def upgrade() -> None:
     sa.Column('rms_score', sa.Integer(), nullable=True),
     sa.Column('cpi', sa.String(), nullable=True),
     sa.Column('predicted_grad_date', sa.String(), nullable=True),
-    sa.Column('skills_detected', postgresql.JSONB(astext_type=Text()), nullable=True),
-    sa.Column('top_errors', postgresql.JSONB(astext_type=Text()), nullable=True),
-    sa.Column('raw_json', postgresql.JSONB(astext_type=Text()), nullable=True),
+    sa.Column('skills_detected', sa.JSON(), nullable=True),
+    sa.Column('top_errors', sa.JSON(), nullable=True),
+    sa.Column('raw_json', sa.JSON(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['resume_id'], ['resumes.id'], ),
     sa.PrimaryKeyConstraint('id')

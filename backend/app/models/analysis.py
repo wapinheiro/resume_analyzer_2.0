@@ -1,7 +1,7 @@
 from datetime import datetime
 import uuid
-from sqlalchemy import DateTime, Integer, String, ForeignKey, Float
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy import DateTime, Integer, String, ForeignKey, Float, JSON
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base_class import Base
@@ -18,9 +18,9 @@ class Analysis(Base):
     predicted_grad_date: Mapped[str] = mapped_column(String, nullable=True)
     
     # JSON Data
-    skills_detected: Mapped[list] = mapped_column(JSONB, nullable=True)
-    top_errors: Mapped[list] = mapped_column(JSONB, nullable=True)
-    raw_json: Mapped[dict] = mapped_column(JSONB, nullable=True) # Full analysis result
+    skills_detected: Mapped[list] = mapped_column(JSON, nullable=True)
+    top_errors: Mapped[list] = mapped_column(JSON, nullable=True)
+    raw_json: Mapped[dict] = mapped_column(JSON, nullable=True) # Full analysis result
     
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
