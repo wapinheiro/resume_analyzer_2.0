@@ -50,6 +50,8 @@ jobs:
       run: npm install
       
     - name: Build Check
+      env:
+        NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_mock_key_for_build
       run: npm run build
       
     - name: Lint Check
