@@ -18,6 +18,7 @@ export async function analyzeResume(file: File, onProgress?: (msg: string) => vo
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let resultData = null;
+    let buffer = '';
 
     try {
         while (true) {
@@ -25,9 +26,14 @@ export async function analyzeResume(file: File, onProgress?: (msg: string) => vo
             if (done) break;
 
             const chunk = decoder.decode(value, { stream: true });
-            const lines = chunk.split('\n').filter(line => line.trim() !== '');
+            buffer += chunk;
+
+            const lines = buffer.split('\n');
+            // Keep the last line in the buffer as it might be incomplete
+            buffer = lines.pop() || '';
 
             for (const line of lines) {
+                if (line.trim() === '') continue;
                 try {
                     const message = JSON.parse(line);
 
@@ -44,6 +50,18 @@ export async function analyzeResume(file: File, onProgress?: (msg: string) => vo
                 }
             }
         }
+
+        // Process any remaining buffer after stream ends
+        if (buffer.trim() !== '') {
+            try {
+                const message = JSON.parse(buffer);
+                if (message.type === 'result') resultData = message.data;
+                else if (message.type === 'error') throw new Error(message.message);
+            } catch (e) {
+                console.warn('Failed to parse final buffer:', buffer);
+            }
+        }
+
     } finally {
         reader.releaseLock();
     }
