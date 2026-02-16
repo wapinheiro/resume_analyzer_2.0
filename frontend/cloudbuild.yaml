@@ -1,6 +1,7 @@
 steps:
   # Build Docker image
   - name: 'gcr.io/cloud-builders/docker'
+    dir: 'frontend'
     args:
       - 'build'
       - '-t'
@@ -17,6 +18,7 @@ steps:
 
   # Push to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
+    dir: 'frontend'
     args:
       - 'push'
       - '--all-tags'
@@ -24,6 +26,7 @@ steps:
 
   # Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    dir: 'frontend'
     entrypoint: gcloud
     args:
       - 'run'
