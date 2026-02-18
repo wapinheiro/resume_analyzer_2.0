@@ -9,7 +9,7 @@ class AnalysisBase(BaseModel):
     cpi: Optional[str] = None
     predicted_grad_date: Optional[str] = None
     skills_detected: Optional[List[str]] = None
-    top_errors: Optional[List[str]] = None
+    top_risks: Optional[List[Dict[str, str]]] = None
     raw_json: Optional[Dict[str, Any]] = None
 
 # Properties to return to client

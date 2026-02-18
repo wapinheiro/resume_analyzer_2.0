@@ -34,6 +34,16 @@ Update the JSON schema and instructions to:
 - Audit existing documentation in `docs/` for outdated screen descriptions or features.
 - Update `README.md` if necessary to reflect the improved analysis features.
 
+### DB & Schema Alignment
+#### [MODIFY] [analysis.py (Model)](file://backend/app/models/analysis.py)
+- Rename `top_errors` column to `top_risks`.
+#### [MODIFY] [analysis.py (Schema)](file://backend/app/schemas/analysis.py)
+- Update `AnalysisBase` to use `top_risks: Optional[List[Dict[str, str]]]`.
+#### [MODIFY] [analyze.py](file://backend/app/api/v1/endpoints/analyze.py)
+- Update mapping to use `top_risks=analysis_data.get("top_risks", [])`.
+#### [NEW] [Alembic Migration](file://backend/alembic/versions/...)
+- Rename `top_errors` to `top_risks` in `analyses` table.
+
 ## Verification Plan
 
 ### Automated Tests

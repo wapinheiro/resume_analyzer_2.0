@@ -89,7 +89,7 @@ async def analyze_resume(
                     cpi=analysis_data.get("cpi", "Unknown"),
                     predicted_grad_date=analysis_data.get("predicted_grad_date"),
                     skills_detected=analysis_data.get("skills_detected", []),
-                    top_errors=analysis_data.get("top_errors", []),
+                    top_risks=analysis_data.get("top_risks", []),
                     raw_json=analysis_data
                 )
             else:

@@ -19,7 +19,7 @@ class Analysis(Base):
     
     # JSON Data
     skills_detected: Mapped[list] = mapped_column(JSON, nullable=True)
-    top_errors: Mapped[list] = mapped_column(JSON, nullable=True)
+    top_risks: Mapped[list] = mapped_column(JSON, nullable=True)
     raw_json: Mapped[dict] = mapped_column(JSON, nullable=True) # Full analysis result
     
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
