@@ -107,6 +107,49 @@ Source: `docs/demo-reviews/feb_18_demo_feedback.md`
 
 ---
 
+## Round 2 — Post-Deployment Review Fixes
+
+Identified from live deployment review on Feb 18, 2026.
+
+| # | Item | Files Affected | Priority |
+|---|------|---------------|----------|
+| R1 | BYU light color scheme (full redesign) | `frontend/src/app/globals.css`, all pages | 🟠 Medium |
+| R2 | Analysis layers: default to first layer | `frontend/src/app/analysis/page.tsx` | 🟡 Low |
+| R3 | Rename "View Optimized Version" button | `frontend/src/app/analysis/page.tsx` | 🟡 Low |
+
+### R1 — BYU Light Color Scheme
+
+BYU's actual web presence uses a **light background** with navy/blue accents, not dark mode.
+
+#### [MODIFY] `frontend/src/app/globals.css`
+
+| Token | Current | New |
+|-------|---------|-----|
+| `--background` | `#141414` (dark) | `#F5F5F5` (light gray) |
+| `--surface` | `#0a1628` (navy-dark) | `#FFFFFF` (white) |
+| `--primary` | `#0047BA` | `#0047BA` (keep — BYU Royal Blue) |
+| `--text-main` | `#f8fafc` (white) | `#002E5D` (BYU Navy) |
+| `--text-muted` | `#94a3b8` | `#6E7CA0` (BYU Blue Gray) |
+| Navbar bg | dark glass | `#002E5D` (BYU Navy) with white text |
+| Text gradient | Blue→Purple | Royal Blue→Light Blue |
+
+- Navbar: solid BYU Navy background (`#002E5D`) with white text — the signature BYU look
+- Cards/panels: white with subtle navy border
+- Optimize page resume panel: add card border/shadow to distinguish from white background
+
+### R2 — Analysis Layers: Default to First Layer
+
+#### [MODIFY] `frontend/src/app/analysis/page.tsx`
+- Change `useState('impact')` → `useState('format')` so the first layer is selected on load
+
+### R3 — Rename "View Optimized Version" Button
+
+#### [MODIFY] `frontend/src/app/analysis/page.tsx`
+- Change button label from `"View Optimized Version"` → `"View Suggested Rewrite"`
+- Rationale: honest framing — it's a suggestion, not a final product
+
+---
+
 ## Verification Plan
 
 ### Automated
@@ -115,9 +158,11 @@ Source: `docs/demo-reviews/feb_18_demo_feedback.md`
 ### Manual
 - Upload a real resume PDF and walk through the full happy path:
   1. Home → upload triggers analysis immediately (no disabled button)
-  2. Dashboard link hidden until analysis exists
-  3. Analysis page: `reason` text differs from `fix` text
-  4. Optimized page: bold renders correctly in list items
-  5. Optimized page: disclaimer banner visible
-  6. Download button → modal appears → PDF downloads correctly
-  7. Color scheme matches BYU brand palette
+  2. Dashboard link hidden until analysis exists (verify in incognito)
+  3. Analysis page: first layer (Format) selected by default
+  4. Analysis page: `reason` text differs from `fix` text
+  5. Analysis page: "View Suggested Rewrite" button label
+  6. Optimized page: bold renders correctly in list items
+  7. Optimized page: disclaimer banner visible
+  8. Download button disabled with "Coming Soon" tooltip
+  9. Color scheme: light BYU theme — navy navbar, white body, royal blue accents

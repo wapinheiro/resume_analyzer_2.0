@@ -3,18 +3,29 @@
 @tailwind utilities;
 
 :root {
-  /* BYU Brand Colors */
-  --primary: #0047BA;           /* BYU Royal Blue */
-  --primary-glow: #BDD6E6;      /* BYU Light Blue (glow/highlight) */
-  --background: #141414;        /* BYU Digital Dark Gray */
-  --surface: #0a1628;           /* Navy-tinted dark panel */
-  --text-main: #f8fafc;         /* Off-white */
-  --text-muted: #94a3b8;        /* Slate */
-  
+  /* BYU Brand Colors — Light Theme */
+  --primary: #0047BA;
+  /* BYU Royal Blue */
+  --primary-glow: #BDD6E6;
+  /* BYU Light Blue */
+  --background: #F5F5F5;
+  /* Light gray background */
+  --surface: #FFFFFF;
+  /* White card/panel */
+  --text-main: #002E5D;
+  /* BYU Navy — headings */
+  --text-muted: #6E7CA0;
+  /* BYU Blue Gray — body */
+  --navbar-bg: #002E5D;
+  /* BYU Navy navbar */
+
   /* Status Colors */
-  --score-high: #10b981;    /* Emerald */
-  --score-med: #f59e0b;     /* Amber */
-  --score-low: #ef4444;     /* Red */
+  --score-high: #10b981;
+  /* Emerald */
+  --score-med: #f59e0b;
+  /* Amber */
+  --score-low: #ef4444;
+  /* Red */
 
   /* Spacing & Radius */
   --radius-sm: 8px;
@@ -30,25 +41,37 @@ body {
 }
 
 /* Base Typography */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 
-h1 { font-size: 2.5rem; line-height: 1.2; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.5rem; }
+h1 {
+  font-size: 2.5rem;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
 
 /* Utilities */
 .glass-panel {
-  background: rgba(30, 41, 59, 0.7);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 46, 93, 0.12);
 }
 
 .text-gradient {
-  background: linear-gradient(to right, #60a5fa, #a855f7);
+  background: linear-gradient(to right, #0047BA, #BDD6E6);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }

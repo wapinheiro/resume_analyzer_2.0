@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 
 export default function AnalysisPage() {
     const [data, setData] = useState<any>(null);
-    const [activeLayer, setActiveLayer] = useState('impact');
+    const [activeLayer, setActiveLayer] = useState('format');
 
     useEffect(() => {
         const stored = localStorage.getItem('analysisResult');
@@ -96,7 +96,7 @@ export default function AnalysisPage() {
                                 href="/optimize"
                                 className="w-full block text-center bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-4 rounded-xl transition-colors text-sm"
                             >
-                                View Optimized Version
+                                View Suggested Rewrite
                             </Link>
                         </div>
                     </div>
