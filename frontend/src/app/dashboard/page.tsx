@@ -40,7 +40,17 @@ function ScoreGauge({ score }: { score: number }) {
             </svg>
             <div className="absolute flex flex-col items-center">
                 <span className={`text-5xl font-bold ${color}`}>{score}</span>
-                <span className="text-sm text-gray-400">RMS</span>
+                <div className="flex items-center gap-1 group relative">
+                    <span className="text-sm text-gray-400">RMS</span>
+                    <button className="text-gray-500 hover:text-gray-300">
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </button>
+                    <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 p-2 bg-gray-900 text-xs text-gray-300 rounded shadow-xl opacity-0 group-hover:opacity-100 Transition-opacity pointer-events-none z-10 border border-gray-800">
+                        Resume Marketability Score: A quantitative measure of how well your resume mitigates hiring risks for a specific role.
+                    </div>
+                </div>
             </div>
         </div>
     );
@@ -103,7 +113,17 @@ export default function Dashboard() {
                     {/* Identity & Quick Stats */}
                     <div className="space-y-6">
                         <div className="glass-panel p-8 rounded-2xl">
-                            <h3 className="text-lg font-medium text-gray-400 mb-2">Identity Detected</h3>
+                            <div className="flex items-center gap-2 mb-2 group relative">
+                                <h3 className="text-lg font-medium text-gray-400">Identity Detected</h3>
+                                <button className="text-gray-500 hover:text-gray-300">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </button>
+                                <div className="absolute bottom-full mb-2 left-0 w-64 p-3 bg-gray-900 text-xs text-gray-300 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 border border-gray-800">
+                                    Career Profile Identity (CPI): The immediate professional "bucket" a recruiter places you in within 6 seconds.
+                                </div>
+                            </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-2xl font-bold text-white">{identityTitle}</span>
                                 <span className="bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full text-sm">

@@ -15,6 +15,8 @@ Your goal is to provide a detailed audit, a Quantitative Risk-Mitigation Score (
 # Output Rules (CRITICAL)
 1. You must output **ONLY valid JSON**. Do not include markdown formatting (like ```json ... ```) or any conversational text.
 2. The JSON must strictly adhere to the schema below.
+3. For each layer, provide a `referenced_text` snippet from the original resume that justifies the score or feedback.
+4. Provide exactly 3 "top_risks" explaining why a recruiter would hesitate.
 
 # JSON Schema
 {
@@ -24,35 +26,42 @@ Your goal is to provide a detailed audit, a Quantitative Risk-Mitigation Score (
   "rms_score": Integer (0-100),
   "predicted_grad_date": "String (e.g., 'May 2026' or 'Unknown')",
   "skills_detected": ["List", "of", "skills"],
-  "top_errors": ["Critical Risk 1", "String", "String"],
+  "top_risks": [
+    {"risk": "Short description of risk", "reason": "Detailed explanation of why this is a risk"}
+  ],
   "layers": {
     "format": { 
       "score": Integer (0-10), 
-      "status": "String (e.g., 'critical', 'warning', 'good')", 
+      "status": "String (e.g., 'critical', 'warning', 'good')",
+      "referenced_text": "Snippet from resume",
       "issues": [{"type": "String", "fix": "String"}] 
     },
     "core": { 
       "score": Integer (0-10), 
       "status": "String", 
+      "referenced_text": "Snippet from resume",
       "issues": [{"type": "String", "fix": "String"}] 
     },
     "impact": { 
       "score": Integer (0-10), 
       "status": "String", 
+      "referenced_text": "Snippet from resume",
       "issues": [{"type": "String", "fix": "String"}] 
     },
     "story": { 
       "score": Integer (0-10), 
       "status": "String", 
+      "referenced_text": "Snippet from resume",
       "issues": [{"type": "String", "fix": "String"}] 
     },
     "xfactor": { 
       "score": Integer (0-10), 
       "status": "String", 
+      "referenced_text": "Snippet from resume",
       "issues": [{"type": "String", "fix": "String"}] 
     }
   },
-  "revised_resume_text": "Markdown string of the re-written resume"
+  "revised_resume_text": "Markdown string of the re-written resume, optimized for RMS. Follow standard engineering resume structure: Header, Summary, Education, Skills, Experience, Projects."
 }
 
 # Input Resume
