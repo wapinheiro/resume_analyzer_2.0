@@ -1,31 +1,31 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Navbar } from '@/components/ui/Navbar';
-import { TypewriterEffect } from '@/components/ui/TypewriterEffect';
-import { ResumeUpload } from '@/components/ui/ResumeUpload';
 import { analyzeResume } from '@/services/api';
 
 export default function Home() {
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [loadingStep, setLoadingStep] = useState('');
+    const [isDragging, setIsDragging] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
 
-    const handleAnalyze = async () => {
-        if (!selectedFile) return;
+    const handleFile = async (file: File) => {
+        if (file.type !== 'application/pdf') {
+            alert('Please upload a PDF file.');
+            return;
+        }
 
         setIsAnalyzing(true);
         setLoadingStep('Uploading PDF...');
 
         try {
-            // Pass a callback to update status in real-time
-            const data = await analyzeResume(selectedFile, (message) => {
+            const data = await analyzeResume(file, (message) => {
                 setLoadingStep(message);
             });
 
-            console.log('Analysis result:', data);
             localStorage.setItem('analysisResult', JSON.stringify(data));
             router.push('/dashboard');
         } catch (error) {
@@ -36,60 +36,80 @@ export default function Home() {
         }
     };
 
+    const handleClick = () => {
+        if (!isAnalyzing) fileInputRef.current?.click();
+    };
+
+    const handleDragOver = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(true); };
+    const handleDragLeave = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(false); };
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        setIsDragging(false);
+        const file = e.dataTransfer.files?.[0];
+        if (file) handleFile(file);
+    };
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) handleFile(file);
+    };
+
     return (
         <main className="min-h-screen bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]">
             <Navbar />
 
             <div className="relative isolate pt-14">
-                <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
-                    <div className="mx-auto max-w-2xl text-center">
+                <div className="mx-auto max-w-3xl px-6 py-24 sm:py-36 lg:px-8 flex flex-col items-center text-center">
 
-                        {/* Wireframe Headline: CLI / Terminal Code Style */}
-                        <div className="font-mono text-left inline-block bg-slate-950 p-6 rounded-lg border border-slate-800 shadow-2xl mb-8 min-w-[300px] sm:min-w-[450px]">
-                            {/* Terminal Dots */}
-                            <div className="flex gap-2 mb-4 opacity-50">
-                                <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
-                                <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
-                                <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
-                            </div>
+                    <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4">
+                        Resume Analyzer 2.0
+                    </h1>
+                    <p className="text-lg text-gray-400 mb-12">
+                        Optimize for the 2026 CS job market.
+                    </p>
 
-                            <div className="space-y-2 text-sm sm:text-base">
-                                <p className="text-emerald-500">
-                                    <span className="text-slate-500 mr-2">$</span>
-                                    <TypewriterEffect text="pass_ats_filters = True" delay={40} />
-                                </p>
-                                <p className="text-emerald-500">
-                                    <span className="text-slate-500 mr-2">$</span>
-                                    <TypewriterEffect text="impress_human = True" delay={40} startDelay={1000} />
-                                </p>
-                            </div>
-                        </div>
+                    {/* Mega-Button Upload Zone */}
+                    <div
+                        onClick={handleClick}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                        className={`w-full max-w-xl border-2 border-dashed rounded-2xl p-16 flex flex-col items-center justify-center gap-6 transition-all cursor-pointer
+                            ${isAnalyzing ? 'border-blue-500/50 bg-blue-500/5 cursor-wait' : ''}
+                            ${isDragging ? 'border-blue-500 bg-blue-500/10' : ''}
+                            ${!isAnalyzing && !isDragging ? 'border-gray-700 hover:border-blue-500/70 hover:bg-surface/50' : ''}
+                        `}
+                    >
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileChange}
+                            className="hidden"
+                            accept="application/pdf"
+                        />
 
-                        <div className="mt-10 flex items-center justify-center gap-x-6">
-                            <button
-                                onClick={handleAnalyze}
-                                disabled={!selectedFile || isAnalyzing}
-                                className={`rounded-full px-8 py-3.5 text-base font-semibold text-white shadow-lg transition-all min-w-[200px]
-                                    ${!selectedFile
-                                        ? 'bg-gray-600 opacity-50 cursor-not-allowed'
-                                        : 'bg-blue-600 shadow-blue-500/30 hover:bg-blue-500 hover:scale-105'
-                                    }
-                                    ${isAnalyzing ? 'animate-pulse cursor-wait' : ''}
-                                `}
-                            >
-                                {isAnalyzing ? loadingStep : 'Analyze My Resume'}
-                            </button>
-                        </div>
-
-                        {/* Functional Drag & Drop */}
-                        <ResumeUpload onFileSelect={setSelectedFile} selectedFile={selectedFile} />
-
-                        <div className="mt-20">
-                            <p className="text-xl font-serif italic text-gray-400 tracking-wide mb-6">making weak things become strong</p>
-                        </div>
+                        {isAnalyzing ? (
+                            <>
+                                <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                                <p className="text-blue-400 font-semibold text-lg animate-pulse">{loadingStep}</p>
+                            </>
+                        ) : (
+                            <>
+                                <svg className="w-14 h-14 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                                </svg>
+                                <div>
+                                    <p className="text-xl font-semibold text-white mb-1">Upload Resume to Begin</p>
+                                    <p className="text-sm text-gray-500">Drag &amp; drop or click to select a PDF</p>
+                                </div>
+                            </>
+                        )}
                     </div>
+
+                    <p className="mt-12 text-sm font-serif italic text-gray-500 tracking-wide">
+                        making weak things become strong
+                    </p>
                 </div>
             </div>
         </main>
-    )
+    );
 }

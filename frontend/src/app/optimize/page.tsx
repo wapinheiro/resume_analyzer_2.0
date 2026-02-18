@@ -4,7 +4,17 @@ import { Navbar } from '@/components/ui/Navbar';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-// Simple Markdown-ish renderer to keep it dependency-free
+// Shared inline bold parser — applies to all block types
+function renderInline(text: string) {
+    const parts = text.split(/(\*\*.*?\*\*)/);
+    return parts.map((part, j) =>
+        part.startsWith('**') && part.endsWith('**')
+            ? <strong key={j}>{part.slice(2, -2)}</strong>
+            : part
+    );
+}
+
+// Markdown renderer with full inline bold support
 function MarkdownViewer({ content }: { content: string }) {
     if (!content) return <div className="text-gray-500 italic">No optimized content available yet.</div>;
 
@@ -12,21 +22,14 @@ function MarkdownViewer({ content }: { content: string }) {
     return (
         <div className="prose prose-invert max-w-none text-black font-sans">
             {lines.map((line, i) => {
-                if (line.startsWith('# ')) return <h1 key={i} className="text-2xl font-bold mb-4 uppercase tracking-wider border-b-2 border-black pb-2">{line.replace('# ', '')}</h1>;
-                if (line.startsWith('## ')) return <h2 key={i} className="text-xl font-bold mb-3 mt-6 uppercase border-b border-gray-300">{line.replace('## ', '')}</h2>;
-                if (line.startsWith('### ')) return <h3 key={i} className="text-lg font-bold mb-2 mt-4">{line.replace('### ', '')}</h3>;
-                if (line.startsWith('- ') || line.startsWith('* ')) return <li key={i} className="ml-5 mb-1 list-disc">{line.substring(2)}</li>;
+                if (line.startsWith('# ')) return <h1 key={i} className="text-2xl font-bold mb-4 uppercase tracking-wider border-b-2 border-black pb-2">{renderInline(line.replace(/^# /, ''))}</h1>;
+                if (line.startsWith('## ')) return <h2 key={i} className="text-xl font-bold mb-3 mt-6 uppercase border-b border-gray-300">{renderInline(line.replace(/^## /, ''))}</h2>;
+                if (line.startsWith('### ')) return <h3 key={i} className="text-lg font-bold mb-2 mt-4">{renderInline(line.replace(/^### /, ''))}</h3>;
+                if (line.startsWith('- ') || line.startsWith('* ')) return <li key={i} className="ml-5 mb-1 list-disc">{renderInline(line.substring(2))}</li>;
                 if (line.trim() === '') return <br key={i} />;
-
-                // Simple bold parsing
-                const parts = line.split(/(\*\*.*?\*\*)/);
                 return (
                     <p key={i} className="mb-2 leading-relaxed">
-                        {parts.map((part, j) =>
-                            part.startsWith('**') && part.endsWith('**')
-                                ? <strong key={j}>{part.slice(2, -2)}</strong>
-                                : part
-                        )}
+                        {renderInline(line)}
                     </p>
                 );
             })}
@@ -61,15 +64,16 @@ export default function OptimizePage() {
                         <Link href="/analysis" className="text-gray-400 hover:text-white transition-colors">
                             ← Back
                         </Link>
-                        <h1 className="text-2xl font-bold">The Vision</h1>
+                        <h1 className="text-2xl font-bold">What Your Resume Could Look Like</h1>
                     </div>
 
                     <div className="flex gap-4">
-                        <button className="bg-surface hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors border border-gray-700">
-                            Copy All Changes
-                        </button>
-                        <button className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-blue-500/20">
-                            Download Optimized PDF
+                        <button
+                            disabled
+                            title="PDF download coming soon"
+                            className="bg-surface text-gray-500 px-4 py-2 rounded-lg text-sm font-medium border border-gray-700 cursor-not-allowed opacity-50"
+                        >
+                            Download (Coming Soon)
                         </button>
                     </div>
                 </div>
@@ -108,11 +112,22 @@ export default function OptimizePage() {
                                 ✨ Optimized Version (RMS 95+)
                             </span>
                             <button
-                                onClick={() => navigator.clipboard.writeText(data?.revised_resume_text || data?.raw_json?.revised_resume_text || '')}
+                                onClick={() => {
+                                    const raw = data?.revised_resume_text || data?.raw_json?.revised_resume_text || '';
+                                    const plain = raw.replace(/\*\*(.*?)\*\*/g, '$1').replace(/^#{1,3} /gm, '').replace(/^[-*] /gm, '• ');
+                                    navigator.clipboard.writeText(plain);
+                                }}
                                 className="text-emerald-500 hover:text-emerald-400 text-xs font-mono transition-colors"
                             >
-                                [COPY MARKDOWN]
+                                [COPY AS PLAIN TEXT]
                             </button>
+                        </div>
+                        {/* Disclaimer Banner */}
+                        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl px-5 py-3 mb-2 flex items-start gap-3">
+                            <span className="text-amber-400 text-lg mt-0.5">⚠️</span>
+                            <p className="text-amber-200 text-xs leading-relaxed">
+                                <strong>AI-generated illustration.</strong> This is not your actual resume. Content in brackets (e.g., <code>[X]%</code>) is estimated or example data. Use this as a structural guide — do not submit as-is.
+                            </p>
                         </div>
                         <div className="bg-white rounded-lg shadow-2xl p-10 overflow-auto max-h-[800px] ring-4 ring-emerald-500/20 shadow-emerald-500/20">
                             <MarkdownViewer content={data?.revised_resume_text || data?.raw_json?.revised_resume_text} />

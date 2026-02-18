@@ -145,7 +145,7 @@ export default function AnalysisPage() {
                                                 </span>
                                             </div>
                                             <p className="text-gray-300 text-sm mb-6 flex-1">
-                                                {issue.description || issue.fix}
+                                                {issue.reason || issue.description || issue.fix}
                                             </p>
                                             <div className="bg-emerald-500/5 p-4 rounded-xl border border-emerald-500/20">
                                                 <p className="text-[10px] text-emerald-500 uppercase font-bold mb-1 tracking-widest">Recommended Action</p>

@@ -17,6 +17,7 @@ Your goal is to provide a detailed audit, a Quantitative Risk-Mitigation Score (
 2. The JSON must strictly adhere to the schema below.
 3. For each layer, provide a `referenced_text` snippet from the original resume that justifies the score or feedback.
 4. Provide exactly 3 "top_risks" explaining why a recruiter would hesitate.
+5. In `revised_resume_text`, wrap any fabricated or estimated values in `[X]` brackets (e.g., `[X]%`, `[Company Name]`) so users can identify and replace them.
 
 # JSON Schema
 {
@@ -34,31 +35,31 @@ Your goal is to provide a detailed audit, a Quantitative Risk-Mitigation Score (
       "score": Integer (0-10), 
       "status": "String (e.g., 'critical', 'warning', 'good')",
       "referenced_text": "Snippet from resume",
-      "issues": [{"type": "String", "fix": "String"}] 
+      "issues": [{"type": "String", "reason": "Why this is a problem for recruiters", "fix": "Specific rewrite or action"}] 
     },
     "core": { 
       "score": Integer (0-10), 
       "status": "String", 
       "referenced_text": "Snippet from resume",
-      "issues": [{"type": "String", "fix": "String"}] 
+      "issues": [{"type": "String", "reason": "Why this is a problem for recruiters", "fix": "Specific rewrite or action"}] 
     },
     "impact": { 
       "score": Integer (0-10), 
       "status": "String", 
       "referenced_text": "Snippet from resume",
-      "issues": [{"type": "String", "fix": "String"}] 
+      "issues": [{"type": "String", "reason": "Why this is a problem for recruiters", "fix": "Specific rewrite or action"}] 
     },
     "story": { 
       "score": Integer (0-10), 
       "status": "String", 
       "referenced_text": "Snippet from resume",
-      "issues": [{"type": "String", "fix": "String"}] 
+      "issues": [{"type": "String", "reason": "Why this is a problem for recruiters", "fix": "Specific rewrite or action"}] 
     },
     "xfactor": { 
       "score": Integer (0-10), 
       "status": "String", 
       "referenced_text": "Snippet from resume",
-      "issues": [{"type": "String", "fix": "String"}] 
+      "issues": [{"type": "String", "reason": "Why this is a problem for recruiters", "fix": "Specific rewrite or action"}] 
     }
   },
   "revised_resume_text": "Markdown string of the re-written resume, optimized for RMS. Follow standard engineering resume structure: Header, Summary, Education, Skills, Experience, Projects."

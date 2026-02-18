@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 :root {
-  /* Brand Colors (Premium/Modern) */
-  --primary: #2563eb;       /* Royal Blue */
-  --primary-glow: #60a5fa;  /* Lighter Blue for gradients */
-  --background: #0f172a;    /* Deep Navy/Black */
-  --surface: #1e293b;       /* Card Background */
-  --text-main: #f8fafc;     /* Off-white */
-  --text-muted: #94a3b8;    /* Slate */
+  /* BYU Brand Colors */
+  --primary: #0047BA;           /* BYU Royal Blue */
+  --primary-glow: #BDD6E6;      /* BYU Light Blue (glow/highlight) */
+  --background: #141414;        /* BYU Digital Dark Gray */
+  --surface: #0a1628;           /* Navy-tinted dark panel */
+  --text-main: #f8fafc;         /* Off-white */
+  --text-muted: #94a3b8;        /* Slate */
   
   /* Status Colors */
   --score-high: #10b981;    /* Emerald */
