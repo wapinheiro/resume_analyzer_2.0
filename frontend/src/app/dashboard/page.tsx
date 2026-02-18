@@ -121,7 +121,7 @@ export default function Dashboard() {
                                     </svg>
                                 </button>
                                 <div className="absolute bottom-full mb-2 left-0 w-64 p-3 bg-gray-900 text-xs text-gray-300 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 border border-gray-800">
-                                    Career Profile Identity (CPI): The immediate professional "bucket" a recruiter places you in within 6 seconds.
+                                    Career Profile Identity (CPI): The immediate professional &quot;bucket&quot; a recruiter places you in within 6 seconds.
                                 </div>
                             </div>
                             <div className="flex items-center justify-between">

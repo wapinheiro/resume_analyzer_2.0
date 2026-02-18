@@ -51,7 +51,7 @@ export default function AnalysisPage() {
                 {/* Global Stats: CPI & Top Risks */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                     <div className="glass-panel p-6 rounded-2xl lg:col-span-1">
-                        <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">The "6-Second Label"</h3>
+                        <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">The &quot;6-Second Label&quot;</h3>
                         <p className="text-2xl font-bold text-white mb-2">{cpi}</p>
                         <p className="text-sm text-gray-500">How a technical recruiter first categorizes you.</p>
                     </div>
@@ -123,7 +123,7 @@ export default function AnalysisPage() {
                             </div>
                             <div className="p-8">
                                 <blockquote className="text-lg text-gray-300 italic border-l-4 border-blue-500/30 pl-6 py-2 leading-relaxed">
-                                    "{layers[activeLayer]?.referenced_text || "Analysis in progress or snippet not available."}"
+                                    &quot;{layers[activeLayer]?.referenced_text || "Analysis in progress or snippet not available."}&quot;
                                 </blockquote>
                             </div>
                         </div>
