@@ -63,7 +63,7 @@ export default function Home() {
                     <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4">
                         Resume Analyzer 2.0
                     </h1>
-                    <p className="text-lg text-gray-400 mb-12">
+                    <p className="text-lg text-[#6E7CA0] mb-12">
                         Optimize for the 2026 CS job market.
                     </p>
 
@@ -98,14 +98,14 @@ export default function Home() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                                 </svg>
                                 <div>
-                                    <p className="text-xl font-semibold text-white mb-1">Upload Resume to Begin</p>
-                                    <p className="text-sm text-gray-500">Drag &amp; drop or click to select a PDF</p>
+                                    <p className="text-xl font-semibold text-[#002E5D] mb-1">Upload Resume to Begin</p>
+                                    <p className="text-sm text-[#6E7CA0]">Drag &amp; drop or click to select a PDF</p>
                                 </div>
                             </>
                         )}
                     </div>
 
-                    <p className="mt-12 text-sm font-serif italic text-gray-500 tracking-wide">
+                    <p className="mt-12 text-sm font-serif italic text-[#6E7CA0] tracking-wide">
                         making weak things become strong
                     </p>
                 </div>

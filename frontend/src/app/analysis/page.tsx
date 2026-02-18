@@ -18,7 +18,7 @@ export default function AnalysisPage() {
         }
     }, []);
 
-    if (!data) return <div className="min-h-screen bg-background flex items-center justify-center text-white">Loading...</div>;
+    if (!data) return <div className="min-h-screen bg-background flex items-center justify-center text-gray-700">Loading...</div>;
 
     const layers = data.raw_json?.layers || data.layers || MOCK_ANALYSIS.layers;
 
@@ -42,7 +42,7 @@ export default function AnalysisPage() {
 
             <div className="flex-1 pt-24 pb-12 px-6 max-w-7xl mx-auto w-full">
                 <div className="flex items-center gap-4 mb-8">
-                    <Link href="/dashboard" className="text-gray-400 hover:text-white transition-colors">
+                    <Link href="/dashboard" className="text-[#0047BA] hover:text-[#002E5D] transition-colors text-sm font-medium">
                         ← Dashboard
                     </Link>
                     <h1 className="text-3xl font-bold">Detailed Analysis</h1>
@@ -51,20 +51,20 @@ export default function AnalysisPage() {
                 {/* Global Stats: CPI & Top Risks */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                     <div className="glass-panel p-6 rounded-2xl lg:col-span-1">
-                        <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">The &quot;6-Second Label&quot;</h3>
-                        <p className="text-2xl font-bold text-white mb-2">{cpi}</p>
-                        <p className="text-sm text-gray-500">How a technical recruiter first categorizes you.</p>
+                        <h3 className="text-xs font-bold text-[#6E7CA0] uppercase tracking-wider mb-2">The &quot;6-Second Label&quot;</h3>
+                        <p className="text-2xl font-bold text-[#002E5D] mb-2">{cpi}</p>
+                        <p className="text-sm text-[#6E7CA0]">How a technical recruiter first categorizes you.</p>
                     </div>
                     <div className="glass-panel p-6 rounded-2xl lg:col-span-2">
-                        <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-4">Top 3 Hiring Risks</h3>
+                        <h3 className="text-xs font-bold text-[#6E7CA0] uppercase tracking-wider mb-4">Top 3 Hiring Risks</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {topRisks.length > 0 ? topRisks.map((risk: any, i: number) => (
                                 <div key={i} className="space-y-1">
                                     <p className="text-red-400 font-bold text-sm">#{(i + 1)} {risk.risk}</p>
-                                    <p className="text-xs text-gray-500 leading-relaxed">{risk.reason}</p>
+                                    <p className="text-xs text-[#6E7CA0] leading-relaxed">{risk.reason}</p>
                                 </div>
                             )) : (
-                                <p className="text-gray-500 italic text-sm">No significant risks identified.</p>
+                                <p className="text-[#6E7CA0] italic text-sm">No significant risks identified.</p>
                             )}
                         </div>
                     </div>
@@ -79,8 +79,8 @@ export default function AnalysisPage() {
                                 key={layer.id}
                                 onClick={() => setActiveLayer(layer.id)}
                                 className={`w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-all flex justify-between items-center ${activeLayer === layer.id
-                                    ? 'bg-blue-600/20 text-blue-400 border border-blue-600/50'
-                                    : 'text-gray-400 hover:bg-surface hover:text-white border border-transparent'
+                                        ? 'bg-[#0047BA]/10 text-[#0047BA] border border-[#0047BA]/40'
+                                        : 'text-[#6E7CA0] hover:bg-gray-100 hover:text-[#002E5D] border border-transparent'
                                     }`}
                             >
                                 <span>{layer.name}</span>
@@ -91,10 +91,10 @@ export default function AnalysisPage() {
                             </button>
                         ))}
 
-                        <div className="mt-8 pt-8 border-t border-gray-800">
+                        <div className="mt-8 pt-8 border-t border-gray-200">
                             <Link
                                 href="/optimize"
-                                className="w-full block text-center bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-4 rounded-xl transition-colors text-sm"
+                                className="w-full block text-center bg-[#0047BA] hover:bg-[#002E5D] text-white font-semibold py-3 px-4 rounded-xl transition-colors text-sm"
                             >
                                 View Suggested Rewrite
                             </Link>
@@ -116,13 +116,13 @@ export default function AnalysisPage() {
                         </div>
 
                         {/* Referenced Text Snippet */}
-                        <div className="glass-panel rounded-2xl overflow-hidden border border-gray-800">
-                            <div className="bg-surface px-6 py-3 border-b border-gray-800 flex justify-between items-center">
-                                <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Referenced Text from Resume</span>
-                                <span className="text-[10px] text-gray-600">SOURCE EXTRACT</span>
+                        <div className="glass-panel rounded-2xl overflow-hidden border border-gray-200">
+                            <div className="bg-gray-50 px-6 py-3 border-b border-gray-200 flex justify-between items-center">
+                                <span className="text-xs font-bold text-[#6E7CA0] uppercase tracking-widest">Referenced Text from Resume</span>
+                                <span className="text-[10px] text-gray-400">SOURCE EXTRACT</span>
                             </div>
                             <div className="p-8">
-                                <blockquote className="text-lg text-gray-300 italic border-l-4 border-blue-500/30 pl-6 py-2 leading-relaxed">
+                                <blockquote className="text-base text-[#002E5D] italic border-l-4 border-[#0047BA]/30 pl-6 py-2 leading-relaxed">
                                     &quot;{layers[activeLayer]?.referenced_text || "Analysis in progress or snippet not available."}&quot;
                                 </blockquote>
                             </div>
@@ -130,7 +130,7 @@ export default function AnalysisPage() {
 
                         {/* Fixes / Issues */}
                         <div className="space-y-4">
-                            <h4 className="text-sm font-bold text-gray-500 uppercase tracking-widest">Actionable Fixes</h4>
+                            <h4 className="text-xs font-bold text-[#6E7CA0] uppercase tracking-widest">Actionable Fixes</h4>
                             {activeLayerData.issues.length === 0 ? (
                                 <div className="glass-panel p-8 rounded-2xl border-emerald-500/20 text-center">
                                     <p className="text-emerald-400">Layer is optimized. No critical fixes required.</p>
@@ -138,18 +138,18 @@ export default function AnalysisPage() {
                             ) : (
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                     {activeLayerData.issues.map((issue: any, idx: number) => (
-                                        <div key={idx} className="glass-panel p-6 rounded-2xl border border-gray-800 flex flex-col">
+                                        <div key={idx} className="glass-panel p-6 rounded-2xl border border-gray-200 flex flex-col">
                                             <div className="flex justify-between items-start mb-4">
                                                 <span className="bg-red-500/10 text-red-400 text-[10px] px-2 py-1 rounded-md font-bold uppercase tracking-tighter">
                                                     {issue.type || 'Fix'}
                                                 </span>
                                             </div>
-                                            <p className="text-gray-300 text-sm mb-6 flex-1">
+                                            <p className="text-[#002E5D] text-sm mb-6 flex-1">
                                                 {issue.reason || issue.description || issue.fix}
                                             </p>
                                             <div className="bg-emerald-500/5 p-4 rounded-xl border border-emerald-500/20">
                                                 <p className="text-[10px] text-emerald-500 uppercase font-bold mb-1 tracking-widest">Recommended Action</p>
-                                                <p className="text-sm text-emerald-100 font-medium">
+                                                <p className="text-sm text-emerald-700 font-medium">
                                                     {issue.fix}
                                                 </p>
                                             </div>

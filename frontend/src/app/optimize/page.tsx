@@ -61,7 +61,7 @@ export default function OptimizePage() {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-4">
-                        <Link href="/analysis" className="text-gray-400 hover:text-white transition-colors">
+                        <Link href="/analysis" className="text-[#0047BA] hover:text-[#002E5D] transition-colors text-sm font-medium">
                             ← Back
                         </Link>
                         <h1 className="text-2xl font-bold">What Your Resume Could Look Like</h1>
@@ -71,7 +71,7 @@ export default function OptimizePage() {
                         <button
                             disabled
                             title="PDF download coming soon"
-                            className="bg-surface text-gray-500 px-4 py-2 rounded-lg text-sm font-medium border border-gray-700 cursor-not-allowed opacity-50"
+                            className="bg-gray-100 text-gray-400 px-4 py-2 rounded-lg text-sm font-medium border border-gray-300 cursor-not-allowed opacity-60"
                         >
                             Download (Coming Soon)
                         </button>
@@ -84,7 +84,7 @@ export default function OptimizePage() {
                     {/* Left: Original (Text focus) */}
                     <div className="flex flex-col gap-4">
                         <div className="flex justify-between items-center px-4">
-                            <span className="text-gray-400 font-medium">Key Findings</span>
+                            <span className="text-[#6E7CA0] font-medium">Key Findings</span>
                             <span className="text-red-400 font-mono text-sm">Score: {data?.rms_score || 0}</span>
                         </div>
                         <div className="glass-panel p-8 rounded-2xl flex-1 overflow-auto max-h-[800px]">
@@ -92,13 +92,13 @@ export default function OptimizePage() {
                             <ul className="space-y-4">
                                 {(data?.top_risks || data?.raw_json?.top_risks || []).map((risk: any, i: number) => (
                                     <li key={i} className="border-l-2 border-red-500/30 pl-4 py-1">
-                                        <p className="text-white font-semibold text-sm">{risk.risk}</p>
-                                        <p className="text-gray-500 text-xs mt-1">{risk.reason}</p>
+                                        <p className="text-[#002E5D] font-semibold text-sm">{risk.risk}</p>
+                                        <p className="text-[#6E7CA0] text-xs mt-1">{risk.reason}</p>
                                     </li>
                                 ))}
                             </ul>
-                            <div className="mt-8 pt-8 border-t border-gray-800">
-                                <p className="text-gray-400 text-sm leading-relaxed">
+                            <div className="mt-8 pt-8 border-t border-gray-200">
+                                <p className="text-[#6E7CA0] text-sm leading-relaxed">
                                     The optimized version on the right transforms these risks into high-signal engineering outcomes.
                                 </p>
                             </div>
@@ -125,7 +125,7 @@ export default function OptimizePage() {
                         {/* Disclaimer Banner */}
                         <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl px-5 py-3 mb-2 flex items-start gap-3">
                             <span className="text-amber-400 text-lg mt-0.5">⚠️</span>
-                            <p className="text-amber-200 text-xs leading-relaxed">
+                            <p className="text-amber-700 text-xs leading-relaxed">
                                 <strong>AI-generated illustration.</strong> This is not your actual resume. Content in brackets (e.g., <code>[X]%</code>) is estimated or example data. Use this as a structural guide — do not submit as-is.
                             </p>
                         </div>

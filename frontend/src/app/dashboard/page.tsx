@@ -24,7 +24,7 @@ function ScoreGauge({ score }: { score: number }) {
                     stroke="currentColor"
                     strokeWidth="12"
                     fill="transparent"
-                    className="text-gray-800"
+                    className="text-gray-200"
                 />
                 <circle
                     cx="96"
@@ -41,13 +41,13 @@ function ScoreGauge({ score }: { score: number }) {
             <div className="absolute flex flex-col items-center">
                 <span className={`text-5xl font-bold ${color}`}>{score}</span>
                 <div className="flex items-center gap-1 group relative">
-                    <span className="text-sm text-gray-400">RMS</span>
+                    <span className="text-sm text-[#6E7CA0]">RMS</span>
                     <button className="text-gray-500 hover:text-gray-300">
                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </button>
-                    <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 p-2 bg-gray-900 text-xs text-gray-300 rounded shadow-xl opacity-0 group-hover:opacity-100 Transition-opacity pointer-events-none z-10 border border-gray-800">
+                    <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-48 p-2 bg-[#002E5D] text-xs text-white rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 border border-[#001f42]">
                         Resume Marketability Score: A quantitative measure of how well your resume mitigates hiring risks for a specific role.
                     </div>
                 </div>
@@ -70,7 +70,7 @@ export default function Dashboard() {
         }
     }, []);
 
-    if (!data) return <div className="min-h-screen bg-background flex items-center justify-center text-white">Loading...</div>;
+    if (!data) return <div className="min-h-screen bg-background flex items-center justify-center text-gray-700">Loading...</div>;
 
     // Normalize data (backend might use snake_case vs mock camelCase)
     // Backend returns: rms_score, cpi...
@@ -94,11 +94,11 @@ export default function Dashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* Main Score Card */}
                     <div className="glass-panel p-8 rounded-2xl flex flex-col items-center justify-center text-center">
-                        <h2 className="text-xl font-semibold mb-6 text-gray-300">Resume Marketability Score</h2>
+                        <h2 className="text-lg font-semibold mb-6 text-[#6E7CA0]">Resume Marketability Score</h2>
                         <ScoreGauge score={score} />
                         <div className="mt-6">
-                            <p className="text-gray-400 max-w-sm mx-auto">
-                                You are in the <span className="text-white font-semibold">top {score > 80 ? '10%' : '40%'}</span>.
+                            <p className="text-[#6E7CA0] max-w-sm mx-auto">
+                                You are in the <span className="text-[#002E5D] font-semibold">top {score > 80 ? '10%' : '40%'}</span>.
                                 Fix critical errors to improve.
                             </p>
                             <Link
@@ -114,18 +114,18 @@ export default function Dashboard() {
                     <div className="space-y-6">
                         <div className="glass-panel p-8 rounded-2xl">
                             <div className="flex items-center gap-2 mb-2 group relative">
-                                <h3 className="text-lg font-medium text-gray-400">Identity Detected</h3>
-                                <button className="text-gray-500 hover:text-gray-300">
+                                <h3 className="text-base font-medium text-[#6E7CA0] mb-2">Identity Detected</h3>
+                                <button className="text-[#6E7CA0] hover:text-[#002E5D]">
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 </button>
-                                <div className="absolute bottom-full mb-2 left-0 w-64 p-3 bg-gray-900 text-xs text-gray-300 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 border border-gray-800">
+                                <div className="absolute bottom-full mb-2 left-0 w-64 p-3 bg-[#002E5D] text-xs text-white rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 border border-[#001f42]">
                                     Career Profile Identity (CPI): The immediate professional &quot;bucket&quot; a recruiter places you in within 6 seconds.
                                 </div>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="text-2xl font-bold text-white">{identityTitle}</span>
+                                <span className="text-2xl font-bold text-[#002E5D]">{identityTitle}</span>
                                 <span className="bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full text-sm">
                                     {confidence}% Conf
                                 </span>
@@ -133,10 +133,10 @@ export default function Dashboard() {
                         </div>
 
                         <div className="glass-panel p-8 rounded-2xl">
-                            <h3 className="text-lg font-medium text-gray-400 mb-4">Recent Activity</h3>
+                            <h3 className="text-base font-medium text-[#6E7CA0] mb-4">Recent Activity</h3>
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center text-sm">
-                                    <span className="text-white">Current Upload</span>
+                                    <span className="text-[#002E5D] font-medium">Current Upload</span>
                                     <span className="text-emerald-400 font-mono">Score: {score}</span>
                                 </div>
                             </div>
