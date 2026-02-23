@@ -61,10 +61,16 @@ async def analyze_resume(
                 "gcs_uri": public_url,
                 "gcs_blob": gcs_filename
             }
+            db_user_id = None
             if user_id:
                 client_info["user_id"] = user_id
+                db_user_id = uuid.UUID(user_id)
 
-            db_resume = models.Resume(session_id=session_id, client_info=client_info)
+            db_resume = models.Resume(
+                session_id=session_id, 
+                client_info=client_info,
+                user_id=db_user_id
+            )
             db.add(db_resume)
             db.commit()
             db.refresh(db_resume)

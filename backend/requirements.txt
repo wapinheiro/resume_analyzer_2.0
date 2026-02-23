@@ -12,3 +12,4 @@ google-generativeai
 pypdf
 google-cloud-storage
 tenacity
+email-validator

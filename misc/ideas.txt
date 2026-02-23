@@ -1,0 +1,9 @@
+we need to implement a bridge to the career advisor. The app should propose (based on the analysis and a list of services provided by the advisor) some questions and/or actions. Then we should have a link to schedule a time with the advisor and if possible include the questions in the scheduler's form.
+Create an Advisor/Admin page, where the advisor see the analysis for each student all the questions/actions that the system proposed to the student. 
+Create an Advisor's dashboard with some metrics, analytics from the students, etc. Also, propose follow up and check ins.
+We need to add signal strength to the 6 second lable section. For example if the identified career profile identity is Full stack dev, how strong/weak is the evidence for this identity? How easy would it be for the recruiter to identify this identity in 6 seconds? HOw confident woudl the recruiter be in this identification? If needs be, let's define a calculation for taht.
+Improvement: the layered feedback needs to be more detailed and thorough. Right now it only provides feedback for one line (source extract). It's one life per layer. That's not enough. It should bring all the lines that need feedback for each layer.
+We need to find a way to measure and track token efficiency. This is not priority, it's a backlog item, but eventually we should implement it.
+We need to provide an example for each Recommended Action, so that it's easier for the student to understand what the action means.
+We need to change the frabricated content identifier from X to *, or use both. Let's use X for specific values (ie: improved productivity by X%), and * to identify ilustrative text (ie: Programming Languages: *Python). Then we need to add a notes section explaining what the * means.
+We need to enforce template compliance when generating the RMS optimized version. Let's review the current template or create one if we don't have it.

@@ -1,18 +1,6 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-
-const isProtectedRoute = createRouteMatcher([
-    '/dashboard(.*)',
-    '/analysis(.*)',
-    '/history(.*)',
-]);
-
-export default clerkMiddleware(async (auth, req) => {
-    if (isProtectedRoute(req)) {
-        const { userId, redirectToSignIn } = await auth();
-        if (!userId) return redirectToSignIn();
-    }
-});
+export { default } from "next-auth/middleware";
 
 export const config = {
-    matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
+    // Only runs middleware on specific protected routes
+    matcher: ['/dashboard/:path*', '/analysis/:path*', '/history/:path*'],
 };

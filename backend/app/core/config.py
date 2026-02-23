@@ -24,6 +24,9 @@ class Settings(BaseSettings):
     # GCP credentials - Cloud Run uses default service account
     # Only needed for local development
     GOOGLE_APPLICATION_CREDENTIALS: str | None = None
+    
+    # NextAuth shared secret
+    NEXTAUTH_SECRET: str = "super_secret_key_for_local_dev"
 
     class Config:
         case_sensitive = True

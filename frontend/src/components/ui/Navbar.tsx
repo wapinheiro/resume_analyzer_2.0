@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { UserButton, SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { useEffect, useState } from 'react';
+import { LoginButton } from './LoginButton';
 
 export function Navbar() {
     const [hasAnalysis, setHasAnalysis] = useState(false);
@@ -27,18 +27,7 @@ export function Navbar() {
                                     Dashboard
                                 </Link>
                             )}
-
-                            <SignedOut>
-                                <SignInButton mode="modal">
-                                    <button className="bg-[#0047BA] hover:bg-[#003a9e] text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">
-                                        Login
-                                    </button>
-                                </SignInButton>
-                            </SignedOut>
-
-                            <SignedIn>
-                                <UserButton afterSignOutUrl="/" />
-                            </SignedIn>
+                            <LoginButton />
                         </div>
                     </div>
                 </div>
