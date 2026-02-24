@@ -79,8 +79,8 @@ export default function AnalysisPage() {
                                 key={layer.id}
                                 onClick={() => setActiveLayer(layer.id)}
                                 className={`w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-all flex justify-between items-center ${activeLayer === layer.id
-                                        ? 'bg-[#0047BA]/10 text-[#0047BA] border border-[#0047BA]/40'
-                                        : 'text-[#6E7CA0] hover:bg-gray-100 hover:text-[#002E5D] border border-transparent'
+                                    ? 'bg-[#0047BA]/10 text-[#0047BA] border border-[#0047BA]/40'
+                                    : 'text-[#6E7CA0] hover:bg-gray-100 hover:text-[#002E5D] border border-transparent'
                                     }`}
                             >
                                 <span>{layer.name}</span>
@@ -91,13 +91,22 @@ export default function AnalysisPage() {
                             </button>
                         ))}
 
-                        <div className="mt-8 pt-8 border-t border-gray-200">
+                        <div className="mt-8 pt-8 border-t border-gray-200 space-y-3">
                             <Link
                                 href="/optimize"
                                 className="w-full block text-center bg-[#0047BA] hover:bg-[#002E5D] text-white font-semibold py-3 px-4 rounded-xl transition-colors text-sm"
                             >
                                 View Suggested Rewrite
                             </Link>
+
+                            <a
+                                href={process.env.NEXT_PUBLIC_ACUITY_URL || "https://acuityscheduling.com"}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full block text-center bg-white border-2 border-[#0047BA] hover:bg-gray-50 text-[#0047BA] font-semibold py-3 px-4 rounded-xl transition-colors text-sm"
+                            >
+                                Discuss with an Advisor
+                            </a>
                         </div>
                     </div>
 
