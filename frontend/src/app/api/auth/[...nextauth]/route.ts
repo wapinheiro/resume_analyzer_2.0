@@ -1,9 +1,49 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 const authOptions: NextAuthOptions = {
     providers: [
+        CredentialsProvider({
+            name: "Email & Password",
+            credentials: {
+                email: { label: "Email", type: "email" },
+                password: { label: "Password", type: "password" },
+            },
+            async authorize(credentials) {
+                if (!credentials?.email || !credentials?.password) {
+                    return null;
+                }
+
+                try {
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'}/users/login`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            email: credentials.email,
+                            password: credentials.password
+                        })
+                    });
+
+                    if (res.ok) {
+                        const user = await res.json();
+                        // user object from db contains id, email, name, avatar_url, role
+                        return {
+                            id: user.id,
+                            email: user.email,
+                            name: user.name,
+                            image: user.avatar_url,
+                            role: user.role
+                        };
+                    }
+                    return null;
+                } catch (e) {
+                    console.error("Login verification failed:", e);
+                    return null;
+                }
+            }
+        }),
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID || "",
             clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
@@ -13,6 +53,9 @@ const authOptions: NextAuthOptions = {
             clientSecret: process.env.GITHUB_SECRET || "",
         }),
     ],
+    pages: {
+        signIn: '/login',
+    },
     session: {
         strategy: "jwt",
     },

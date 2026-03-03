@@ -4,22 +4,29 @@ import { NextResponse } from "next/server";
 export default withAuth(
     function middleware(req) {
         const token = req.nextauth.token;
-        const isAdvisorRoute = req.nextUrl.pathname.startsWith("/advisor");
+        const path = req.nextUrl.pathname;
 
-        // If trying to access an advisor route but not an advisor/admin
-        if (isAdvisorRoute && token?.role !== "advisor" && token?.role !== "admin") {
-            // Redirect to a Not Authorized page or the homepage
+        // Route protection
+        if (path.startsWith("/advisor") && token?.role !== "advisor" && token?.role !== "admin") {
             return NextResponse.redirect(new URL("/", req.url));
+        }
+        if (path.startsWith("/admin") && token?.role !== "admin") {
+            return NextResponse.redirect(new URL("/", req.url));
+        }
+
+        // Smart redirects away from student landing page tailored by role
+        if (path === "/" && token) {
+            if (token.role === "admin") return NextResponse.redirect(new URL("/admin", req.url));
+            if (token.role === "advisor") return NextResponse.redirect(new URL("/advisor/dashboard", req.url));
         }
     },
     {
         callbacks: {
-            authorized: ({ token }) => !!token, // Standard login check
+            authorized: ({ token }) => !!token,
         },
     }
 );
 
 export const config = {
-    // Only runs middleware on specific protected routes
-    matcher: ['/dashboard/:path*', '/analysis/:path*', '/history/:path*', '/advisor/:path*'],
+    matcher: ['/', '/dashboard/:path*', '/analysis/:path*', '/history/:path*', '/advisor/:path*', '/admin/:path*'],
 };

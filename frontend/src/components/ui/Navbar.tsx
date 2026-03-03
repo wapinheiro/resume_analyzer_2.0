@@ -2,14 +2,18 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { LoginButton } from './LoginButton';
 
 export function Navbar() {
+    const { data: session } = useSession();
     const [hasAnalysis, setHasAnalysis] = useState(false);
 
     useEffect(() => {
         setHasAnalysis(!!localStorage.getItem('analysisResult'));
     }, []);
+
+    const role = (session?.user as any)?.role;
 
     return (
         <nav className="fixed top-0 w-full z-50 border-b border-[#001f42]" style={{ backgroundColor: '#002E5D' }}>
@@ -22,7 +26,17 @@ export function Navbar() {
                     </div>
                     <div className="hidden md:block">
                         <div className="ml-10 flex items-center space-x-4">
-                            {hasAnalysis && (
+                            {role === 'admin' && (
+                                <Link href="/admin" className="text-white hover:text-blue-200 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                    Admin Panel
+                                </Link>
+                            )}
+                            {role === 'advisor' && (
+                                <Link href="/advisor/dashboard" className="text-white hover:text-blue-200 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                    Advisor Dashboard
+                                </Link>
+                            )}
+                            {hasAnalysis && role !== 'admin' && role !== 'advisor' && (
                                 <Link href="/dashboard" className="text-white/80 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
                                     Dashboard
                                 </Link>

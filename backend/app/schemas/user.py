@@ -8,6 +8,13 @@ class UserCreate(BaseModel):
     name: Optional[str] = None
     avatar_url: Optional[str] = None
 
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
+class UserRoleUpdate(BaseModel):
+    role: str
+
 class User(UserCreate):
     id: uuid.UUID
     role: str
