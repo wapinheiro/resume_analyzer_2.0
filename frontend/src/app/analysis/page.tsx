@@ -4,6 +4,19 @@ import { Navbar } from '@/components/ui/Navbar';
 import { MOCK_ANALYSIS } from '@/data/mock';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { Info } from 'lucide-react';
+
+const renderActionText = (text: string) => {
+    if (!text) return null;
+    // Highlight words starting with * (e.g. *Python, *Managed)
+    const parts = text.split(/(\*[a-zA-Z0-9_-]+)/g);
+    return parts.map((part, index) => {
+        if (part.startsWith('*')) {
+            return <span key={index} className="bg-amber-100 text-amber-800 font-bold px-1 rounded mx-0.5">{part.substring(1)}</span>;
+        }
+        return <span key={index}>{part}</span>;
+    });
+};
 
 export default function AnalysisPage() {
     const [data, setData] = useState<any>(null);
@@ -35,6 +48,14 @@ export default function AnalysisPage() {
 
     const topRisks = data.top_risks || data.raw_json?.top_risks || [];
     const cpi = data.cpi || data.raw_json?.cpi || "Unknown";
+    const confidenceScore = data.confidence_score !== undefined ? data.confidence_score : data.raw_json?.confidence_score;
+    const confidenceReasoning = data.confidence_reasoning || data.raw_json?.confidence_reasoning || "Reasoning not provided.";
+
+    const getSignalColor = (score: number) => {
+        if (score >= 80) return "bg-emerald-100 text-emerald-700 border-emerald-200";
+        if (score >= 50) return "bg-amber-100 text-amber-700 border-amber-200";
+        return "bg-red-100 text-red-700 border-red-200";
+    };
 
     return (
         <main className="min-h-screen bg-background flex flex-col">
@@ -50,12 +71,25 @@ export default function AnalysisPage() {
 
                 {/* Global Stats: CPI & Top Risks */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                    <div className="glass-panel p-6 rounded-2xl lg:col-span-1">
-                        <h3 className="text-xs font-bold text-[#6E7CA0] uppercase tracking-wider mb-2">The &quot;6-Second Label&quot;</h3>
+                    <div className="glass-panel p-6 rounded-2xl lg:col-span-1 border border-gray-200">
+                        <div className="flex justify-between items-start mb-2">
+                            <h3 className="text-xs font-bold text-[#6E7CA0] uppercase tracking-wider">The &quot;6-Second Label&quot;</h3>
+                            {confidenceScore !== undefined && (
+                                <div className={`px-2 py-0.5 rounded text-xs font-bold border flex items-center gap-1 ${getSignalColor(confidenceScore)}`} title={confidenceReasoning}>
+                                    <Info className="w-3 h-3" />
+                                    Signal: {confidenceScore}/100
+                                </div>
+                            )}
+                        </div>
                         <p className="text-2xl font-bold text-[#002E5D] mb-2">{cpi}</p>
                         <p className="text-sm text-[#6E7CA0]">How a technical recruiter first categorizes you.</p>
+                        {confidenceScore !== undefined && (
+                            <p className="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100">
+                                <strong>AI Reasoning:</strong> {confidenceReasoning}
+                            </p>
+                        )}
                     </div>
-                    <div className="glass-panel p-6 rounded-2xl lg:col-span-2">
+                    <div className="glass-panel p-6 rounded-2xl lg:col-span-2 border border-gray-200">
                         <h3 className="text-xs font-bold text-[#6E7CA0] uppercase tracking-wider mb-4">Top 3 Hiring Risks</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {topRisks.length > 0 ? topRisks.map((risk: any, i: number) => (
@@ -159,13 +193,28 @@ export default function AnalysisPage() {
                                             <div className="bg-emerald-500/5 p-4 rounded-xl border border-emerald-500/20">
                                                 <p className="text-[10px] text-emerald-500 uppercase font-bold mb-1 tracking-widest">Recommended Action</p>
                                                 <p className="text-sm text-emerald-700 font-medium">
-                                                    {issue.fix}
+                                                    {renderActionText(issue.fix)}
                                                 </p>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
                             )}
+                        </div>
+
+                        {/* Legend */}
+                        <div className="mt-8 pt-6 border-t border-gray-200">
+                            <h4 className="text-xs font-bold text-[#6E7CA0] uppercase tracking-widest mb-3">Annotation Legend</h4>
+                            <div className="flex flex-wrap gap-4 text-sm">
+                                <div className="flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-lg border border-slate-200">
+                                    <span className="font-mono text-xs font-bold bg-white border border-slate-300 px-1.5 py-0.5 rounded text-slate-600">[X]</span>
+                                    <span className="text-slate-600">= Replace with your specific numerical data.</span>
+                                </div>
+                                <div className="flex items-center gap-2 bg-amber-50 px-3 py-2 rounded-lg border border-amber-200/50">
+                                    <span className="font-mono text-xs font-bold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">[*]</span>
+                                    <span className="text-amber-800">= Illustrative technical example to emulate.</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

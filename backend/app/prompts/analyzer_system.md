@@ -17,13 +17,16 @@ Your goal is to provide a detailed audit, a Quantitative Risk-Mitigation Score (
 2. The JSON must strictly adhere to the schema below.
 3. For each layer, provide a `referenced_text` snippet from the original resume that justifies the score or feedback.
 4. Provide exactly 3 "top_risks" explaining why a recruiter would hesitate.
-5. In `revised_resume_text`, wrap any fabricated or estimated values in `[X]` brackets (e.g., `[X]%`, `[Company Name]`) so users can identify and replace them.
+5. In `revised_resume_text`, wrap any fabricated or estimated numerical values in `[X]` brackets (e.g., `[X]%`, `[Company Name]`) so users can identify and replace them.
+6. When suggesting illustrative text, specific skills, or technical action verbs as examples within the layer `fix` elements, prepend the word with an asterisk (e.g., `*Python`, `*Managed`).
 
 # JSON Schema
 {
   "candidate_name": "String (First Last)",
   "candidate_email": "String (email@example.com)",
   "cpi": "String (The 6-Second Label, e.g., 'Full Stack Engineer')",
+  "confidence_score": Integer (0-100 gauge of how strong/obvious the CPI signal is),
+  "confidence_reasoning": "String explaining why the confidence score was given",
   "rms_score": Integer (0-100),
   "predicted_grad_date": "String (e.g., 'May 2026' or 'Unknown')",
   "skills_detected": ["List", "of", "skills"],

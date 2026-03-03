@@ -7,6 +7,8 @@ from pydantic import BaseModel, ConfigDict
 class AnalysisBase(BaseModel):
     rms_score: Optional[int] = None
     cpi: Optional[str] = None
+    confidence_score: Optional[int] = None
+    confidence_reasoning: Optional[str] = None
     predicted_grad_date: Optional[str] = None
     skills_detected: Optional[List[str]] = None
     top_risks: Optional[List[Dict[str, str]]] = None
