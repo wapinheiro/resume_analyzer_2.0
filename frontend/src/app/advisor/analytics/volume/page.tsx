@@ -92,7 +92,7 @@ export default function VolumeAnalytics() {
                         <div className="flex flex-col">
                             <label className="text-xs font-semibold text-[#6E7CA0] uppercase tracking-wider mb-2">Group By</label>
                             <select
-                                className="border rounded-lg px-4 py-2 bg-white/50 dark:bg-gray-800/50 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                                className="border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-black focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                                 value={groupBy}
                                 onChange={(e) => setGroupBy(e.target.value)}
                             >
@@ -106,7 +106,7 @@ export default function VolumeAnalytics() {
                         <div className="flex flex-col">
                             <label className="text-xs font-semibold text-[#6E7CA0] uppercase tracking-wider mb-2">Filter by Major</label>
                             <select
-                                className="border rounded-lg px-4 py-2 bg-white/50 dark:bg-gray-800/50 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                                className="border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-black focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                                 value={major}
                                 onChange={(e) => setMajor(e.target.value)}
                             >
@@ -120,7 +120,7 @@ export default function VolumeAnalytics() {
                         <div className="flex flex-col">
                             <label className="text-xs font-semibold text-[#6E7CA0] uppercase tracking-wider mb-2">Filter by Grad Year</label>
                             <select
-                                className="border rounded-lg px-4 py-2 bg-white/50 dark:bg-gray-800/50 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                                className="border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-black focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                                 value={gradYear}
                                 onChange={(e) => setGradYear(e.target.value)}
                             >

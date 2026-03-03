@@ -111,7 +111,7 @@ async def analyze_resume(
                     cpi="Full Stack Developer (Mock)",
                     predicted_grad_date="May 2026",
                     skills_detected=["Python", "React", "FastAPI"],
-                    top_errors=["Weak Verbs", "Missing Metrics"],
+                    top_risks=[{"type": "Weak Verbs", "issue": "Used 'Helped' instead of 'Architected'"}, {"type": "Missing Metrics", "issue": "No quantifiable impact"}],
                     raw_json={"layers": mock_layers}
                 )
 

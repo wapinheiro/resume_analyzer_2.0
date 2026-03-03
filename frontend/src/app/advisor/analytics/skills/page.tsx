@@ -116,19 +116,19 @@ export default function SkillsAnalytics() {
             <div className="overflow-x-auto min-h-[400px]">
                 <table className="w-full text-left border-collapse">
                     <thead>
-                        <tr className="bg-gray-50/50 dark:bg-gray-800/20 text-xs uppercase tracking-wider text-[#6E7CA0] border-b border-gray-100 dark:border-gray-800">
+                        <tr className="bg-gray-50/50 text-xs uppercase tracking-wider text-[#6E7CA0] border-b border-gray-100">
                             <th className="p-6 font-semibold">Missing Skill / Keyword</th>
                             <th className="p-6 font-semibold text-right">Frequency</th>
                             <th className="p-6 font-semibold text-right">% of Students</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                    <tbody className="divide-y divide-gray-100">
                         {skills.map((s) => (
-                            <tr key={s.skill} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
-                                <td className="p-6 font-bold text-[#002E5D] dark:text-gray-200">{s.skill}</td>
-                                <td className="p-6 text-right font-mono text-gray-700 dark:text-gray-300">{s.missing_count}</td>
+                            <tr key={s.skill} className="hover:bg-gray-50/50 transition-colors">
+                                <td className="p-6 font-bold text-[#002E5D]">{s.skill}</td>
+                                <td className="p-6 text-right font-mono text-gray-700">{s.missing_count}</td>
                                 <td className="p-6 text-right">
-                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-400">
+                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
                                         {s.percentage}%
                                     </span>
                                 </td>
@@ -160,7 +160,7 @@ export default function SkillsAnalytics() {
                         <div className="flex flex-col">
                             <label className="text-xs font-semibold text-[#6E7CA0] uppercase tracking-wider mb-2">Filter by Major</label>
                             <select
-                                className="border rounded-lg px-4 py-2 bg-white/50 dark:bg-gray-800/50 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                                className="border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-black focus:ring-2 focus:ring-amber-500 focus:outline-none"
                                 value={major}
                                 onChange={(e) => setMajor(e.target.value)}
                             >
@@ -174,7 +174,7 @@ export default function SkillsAnalytics() {
                         <div className="flex flex-col">
                             <label className="text-xs font-semibold text-[#6E7CA0] uppercase tracking-wider mb-2">Filter by Grad Year</label>
                             <select
-                                className="border rounded-lg px-4 py-2 bg-white/50 dark:bg-gray-800/50 focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                                className="border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-black focus:ring-2 focus:ring-amber-500 focus:outline-none"
                                 value={gradYear}
                                 onChange={(e) => setGradYear(e.target.value)}
                             >
@@ -187,16 +187,16 @@ export default function SkillsAnalytics() {
                         </div>
                     </div>
 
-                    <div className="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-xl">
+                    <div className="flex bg-gray-100 p-1 rounded-xl">
                         <button
                             onClick={() => setViewMode('cloud')}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${viewMode === 'cloud' ? 'bg-white dark:bg-gray-700 shadow-sm text-amber-600' : 'text-gray-500 hover:text-gray-700'}`}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${viewMode === 'cloud' ? 'bg-white shadow-sm text-amber-600' : 'text-gray-500 hover:text-gray-700'}`}
                         >
                             <LayoutGrid className="w-4 h-4" /> Word Cloud
                         </button>
                         <button
                             onClick={() => setViewMode('table')}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${viewMode === 'table' ? 'bg-white dark:bg-gray-700 shadow-sm text-amber-600' : 'text-gray-500 hover:text-gray-700'}`}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${viewMode === 'table' ? 'bg-white shadow-sm text-amber-600' : 'text-gray-500 hover:text-gray-700'}`}
                         >
                             <List className="w-4 h-4" /> Data Table
                         </button>

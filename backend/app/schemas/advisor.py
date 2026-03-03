@@ -9,6 +9,8 @@ class AdvisorStudentSub(BaseModel):
     last_scan_date: Optional[datetime] = None
     latest_score: Optional[int] = None
     status: str = "Pending"  # E.g., Pending, Reviewed, Follow-up
+    major: Optional[str] = None
+    grad_year: Optional[str] = None
 
 class AdvisorStudentListResponse(BaseModel):
     students: List[AdvisorStudentSub]

@@ -63,8 +63,13 @@ def list_students(
         # Get latest resume for this user
         latest_resume = db.query(Resume).filter(Resume.user_id == user.id).order_by(Resume.uploaded_at.desc()).first()
         latest_analysis = None
+        major = None
+        grad_year = None
         if latest_resume:
              latest_analysis = db.query(Analysis).filter(Analysis.resume_id == latest_resume.id).order_by(Analysis.created_at.desc()).first()
+             if latest_resume.client_info:
+                 major = latest_resume.client_info.get("major")
+                 grad_year = latest_resume.client_info.get("grad_year")
              
         student_data.append(schemas.AdvisorStudentSub(
             id=str(user.id),
@@ -72,7 +77,9 @@ def list_students(
             email=user.email,
             last_scan_date=latest_analysis.created_at if latest_analysis else None,
             latest_score=latest_analysis.rms_score if latest_analysis else None,
-            status="Pending" # Stub status
+            status="Pending",
+            major=major,
+            grad_year=grad_year
         ))
         
     return {

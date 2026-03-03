@@ -91,7 +91,7 @@ export default function ScoresAnalytics() {
                         <div className="flex flex-col">
                             <label className="text-xs font-semibold text-[#6E7CA0] uppercase tracking-wider mb-2">Filter by Major</label>
                             <select
-                                className="border rounded-lg px-4 py-2 bg-white/50 dark:bg-gray-800/50 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                className="border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 value={major}
                                 onChange={(e) => setMajor(e.target.value)}
                             >
@@ -105,7 +105,7 @@ export default function ScoresAnalytics() {
                         <div className="flex flex-col">
                             <label className="text-xs font-semibold text-[#6E7CA0] uppercase tracking-wider mb-2">Filter by Grad Year</label>
                             <select
-                                className="border rounded-lg px-4 py-2 bg-white/50 dark:bg-gray-800/50 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                className="border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-black focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 value={gradYear}
                                 onChange={(e) => setGradYear(e.target.value)}
                             >
@@ -128,13 +128,13 @@ export default function ScoresAnalytics() {
 
                     <div className="p-8">
                         {data?.insight && (
-                            <div className="mb-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800 flex gap-4 items-start">
-                                <div className="p-2 bg-blue-100 dark:bg-blue-800 rounded-lg text-blue-600 dark:text-blue-300 shrink-0">
+                            <div className="mb-8 p-4 bg-blue-50 rounded-xl border border-blue-100 flex gap-4 items-start">
+                                <div className="p-2 bg-blue-100 rounded-lg text-blue-600 shrink-0">
                                     <Lightbulb className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <h4 className="text-sm font-bold text-blue-900 dark:text-blue-300 mb-1">AI Insight</h4>
-                                    <p className="text-sm text-blue-800 dark:text-blue-200 leading-relaxed">
+                                    <h4 className="text-sm font-bold text-blue-900 mb-1">AI Insight</h4>
+                                    <p className="text-sm text-blue-800 leading-relaxed">
                                         {data.insight}
                                     </p>
                                 </div>

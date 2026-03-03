@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Navbar } from '@/components/ui/Navbar';
 import Link from 'next/link';
-import { Users, TrendingUp, AlertTriangle, ChevronRight } from 'lucide-react';
+import { Users, TrendingUp, AlertTriangle, ChevronRight, ArrowDown, ArrowUp } from 'lucide-react';
 import { format } from 'date-fns';
 
 type Student = {
@@ -15,6 +15,8 @@ type Student = {
     last_scan_date: string | null;
     latest_score: number | null;
     status: string;
+    major?: string;
+    grad_year?: string;
 };
 
 type Analytics = {
@@ -31,6 +33,10 @@ export default function AdvisorDashboard() {
     const [analytics, setAnalytics] = useState<Analytics | null>(null);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
+    const [filterMajor, setFilterMajor] = useState('');
+    const [filterGradYear, setFilterGradYear] = useState('');
+    const [sortColumn, setSortColumn] = useState<'date' | 'score' | null>(null);
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
     useEffect(() => {
         if (status === 'unauthenticated') {
@@ -39,8 +45,10 @@ export default function AdvisorDashboard() {
     }, [status, router]);
 
     useEffect(() => {
-        fetchData();
-    }, [search]);
+        if (status === 'authenticated') {
+            fetchData();
+        }
+    }, [search, status]);
 
     const fetchData = async () => {
         try {
@@ -80,9 +88,56 @@ export default function AdvisorDashboard() {
         }
     };
 
-    if (status === 'loading' || loading) {
+    if (status === 'loading') {
         return <div className="min-h-screen bg-background flex text-gray-700 items-center justify-center">Loading...</div>;
     }
+
+    const filteredStudents = students.filter(student => {
+        if (filterMajor && student.major !== filterMajor) return false;
+        if (filterGradYear && student.grad_year !== filterGradYear) return false;
+
+        // Also apply text search
+        if (search) {
+            const searchLower = search.toLowerCase();
+            const nameMatch = student.name?.toLowerCase().includes(searchLower) || false;
+            const emailMatch = student.email.toLowerCase().includes(searchLower);
+            if (!nameMatch && !emailMatch) return false;
+        }
+
+        return true;
+    });
+
+    const sortedAndFilteredStudents = [...filteredStudents].sort((a, b) => {
+        if (!sortColumn) return 0;
+
+        if (sortColumn === 'date') {
+            const dateA = a.last_scan_date ? new Date(a.last_scan_date).getTime() : 0;
+            const dateB = b.last_scan_date ? new Date(b.last_scan_date).getTime() : 0;
+            return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+        }
+
+        if (sortColumn === 'score') {
+            const scoreA = a.latest_score || 0;
+            const scoreB = b.latest_score || 0;
+            return sortDirection === 'asc' ? scoreA - scoreB : scoreB - scoreA;
+        }
+
+        return 0;
+    });
+
+    const handleSort = (col: 'date' | 'score') => {
+        if (sortColumn === col) {
+            if (sortDirection === 'desc') {
+                setSortDirection('asc');
+            } else {
+                setSortColumn(null); // Reset after asc
+                setSortDirection('desc');
+            }
+        } else {
+            setSortColumn(col);
+            setSortDirection('desc'); // First click sorts descending
+        }
+    };
 
     return (
         <main className="min-h-screen bg-background">
@@ -96,7 +151,7 @@ export default function AdvisorDashboard() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
                         <Link href="/advisor/analytics/scores" className="block transform transition-transform hover:-translate-y-1">
                             <div className="glass-panel p-6 rounded-2xl flex items-center gap-4 border border-transparent hover:border-blue-500/50">
-                                <div className="p-4 bg-blue-100 dark:bg-blue-900/30 rounded-xl text-blue-600 dark:text-blue-400">
+                                <div className="p-4 bg-blue-600 rounded-xl text-white">
                                     <TrendingUp className="w-8 h-8" />
                                 </div>
                                 <div>
@@ -108,7 +163,7 @@ export default function AdvisorDashboard() {
 
                         <Link href="/advisor/analytics/volume" className="block transform transition-transform hover:-translate-y-1">
                             <div className="glass-panel p-6 rounded-2xl flex items-center gap-4 border border-transparent hover:border-blue-500/50">
-                                <div className="p-4 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl text-emerald-600 dark:text-emerald-400">
+                                <div className="p-4 bg-emerald-600 rounded-xl text-white">
                                     <Users className="w-8 h-8" />
                                 </div>
                                 <div>
@@ -120,7 +175,7 @@ export default function AdvisorDashboard() {
 
                         <Link href="/advisor/analytics/skills" className="block transform transition-transform hover:-translate-y-1">
                             <div className="glass-panel p-6 rounded-2xl flex items-center gap-4 border border-transparent hover:border-blue-500/50">
-                                <div className="p-4 bg-amber-100 dark:bg-amber-900/30 rounded-xl text-amber-600 dark:text-amber-400">
+                                <div className="p-4 bg-amber-600 rounded-xl text-white">
                                     <AlertTriangle className="w-8 h-8" />
                                 </div>
                                 <div>
@@ -133,36 +188,89 @@ export default function AdvisorDashboard() {
                 )}
 
                 {/* Students Table */}
-                <div className="glass-panel rounded-2xl overflow-hidden">
+                <div className="glass-panel rounded-2xl overflow-hidden relative">
+                    {loading && (
+                        <div className="absolute inset-0 bg-white/50 dark:bg-gray-900/50 z-10 flex items-center justify-center backdrop-blur-sm">
+                            <svg className="w-8 h-8 animate-spin text-blue-600" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </div>
+                    )}
                     <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                         <h2 className="text-xl font-semibold">Student Roster</h2>
-                        <div className="relative">
-                            <input
-                                type="text"
-                                placeholder="Search students..."
-                                className="pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64 bg-white/50 dark:bg-gray-800/50"
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                            />
-                            <svg className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
+                        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                            <select
+                                className="border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-black focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm w-full sm:w-auto"
+                                value={filterMajor}
+                                onChange={(e) => setFilterMajor(e.target.value)}
+                            >
+                                <option value="">All Majors</option>
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Information Systems">Information Systems</option>
+                                <option value="Cybersecurity">Cybersecurity</option>
+                                <option value="Accounting">Accounting</option>
+                                <option value="Finance">Finance</option>
+                            </select>
+                            <select
+                                className="border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-black focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm w-full sm:w-auto"
+                                value={filterGradYear}
+                                onChange={(e) => setFilterGradYear(e.target.value)}
+                            >
+                                <option value="">All Years</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                            </select>
+                            <div className="relative w-full sm:w-auto">
+                                <input
+                                    type="text"
+                                    placeholder="Search students..."
+                                    className="pl-10 pr-4 py-2 border border-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64 bg-transparent text-black placeholder-gray-500"
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                />
+                                <svg className="w-5 h-5 text-gray-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
                         </div>
                     </div>
 
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="bg-gray-50/50 dark:bg-gray-800/20 text-xs uppercase tracking-wider text-[#6E7CA0] border-b border-gray-100 dark:border-gray-800">
+                                <tr className="bg-[#002E5D] text-xs uppercase tracking-wider text-white border-b border-[#002E5D]">
                                     <th className="p-6 font-semibold">Student</th>
-                                    <th className="p-6 font-semibold">Last Scan</th>
-                                    <th className="p-6 font-semibold">RMS Score</th>
+                                    <th
+                                        className="p-6 font-semibold cursor-pointer hover:bg-[#001f40] transition-colors select-none group"
+                                        onClick={() => handleSort('date')}
+                                    >
+                                        <div className="flex items-center gap-1">
+                                            Last Scan
+                                            <span className="text-white/50 group-hover:text-white">
+                                                {sortColumn === 'date' ? (sortDirection === 'desc' ? <ArrowDown className="w-3 h-3" /> : <ArrowUp className="w-3 h-3" />) : null}
+                                            </span>
+                                        </div>
+                                    </th>
+                                    <th
+                                        className="p-6 font-semibold cursor-pointer hover:bg-[#001f40] transition-colors select-none group"
+                                        onClick={() => handleSort('score')}
+                                    >
+                                        <div className="flex items-center gap-1">
+                                            RMS Score
+                                            <span className="text-white/50 group-hover:text-white">
+                                                {sortColumn === 'score' ? (sortDirection === 'desc' ? <ArrowDown className="w-3 h-3" /> : <ArrowUp className="w-3 h-3" />) : null}
+                                            </span>
+                                        </div>
+                                    </th>
                                     <th className="p-6 font-semibold">Status</th>
                                     <th className="p-6 font-semibold text-right">Action</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                                {students.map((student) => (
+                                {sortedAndFilteredStudents.map((student) => (
                                     <tr key={student.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
                                         <td className="p-6">
                                             <div className="font-medium text-[#002E5D]">{student.name || "Unknown"}</div>
@@ -194,7 +302,7 @@ export default function AdvisorDashboard() {
                                         </td>
                                     </tr>
                                 ))}
-                                {students.length === 0 && (
+                                {sortedAndFilteredStudents.length === 0 && (
                                     <tr>
                                         <td colSpan={5} className="p-12 text-center text-gray-500">
                                             No students found.
