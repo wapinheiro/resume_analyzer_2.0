@@ -3,9 +3,11 @@
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Navbar } from '@/components/ui/Navbar';
+import { useSession } from 'next-auth/react';
 import { analyzeResume } from '@/services/api';
 
 export default function Home() {
+    const { data: session } = useSession();
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [loadingStep, setLoadingStep] = useState('');
     const [isDragging, setIsDragging] = useState(false);
@@ -22,7 +24,9 @@ export default function Home() {
         setLoadingStep('Uploading PDF...');
 
         try {
-            const data = await analyzeResume(file, (message) => {
+            // In NextAuth v4 without exposing the raw JWT, we can pass the session.user.id
+            // Pass the explicit NextAuth backend token
+            const data = await analyzeResume(file, (session as any)?.accessToken, (message) => {
                 setLoadingStep(message);
             });
 

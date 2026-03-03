@@ -1,11 +1,17 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
 
-export async function analyzeResume(file: File, onProgress?: (msg: string) => void) {
+export async function analyzeResume(file: File, token?: string, onProgress?: (msg: string) => void) {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await fetch(`${API_URL}/resumes/analyze`, {
+    const headers: HeadersInit = {};
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${API_URL}/analyze/analyze`, {
         method: 'POST',
+        headers,
         body: formData,
     });
 

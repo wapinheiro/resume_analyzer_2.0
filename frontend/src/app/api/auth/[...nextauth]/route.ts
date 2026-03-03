@@ -50,10 +50,17 @@ const authOptions: NextAuthOptions = {
             }
         },
         async jwt({ token, user }) {
-            // First time jwt callback is run, user object is available
             if (user) {
                 token.id = user.id;
                 token.role = (user as any).role;
+            }
+            if (!token.accessToken && token.id) {
+                const jwt = require("jsonwebtoken");
+                token.accessToken = jwt.sign(
+                    { sub: token.id, role: token.role },
+                    process.env.NEXTAUTH_SECRET as string,
+                    { algorithm: 'HS256' }
+                );
             }
             return token;
         },
@@ -61,6 +68,7 @@ const authOptions: NextAuthOptions = {
             if (token) {
                 (session.user as any).id = token.id;
                 (session.user as any).role = token.role;
+                (session as any).accessToken = token.accessToken;
             }
             return session;
         },
