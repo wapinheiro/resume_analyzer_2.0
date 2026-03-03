@@ -45,18 +45,28 @@ export default function AdvisorDashboard() {
     const fetchData = async () => {
         try {
             setLoading(true);
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+            const token = (session as any)?.accessToken;
+
+            const headers: HeadersInit = {
+                'Content-Type': 'application/json',
+            };
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+
             // Construct URLs
-            const studentUrl = new URL('/api/v1/advisors/students', window.location.origin);
+            const studentUrl = new URL(`${API_URL}/advisors/students`);
             if (search) studentUrl.searchParams.append('search', search);
 
             const [studentsRes, analyticsRes] = await Promise.all([
-                fetch(studentUrl.toString()),
-                fetch('/api/v1/advisors/analytics')
+                fetch(studentUrl.toString(), { headers }),
+                fetch(`${API_URL}/advisors/analytics`, { headers })
             ]);
 
             if (studentsRes.ok) {
                 const data = await studentsRes.json();
-                setStudents(data.students);
+                setStudents(data.students || data); // handle API format
             }
 
             if (analyticsRes.ok) {
@@ -164,7 +174,7 @@ export default function AdvisorDashboard() {
                                         <td className="p-6">
                                             {student.latest_score !== null ? (
                                                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${student.latest_score >= 80 ? 'bg-emerald-100 text-emerald-800' :
-                                                        student.latest_score >= 60 ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'
+                                                    student.latest_score >= 60 ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'
                                                     }`}>
                                                     {student.latest_score}
                                                 </span>

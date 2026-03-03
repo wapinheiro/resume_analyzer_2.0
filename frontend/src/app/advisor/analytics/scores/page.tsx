@@ -20,7 +20,7 @@ type ScoreResponse = {
 };
 
 export default function ScoresAnalytics() {
-    const { status } = useSession();
+    const { data: session, status } = useSession();
     const router = useRouter();
 
     const [data, setData] = useState<ScoreResponse | null>(null);
@@ -40,11 +40,17 @@ export default function ScoresAnalytics() {
         const fetchScores = async () => {
             try {
                 setLoading(true);
-                const url = new URL('/api/v1/advisors/analytics/scores', window.location.origin);
+                const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+                const token = (session as any)?.accessToken;
+
+                const headers: HeadersInit = { 'Content-Type': 'application/json' };
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+
+                const url = new URL(`${API_URL}/advisors/analytics/scores`);
                 if (major) url.searchParams.append('major', major);
                 if (gradYear) url.searchParams.append('grad_year', gradYear);
 
-                const res = await fetch(url.toString());
+                const res = await fetch(url.toString(), { headers });
                 if (res.ok) {
                     const json = await res.json();
                     setData(json);
