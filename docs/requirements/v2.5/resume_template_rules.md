@@ -51,7 +51,14 @@ These rules define the "Golden Template" standard for BYU Resumes. The analyzer 
 - **Format:** Month Year (e.g., "Jun 2023") or Season Year (e.g., "Summer 2023").
 - **Alignment:** Right-aligned is standard best practice.
 
+## 4. AI Generation Markdown Rules
+
+To guarantee the frontend CSS can perfectly mimic the Golden Template typography, the AI output (`revised_resume_text`) MUST use strict Markdown syntax:
+- **Candidate Name:** Must be an H1 Header (`# First Last`)
+- **Section Headers:** Must be an H2 Header and **ALL CAPS** (`## EXECUTIVE SUMMARY`, `## EDUCATION`, `## SKILLS`, `## EXPERIENCE`).
+- **Employment/Project Headers:** The Title or Role must be bolded (`**Software Engineer Intern** | Pluralsight | ...`).
+- **Formatting Elements:** Use standard bold spacing (`**`) for Emphasis and standard asterisks/dashes (`*` or `-`) for bullets.
+
 ## TO DO: Refine Rules
 - [ ] Define specific disallowed fonts?
 - [ ] Define accepted date formats strictly?
-- [ ] Define "Section Header" casing (ALL CAPS vs Title Case)?

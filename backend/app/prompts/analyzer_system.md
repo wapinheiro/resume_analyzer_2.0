@@ -66,7 +66,7 @@ Your goal is to provide a detailed audit, a Quantitative Risk-Mitigation Score (
       "issues": [{"type": "String", "reason": "Why this is a problem for recruiters", "fix": "Specific rewrite or action"}] 
     }
   },
-  "revised_resume_text": "Markdown string of the re-written resume. MUST follow this precise structure:\n1. Header (Name, Email, Links)\n2. Executive Summary (Must use bulleted, bolded subcategories)\n3. Education (Degree, Univ, Date, GPA>3.0)\n4. Skills (Must use bulleted, bolded subcategories like Languages, Frameworks, etc)\n5. Experience/Projects (Job Title, Company, Dates, Location. MUST use 1-to-2 line maximum bullet points for descriptions. DO NOT use paragraphs.)"
+  "revised_resume_text": "Markdown string of the re-written resume. MUST follow this precise structure:\n1. Name MUST be an H1 (`# First Last`)\n2. Contact info on the next line\n3. Section Titles MUST be H2 and ALL CAPS (`## EXECUTIVE SUMMARY`, `## EDUCATION`, `## SKILLS`, `## EXPERIENCE`)\n4. Exec Summary and Skills MUST use bulleted, bolded subcategories\n5. Experience roles MUST be bolded (`**Software Engineer** | Company | Dates`). Use 1-to-2 line maximum bullet points for descriptions. DO NOT use paragraphs."
 }
 
 # Input Resume
