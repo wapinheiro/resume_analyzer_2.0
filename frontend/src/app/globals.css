@@ -75,3 +75,70 @@ h3 {
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+/* Phase 4: BYU Golden Template Enforcement */
+.resume-template-view {
+  font-family: "Times New Roman", Times, serif; /* Professional Serif */
+  color: #000000;
+  background-color: #FFFFFF;
+  line-height: 1.15;
+  padding: 0.5in; /* Enforce 0.5 physical inch margins inside the viewer box */
+  max-width: 8.5in; /* Standard US Letter width */
+  margin: 0 auto;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.resume-template-view h1 {
+  font-size: 24pt;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 4pt;
+  text-transform: uppercase;
+  letter-spacing: normal;
+  border-bottom: none;
+}
+
+/* Contact Info (often P right after H1) */
+.resume-template-view h1 + p {
+  text-align: center;
+  font-size: 11pt;
+  margin-bottom: 12pt;
+}
+
+.resume-template-view h2 {
+  font-size: 14pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-bottom: 1px solid #000;
+  margin-top: 12pt;
+  margin-bottom: 6pt;
+  padding-bottom: 2pt;
+}
+
+.resume-template-view h3 {
+  font-size: 12pt;
+  font-weight: bold;
+  margin-top: 6pt;
+  margin-bottom: 2pt;
+}
+
+.resume-template-view p {
+  font-size: 11pt;
+  margin-bottom: 4pt;
+}
+
+.resume-template-view ul {
+  list-style-type: disc;
+  margin-left: 14pt;
+  margin-bottom: 6pt;
+}
+
+.resume-template-view li {
+  font-size: 11pt;
+  margin-bottom: 2pt;
+  padding-left: 2pt;
+}
+
+.resume-template-view .spacer {
+  height: 4pt;
+}

@@ -66,10 +66,9 @@ Version 2.5 transforms the Resume Analyzer from a standalone student tool into a
     - `*`: Use for illustrative text/examples (e.g., "Languages: *Python, *Java").
 - **UI:** Add a legend/note explaining what `*` and `X` represent in the rewritten text.
 
-### 4.5 Template Compliance
-- **New Feature:** Verify that the uploaded resume adheres to the "Golden Template" standards.
-- **Implementation:** Check against `template_rules.md`.
-- **Output:** Pass/Fail specific compliance checks (e.g., "Margins too wide", "Wrong font").
+### 4.5 Golden Template Enforcement
+- **New Feature:** Ensure that the AI-generated "Optimized Version" natively conforms to the strictly defined "Golden Template" (e.g., specific section ordering, bolded subcategories).
+- **Implementation:** Inject structural constraints from `resume_template_rules.md` directly into the LLM prompt, and enforce corresponding physical spacing and typography in the frontend via CSS classes.
 
 ## 5. Impact Analysis & Risks
 
@@ -119,11 +118,14 @@ Version 2.5 transforms the Resume Analyzer from a standalone student tool into a
     - Render layered feedback lists.
     - Add "Fabricated Content" legend.
 
-### Phase 4: Template Compliance
-1.  **Compliance Engine:**
-    - Implement `pdf_compliance.py` service.
-    - Check margins, basic font metadata (if extractable), and structure.
-    - Display Pass/Fail results on Dashboard.
+### Phase 4: Golden Template Enforcement
+1.  **AI Generation Constraints:**
+    - Inject `resume_template_rules.md` structure into the `analyzer_system.md` prompt.
+    - Ensure LLM strictly outputs Header -> Summary -> Education -> Skills -> Experience.
+    - Force LLM to use bulleted, bolded categories for Summary and Skills.
+2.  **Frontend Layout Rendering:**
+    - Update `globals.css` with a `.resume-template-view` class.
+    - Enforce template typography constraints (10-12pt body, 14-18pt headers, standard margins) when rendering the AI's markdown.
 
 ## 7. Backlog / Low Priority
 - **Token Efficiency:** Track token usage for cost analysis (internal metric).

@@ -20,15 +20,17 @@ function MarkdownViewer({ content }: { content: string }) {
 
     const lines = content.split('\n');
     return (
-        <div className="prose prose-invert max-w-none text-black font-sans">
+        <div className="resume-template-view">
             {lines.map((line, i) => {
-                if (line.startsWith('# ')) return <h1 key={i} className="text-2xl font-bold mb-4 uppercase tracking-wider border-b-2 border-black pb-2">{renderInline(line.replace(/^# /, ''))}</h1>;
-                if (line.startsWith('## ')) return <h2 key={i} className="text-xl font-bold mb-3 mt-6 uppercase border-b border-gray-300">{renderInline(line.replace(/^## /, ''))}</h2>;
-                if (line.startsWith('### ')) return <h3 key={i} className="text-lg font-bold mb-2 mt-4">{renderInline(line.replace(/^### /, ''))}</h3>;
-                if (line.startsWith('- ') || line.startsWith('* ')) return <li key={i} className="ml-5 mb-1 list-disc">{renderInline(line.substring(2))}</li>;
-                if (line.trim() === '') return <br key={i} />;
+                if (line.startsWith('# ')) return <h1 key={i}>{renderInline(line.replace(/^# /, ''))}</h1>;
+                if (line.startsWith('## ')) return <h2 key={i}>{renderInline(line.replace(/^## /, ''))}</h2>;
+                if (line.startsWith('### ')) return <h3 key={i}>{renderInline(line.replace(/^### /, ''))}</h3>;
+                if (line.startsWith('- ') || line.startsWith('* ')) return <li key={i}>{renderInline(line.substring(2))}</li>;
+                if (line.trim() === '') return <div key={i} className="spacer"></div>;
+
+                // If the line appears to be generic text
                 return (
-                    <p key={i} className="mb-2 leading-relaxed">
+                    <p key={i}>
                         {renderInline(line)}
                     </p>
                 );
@@ -129,7 +131,7 @@ export default function OptimizePage() {
                                 <strong>AI-generated illustration.</strong> This is not your actual resume. Content in brackets (e.g., <code>[X]%</code>) is estimated or example data. Use this as a structural guide — do not submit as-is.
                             </p>
                         </div>
-                        <div className="bg-white rounded-lg shadow-2xl p-10 overflow-auto max-h-[800px] ring-4 ring-emerald-500/20 shadow-emerald-500/20">
+                        <div className="bg-gray-200 rounded-lg shadow-2xl p-4 overflow-auto max-h-[800px] ring-4 ring-emerald-500/20 shadow-emerald-500/20 flex justify-center">
                             <MarkdownViewer content={data?.revised_resume_text || data?.raw_json?.revised_resume_text} />
                         </div>
                     </div>

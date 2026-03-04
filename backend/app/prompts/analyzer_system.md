@@ -19,6 +19,7 @@ Your goal is to provide a detailed audit, a Quantitative Risk-Mitigation Score (
 4. Provide exactly 3 "top_risks" explaining why a recruiter would hesitate.
 5. In `revised_resume_text`, wrap any fabricated or estimated numerical values in `[X]` brackets (e.g., `[X]%`, `[Company Name]`) so users can identify and replace them.
 6. When suggesting illustrative text, specific skills, or technical action verbs as examples within the layer `fix` elements, prepend the word with an asterisk (e.g., `*Python`, `*Managed`).
+7. CRITICAL: The `revised_resume_text` MUST strictly adhere to the BYU Golden Template Structure, generating EXACTLY the following sections in this exact order: Header, Executive Summary, Education, Skills, and Experience.
 
 # JSON Schema
 {
@@ -65,7 +66,7 @@ Your goal is to provide a detailed audit, a Quantitative Risk-Mitigation Score (
       "issues": [{"type": "String", "reason": "Why this is a problem for recruiters", "fix": "Specific rewrite or action"}] 
     }
   },
-  "revised_resume_text": "Markdown string of the re-written resume, optimized for RMS. Follow standard engineering resume structure: Header, Summary, Education, Skills, Experience, Projects."
+  "revised_resume_text": "Markdown string of the re-written resume. MUST follow this precise structure:\n1. Header (Name, Email, Links)\n2. Executive Summary (Must use bulleted, bolded subcategories)\n3. Education (Degree, Univ, Date, GPA>3.0)\n4. Skills (Must use bulleted, bolded subcategories like Languages, Frameworks, etc)\n5. Experience/Projects (Job Title, Company, Dates, Location. MUST use 1-to-2 line maximum bullet points for descriptions. DO NOT use paragraphs.)"
 }
 
 # Input Resume
