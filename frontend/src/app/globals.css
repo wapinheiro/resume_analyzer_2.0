@@ -78,12 +78,18 @@ h3 {
 
 /* Phase 4: BYU Golden Template Enforcement */
 .resume-template-view {
-  font-family: "Times New Roman", Times, serif; /* Professional Serif */
+  font-family: "Times New Roman", Times, serif;
+  /* Professional Serif */
   color: #000000;
   background-color: #FFFFFF;
   line-height: 1.15;
-  padding: 0.5in; /* Enforce 0.5 physical inch margins inside the viewer box */
-  max-width: 8.5in; /* Standard US Letter width */
+  padding: 0.5in;
+  /* Enforce 0.5 physical inch margins inside the viewer box */
+  width: 100%;
+  max-width: 8.5in;
+  /* Standard US Letter width */
+  min-height: 11in;
+  /* Standard US Letter height */
   margin: 0 auto;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
@@ -99,7 +105,7 @@ h3 {
 }
 
 /* Contact Info (often P right after H1) */
-.resume-template-view h1 + p {
+.resume-template-view h1+p {
   text-align: center;
   font-size: 11pt;
   margin-bottom: 12pt;

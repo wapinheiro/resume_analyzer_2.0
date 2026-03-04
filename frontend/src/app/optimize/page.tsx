@@ -131,7 +131,7 @@ export default function OptimizePage() {
                                 <strong>AI-generated illustration.</strong> This is not your actual resume. Content in brackets (e.g., <code>[X]%</code>) is estimated or example data. Use this as a structural guide — do not submit as-is.
                             </p>
                         </div>
-                        <div className="bg-gray-200 rounded-lg shadow-2xl p-4 overflow-auto max-h-[800px] ring-4 ring-emerald-500/20 shadow-emerald-500/20 flex justify-center">
+                        <div className="bg-gray-200 rounded-lg shadow-2xl p-4 overflow-auto max-h-[800px] ring-4 ring-emerald-500/20 shadow-emerald-500/20">
                             <MarkdownViewer content={data?.revised_resume_text || data?.raw_json?.revised_resume_text} />
                         </div>
                     </div>
