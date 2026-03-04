@@ -93,6 +93,8 @@ async def analyze_resume(
                     resume_id=db_resume.id,
                     rms_score=analysis_data.get("rms_score", 0),
                     cpi=analysis_data.get("cpi", "Unknown"),
+                    confidence_score=analysis_data.get("confidence_score"),
+                    confidence_reasoning=analysis_data.get("confidence_reasoning"),
                     predicted_grad_date=analysis_data.get("predicted_grad_date"),
                     skills_detected=analysis_data.get("skills_detected", []),
                     top_risks=analysis_data.get("top_risks", []),

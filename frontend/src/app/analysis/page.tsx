@@ -48,8 +48,8 @@ export default function AnalysisPage() {
 
     const topRisks = data.top_risks || data.raw_json?.top_risks || [];
     const cpi = data.cpi || data.raw_json?.cpi || "Unknown";
-    const confidenceScore = data.confidence_score !== undefined ? data.confidence_score : data.raw_json?.confidence_score;
-    const confidenceReasoning = data.confidence_reasoning || data.raw_json?.confidence_reasoning || "Reasoning not provided.";
+    const confidenceScore = data.confidence_score ?? data.raw_json?.confidence_score;
+    const confidenceReasoning = data.confidence_reasoning ?? data.raw_json?.confidence_reasoning ?? "Reasoning not provided.";
 
     const getSignalColor = (score: number) => {
         if (score >= 80) return "bg-emerald-100 text-emerald-700 border-emerald-200";

@@ -15,6 +15,8 @@ class Analysis(Base):
     # Analytics Metrics
     rms_score: Mapped[int] = mapped_column(Integer, nullable=True)
     cpi: Mapped[str] = mapped_column(String, nullable=True)
+    confidence_score: Mapped[int] = mapped_column(Integer, nullable=True)
+    confidence_reasoning: Mapped[str] = mapped_column(String, nullable=True)
     predicted_grad_date: Mapped[str] = mapped_column(String, nullable=True)
     
     # JSON Data
