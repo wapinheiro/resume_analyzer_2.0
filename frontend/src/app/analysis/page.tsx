@@ -222,7 +222,7 @@ export default function AnalysisPage() {
                             View Suggested Rewrite
                         </Link>
                         <a
-                            href={process.env.NEXT_PUBLIC_ACUITY_URL || "https://acuityscheduling.com"}
+                            href={process.env.NEXT_PUBLIC_ACUITY_URL || "https://app.acuityscheduling.com/schedule/adb4b746/appointment/79892735/calendar/12255014?ref=email"}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="w-full sm:w-auto block text-center bg-white border-2 border-[#0047BA] hover:bg-slate-50 text-[#0047BA] font-semibold py-4 px-8 rounded-xl transition-colors shadow-sm"

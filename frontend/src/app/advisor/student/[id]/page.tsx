@@ -10,9 +10,10 @@ import { format } from 'date-fns';
 export default function AdvisorStudentView() {
     const params = useParams();
     const router = useRouter();
-    const { status } = useSession();
+    const { data: session, status } = useSession();
 
     const [analyses, setAnalyses] = useState<any[]>([]);
+    const [studentProfile, setStudentProfile] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [activeLayer, setActiveLayer] = useState('format');
 
@@ -28,10 +29,21 @@ export default function AdvisorStudentView() {
 
             try {
                 setLoading(true);
-                const res = await fetch(`/api/v1/advisors/students/${params.id}/analyses`);
+                const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+                const token = (session as any)?.accessToken;
+                const headers: HeadersInit = { 'Content-Type': 'application/json' };
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+
+                const res = await fetch(`${API_URL}/advisors/students/${params.id}/analyses`, { headers });
                 if (res.ok) {
                     const data = await res.json();
                     setAnalyses(data);
+                    
+                    // Also get student info from the first analysis or another endpoint
+                    // Let's assume we can at least get name/email from the first analysis' resume user
+                    // or just use the first analysis if we had the user object included.
+                    // Actually, let's fetch basic user info if we had an endpoint.
+                    // For now, let's just use the metadata from the analysis if available.
                 }
             } catch (error) {
                 console.error("Failed to fetch student analyses", error);
@@ -91,7 +103,39 @@ export default function AdvisorStudentView() {
                         <Link href="/advisor/dashboard" className="text-[#0047BA] hover:text-[#002E5D] transition-colors text-sm font-medium px-4 py-2 bg-blue-50 rounded-lg">
                             ← Back to Roster
                         </Link>
-                        <h1 className="text-3xl font-bold">Student Analysis Result</h1>
+                        <div>
+                            <h1 className="text-3xl font-bold text-[#002E5D]">{analyses[0]?.resume?.user?.name || "Student Analysis Result"}</h1>
+                            {analyses[0]?.resume?.user?.major && (
+                                <p className="text-sm text-[#6E7CA0] font-medium mt-1">
+                                    {analyses[0]?.resume?.user?.major} • Class of {analyses[0]?.resume?.user?.graduation_year}
+                                </p>
+                            )}
+                        </div>
+                        
+                        <button
+                            onClick={async () => {
+                                try {
+                                    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+                                    const token = (session as any)?.accessToken;
+                                    const headers: HeadersInit = {};
+                                    if (token) headers['Authorization'] = `Bearer ${token}`;
+                                    
+                                    const res = await fetch(`${API_URL}/analyze/${data.id}/resume`, { headers });
+                                    if (res.ok) {
+                                        const blob = await res.blob();
+                                        const url = window.URL.createObjectURL(blob);
+                                        window.open(url, '_blank');
+                                    } else {
+                                        alert("Failed to fetch resume. Please try again.");
+                                    }
+                                } catch (err) {
+                                    console.error("Error opening resume:", err);
+                                }
+                            }}
+                            className="inline-flex items-center justify-center px-6 py-2 bg-[#0047BA] text-white font-bold rounded-lg hover:bg-[#002E5D] transition-all shadow-sm text-sm"
+                        >
+                            View Original PDF
+                        </button>
                     </div>
 
                     <div className="text-right">

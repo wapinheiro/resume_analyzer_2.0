@@ -1,5 +1,6 @@
 "use client";
 import { signIn, signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 
 export function LoginButton() {
     const { data: session, status } = useSession();
@@ -23,9 +24,15 @@ export function LoginButton() {
                         {session.user.name?.charAt(0) || "U"}
                     </div>
                 )}
+                <Link
+                    href="/profile"
+                    className="text-white/80 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
+                    Profile
+                </Link>
                 <button
                     onClick={() => signOut()}
-                    className="text-white/80 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                    className="text-white/80 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors border border-white/10 hover:border-white/20"
                 >
                     Sign Out
                 </button>

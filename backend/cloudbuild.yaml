@@ -5,7 +5,7 @@ steps:
     args:
       - 'build'
       - '-t'
-      - 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/resume-analyzer-backend:$COMMIT_SHA'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/resume-analyzer-backend:$_COMMIT_SHA'
       - '-t'
       - 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/resume-analyzer-backend:latest'
       - '.'
@@ -26,7 +26,7 @@ steps:
       - 'run'
       - 'deploy'
       - 'resume-analyzer-backend'
-      - '--image=us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/resume-analyzer-backend:$COMMIT_SHA'
+      - '--image=us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/resume-analyzer-backend:$_COMMIT_SHA'
       - '--region=us-central1'
       - '--platform=managed'
       - '--allow-unauthenticated'
@@ -36,11 +36,15 @@ steps:
       - '--min-instances=0'
       - '--max-instances=10'
       - '--set-env-vars=GCS_BUCKET_NAME=byu-resumes-bucket,BACKEND_CORS_ORIGINS=["https://resume-analyzer-frontend-87294979859.us-central1.run.app"]'
-      - '--set-secrets=GOOGLE_API_KEY=GEMINI_API_KEY:latest'
+      - '--set-secrets=GOOGLE_API_KEY=GEMINI_API_KEY:latest,DATABASE_URL=DATABASE_URL:latest'
+      - '--add-cloudsql-instances=gen-lang-client-0141528519:us-central1:resume-analyzer-db'
 
 images:
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/resume-analyzer-backend:$COMMIT_SHA'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/resume-analyzer-backend:$_COMMIT_SHA'
   - 'us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/resume-analyzer-backend:latest'
 
 options:
   logging: CLOUD_LOGGING_ONLY
+
+substitutions:
+  _COMMIT_SHA: latest
