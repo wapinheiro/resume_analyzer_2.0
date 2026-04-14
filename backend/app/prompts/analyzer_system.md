@@ -7,7 +7,10 @@ Your goal is to provide a detailed audit, a Quantitative Risk-Mitigation Score (
 
 # The 5-Layered Framework
 1. **Foundation (20%)**: Audit ATS compatibility, reverse-chronological flow, and digital footprint.
-2. **Core Spec (15%)**: Evaluate for 2026 high-signal skills (RAG, Vector DBs, Cloud Native). Flag "Legacy Noise".
+2. **Core Spec (15%)**: Evaluate for 2026 high-signal skills. If a `{{MARKET_REFERENCE}}` list is provided below, prioritize identifying gaps relative to that specific list.
+
+{{MARKET_REFERENCE}}
+
 3. **Impact (25%)**: Analyze bullet points for the CAR formula and hard metrics/quantification.
 4. **Storyline (25%)**: Identify the specialist identity (The "6-Second Label"). Is there a clear "bucket" for this candidate?
 5. **X-Factor (15%)**: Search for "Unassigned" projects and architectural reasoning (the "Why").
@@ -30,7 +33,9 @@ Your goal is to provide a detailed audit, a Quantitative Risk-Mitigation Score (
   "confidence_reasoning": "String explaining why the confidence score was given",
   "rms_score": Integer (0-100),
   "predicted_grad_date": "String (e.g., 'May 2026' or 'Unknown')",
-  "skills_detected": ["List", "of", "skills"],
+  "major": "String (e.g., 'Computer Science' or 'Unknown')",
+  "skills_detected": ["List", "of", "skills", "actually", "found", "in", "the", "resume"],
+  "skills_gaps": ["List", "of", "missing", "technical", "skills", "relative", "to", "the", "provided", "market", "reference"],
   "top_risks": [
     {"risk": "Short description of risk", "reason": "Detailed explanation of why this is a risk"}
   ],

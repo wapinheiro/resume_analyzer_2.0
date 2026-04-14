@@ -76,17 +76,27 @@ async def analyze_resume(
             db.refresh(db_resume)
 
             # 4. Analyze with AI
+            yield json.dumps({"type": "log", "message": "Fetching market requirements..."}) + "\n"
+            
+            # Fetch Market Reference Skills
+            from app.models.market_skill import MarketSkill
+            market_skills = db.query(MarketSkill).all()
+            
+            market_ref_str = ""
+            if market_skills:
+                market_ref_str = "\nMARKET REFERENCE SKILLS (2026 High-Signal):\n"
+                for s in market_skills:
+                    major_info = f" ({s.major})" if s.major else ""
+                    market_ref_str += f"- {s.name}: {s.category}{major_info} (Importance: {s.importance}/5)\n"
+            
             yield json.dumps({"type": "log", "message": "AI analyzing profile & key skills..."}) + "\n"
             
             # Initialize Gemini
             gemini = services.GeminiService()
             
             if gemini.model:
-                # We can yield a "Retrying" message if we catch the retry in a callback, 
-                # but for now we'll just yield the "Analyzing" state.
-                # If it takes long, we could potentially yield "Still thinking..." strings via a background task,
-                # but simple linear logs are a good start.
-                analysis_data = await gemini.analyze_resume(text)
+                # Inject market reference into prompt
+                analysis_data = await gemini.analyze_resume(text, market_ref_str=market_ref_str)
                 
                 # Create Analysis Record
                 db_analysis = models.Analysis(
@@ -96,7 +106,9 @@ async def analyze_resume(
                     confidence_score=analysis_data.get("confidence_score"),
                     confidence_reasoning=analysis_data.get("confidence_reasoning"),
                     predicted_grad_date=analysis_data.get("predicted_grad_date"),
+                    major=analysis_data.get("major"),
                     skills_detected=analysis_data.get("skills_detected", []),
+                    skills_gaps=analysis_data.get("skills_gaps", []),
                     top_risks=analysis_data.get("top_risks", []),
                     raw_json=analysis_data
                 )
@@ -112,7 +124,9 @@ async def analyze_resume(
                     rms_score=62,
                     cpi="Full Stack Developer (Mock)",
                     predicted_grad_date="May 2026",
+                    major="Computer Science",
                     skills_detected=["Python", "React", "FastAPI"],
+                    skills_gaps=["RAG", "Kubernetes"],
                     top_risks=[{"type": "Weak Verbs", "issue": "Used 'Helped' instead of 'Architected'"}, {"type": "Missing Metrics", "issue": "No quantifiable impact"}],
                     raw_json={"layers": mock_layers}
                 )
@@ -135,3 +149,108 @@ async def analyze_resume(
             yield json.dumps({"type": "error", "message": str(e)}) + "\n"
 
     return StreamingResponse(event_generator(), media_type="application/x-ndjson")
+
+@router.get("/{analysis_id}", response_model=schemas.Analysis)
+def get_analysis_details(
+    analysis_id: str,
+    db: Session = Depends(deps.get_db),
+    current_user_id: str = Depends(deps.get_current_user_id)
+):
+    """
+    Returns the details of a specific analysis.
+    Ensures ownership: users can only see their own analyses unless they are an advisor/admin.
+    """
+    try:
+        analysis_uuid = uuid.UUID(analysis_id)
+        user_uuid = uuid.UUID(current_user_id)
+    except (ValueError, TypeError):
+        raise HTTPException(status_code=400, detail="Invalid ID format")
+
+    analysis = db.query(models.Analysis).filter(models.Analysis.id == analysis_uuid).first()
+    if not analysis:
+        raise HTTPException(status_code=404, detail="Analysis not found")
+    
+    # Check ownership
+    # We need the resume to get the user_id
+    resume = db.query(models.Resume).filter(models.Resume.id == analysis.resume_id).first()
+    
+    # Check if user is the owner
+    if resume.user_id != user_uuid:
+        # Check if user is an advisor/admin
+        # We could use another dependency but let's just check the DB here for simplicity
+        from app.models.user import User
+        requester = db.query(User).filter(User.id == user_uuid).first()
+        if not requester or requester.role not in ["advisor", "admin"]:
+            raise HTTPException(status_code=403, detail="Not authorized to view this analysis")
+
+    return analysis
+
+from fastapi import Response
+
+@router.get("/{analysis_id}/resume")
+def get_resume_link(
+    analysis_id: str,
+    db: Session = Depends(deps.get_db),
+    current_user_id: str = Depends(deps.get_current_user_id)
+):
+    """
+    Returns the resume PDF associated with an analysis.
+    Ensures ownership: users can only see their own resumes unless they are an advisor/admin.
+    """
+    try:
+        analysis_uuid = uuid.UUID(analysis_id)
+        user_uuid = uuid.UUID(current_user_id)
+    except (ValueError, TypeError):
+        raise HTTPException(status_code=400, detail="Invalid ID format")
+
+    analysis = db.query(models.Analysis).filter(models.Analysis.id == analysis_uuid).first()
+    if not analysis:
+        raise HTTPException(status_code=404, detail="Analysis not found")
+    
+    resume = db.query(models.Resume).filter(models.Resume.id == analysis.resume_id).first()
+    if not resume:
+         raise HTTPException(status_code=404, detail="Resume not found")
+
+    # Check ownership
+    is_authorized = False
+    if resume.user_id == user_uuid:
+        is_authorized = True
+    else:
+        # Check if user is an advisor/admin
+        from app.models.user import User
+        requester = db.query(User).filter(User.id == user_uuid).first()
+        if requester and requester.role in ["advisor", "admin"]:
+            is_authorized = True
+
+    if not is_authorized:
+        raise HTTPException(status_code=403, detail="Not authorized to view this resume")
+
+    # Get GCS blob name
+    gcs_blob = None
+    if resume.client_info:
+        if isinstance(resume.client_info, dict):
+            gcs_blob = resume.client_info.get("gcs_blob")
+        elif isinstance(resume.client_info, str):
+            try:
+                import json
+                c_info = json.loads(resume.client_info)
+                gcs_blob = c_info.get("gcs_blob")
+            except:
+                pass
+
+    if not gcs_blob:
+        raise HTTPException(status_code=404, detail="Resume file not found in storage")
+
+    # Proxy the file bytes
+    try:
+        pdf_bytes = services.gcs_service.download_file(gcs_blob)
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f"inline; filename={gcs_blob.split('/')[-1]}"
+            }
+        )
+    except Exception as e:
+        print(f"Proxy Error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch file from storage")

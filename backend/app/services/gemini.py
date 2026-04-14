@@ -32,14 +32,15 @@ class GeminiService:
         wait=wait_exponential(multiplier=1, min=4, max=10),
         before_sleep=before_sleep_log(logger, logging.WARNING)
     )
-    async def analyze_resume(self, resume_text: str) -> Dict[str, Any]:
+    async def analyze_resume(self, resume_text: str, market_ref_str: str = "") -> Dict[str, Any]:
         if not self.model:
             raise ValueError("Google API Key is missing. Cannot perform analysis.")
-
+ 
         try:
             # 1. Prepare Prompt
             template = self._load_prompt_template()
             final_prompt = template.replace("{{RESUME_TEXT}}", resume_text)
+            final_prompt = final_prompt.replace("{{MARKET_REFERENCE}}", market_ref_str)
 
             # 2. Call Gemini (Force JSON expectation in the prompt is key, 
             # but we can also use generation_config for strict JSON if available, 

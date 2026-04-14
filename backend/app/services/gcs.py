@@ -67,5 +67,15 @@ class GCSService:
         )
         return url
 
+    def download_file(self, filename: str) -> bytes:
+        """
+        Downloads a file from GCS and returns its content as bytes.
+        """
+        if not self.bucket:
+            raise ValueError("GCS_BUCKET_NAME not configured or GCS connection failed.")
+        
+        blob = self.bucket.blob(filename)
+        return blob.download_as_bytes()
+
 # Singleton instance
 gcs_service = GCSService()

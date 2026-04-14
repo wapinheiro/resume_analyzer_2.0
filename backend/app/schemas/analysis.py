@@ -10,7 +10,9 @@ class AnalysisBase(BaseModel):
     confidence_score: Optional[int] = None
     confidence_reasoning: Optional[str] = None
     predicted_grad_date: Optional[str] = None
+    major: Optional[str] = None
     skills_detected: Optional[List[str]] = None
+    skills_gaps: Optional[List[str]] = None
     top_risks: Optional[List[Dict[str, str]]] = None
     raw_json: Optional[Dict[str, Any]] = None
 
@@ -21,3 +23,6 @@ class Analysis(AnalysisBase):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+class ResumeLink(BaseModel):
+    url: str

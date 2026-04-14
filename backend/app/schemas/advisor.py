@@ -8,9 +8,10 @@ class AdvisorStudentSub(BaseModel):
     email: str
     last_scan_date: Optional[datetime] = None
     latest_score: Optional[int] = None
-    status: str = "Pending"  # E.g., Pending, Reviewed, Follow-up
+    status: str = "Pending"  # Current UI field
+    student_status: str = "active_student" # New DB field
     major: Optional[str] = None
-    grad_year: Optional[str] = None
+    grad_year: Optional[int] = None
 
 class AdvisorStudentListResponse(BaseModel):
     students: List[AdvisorStudentSub]
@@ -22,6 +23,7 @@ class AdvisorAnalyticsOverview(BaseModel):
     average_score: float
     total_scans_30d: int
     top_missing_skill: Optional[str] = None
+    top_detected_skill: Optional[str] = None
 
 class ScoreDataPoint(BaseModel):
     date: str  # YYYY-MM or YYYY-MM-DD
@@ -47,3 +49,8 @@ class SkillGapData(BaseModel):
 
 class AdvisorSkillsResponse(BaseModel):
     data: List[SkillGapData]
+
+class AdvisorFilterOptions(BaseModel):
+    majors: List[str]
+    grad_years: List[int]
+    student_statuses: List[str]

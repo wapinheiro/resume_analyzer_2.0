@@ -5,7 +5,10 @@ from datetime import datetime
 
 from app.api import deps
 from app.models.user import User
-from app.schemas.user import UserCreate, User as UserSchema, UserLogin, UserRoleUpdate
+from app.schemas.user import UserCreate, User as UserSchema, UserLogin, UserRoleUpdate, UserProfileUpdate
+from app.schemas.analysis import Analysis as AnalysisSchema
+from app.models.analysis import Analysis
+from app.models.resume import Resume
 
 router = APIRouter()
 
@@ -97,6 +100,49 @@ def update_user_role(
         raise HTTPException(status_code=404, detail="User not found")
     
     user.role = role_data.role
+    db.commit()
+    db.refresh(user)
+    return user
+
+@router.get("/me/analyses", response_model=List[AnalysisSchema])
+def get_my_analyses(
+    db: Session = Depends(deps.get_db),
+    current_user_id: str = Depends(deps.get_current_user_id)
+):
+    """
+    Returns all analyses for the current authenticated student.
+    """
+    from uuid import UUID
+    user_uuid = UUID(current_user_id)
+    
+    # Get all resumes for this user, then all analyses for those resumes
+    resumes = db.query(Resume).filter(Resume.user_id == user_uuid).all()
+    resume_ids = [r.id for r in resumes]
+    
+    analyses = db.query(Analysis).filter(Analysis.resume_id.in_(resume_ids)).order_by(Analysis.created_at.desc()).all()
+    return analyses
+
+@router.patch("/me/profile", response_model=UserSchema)
+def update_my_profile(
+    profile_data: UserProfileUpdate,
+    db: Session = Depends(deps.get_db),
+    current_user_id: str = Depends(deps.get_current_user_id)
+):
+    """Update the current user's profile information."""
+    from uuid import UUID
+    user_uuid = UUID(current_user_id)
+    
+    user = db.query(User).filter(User.id == user_uuid).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if profile_data.major is not None:
+        user.major = profile_data.major
+    if profile_data.graduation_year is not None:
+        user.graduation_year = profile_data.graduation_year
+    if profile_data.student_status is not None:
+        user.student_status = profile_data.student_status
+    
     db.commit()
     db.refresh(user)
     return user

@@ -1,5 +1,6 @@
 from datetime import datetime
 import uuid
+from typing import Optional
 from sqlalchemy import DateTime, Integer, String, ForeignKey, Float, JSON
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -18,9 +19,11 @@ class Analysis(Base):
     confidence_score: Mapped[int] = mapped_column(Integer, nullable=True)
     confidence_reasoning: Mapped[str] = mapped_column(String, nullable=True)
     predicted_grad_date: Mapped[str] = mapped_column(String, nullable=True)
+    major: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     
     # JSON Data
     skills_detected: Mapped[list] = mapped_column(JSON, nullable=True)
+    skills_gaps: Mapped[list] = mapped_column(JSON, nullable=True)
     top_risks: Mapped[list] = mapped_column(JSON, nullable=True)
     raw_json: Mapped[dict] = mapped_column(JSON, nullable=True) # Full analysis result
     

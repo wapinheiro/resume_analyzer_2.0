@@ -28,6 +28,7 @@ export default function SkillsAnalytics() {
     const [viewMode, setViewMode] = useState<'cloud' | 'table'>('cloud');
 
     // Filters
+    const [type, setType] = useState<'strengths' | 'gaps'>('gaps');
     const [major, setMajor] = useState('');
     const [gradYear, setGradYear] = useState('');
 
@@ -48,6 +49,7 @@ export default function SkillsAnalytics() {
                 if (token) headers['Authorization'] = `Bearer ${token}`;
 
                 const url = new URL(`${API_URL}/advisors/analytics/skills`);
+                url.searchParams.append('type', type);
                 if (major) url.searchParams.append('major', major);
                 if (gradYear) url.searchParams.append('grad_year', gradYear);
 
@@ -56,17 +58,37 @@ export default function SkillsAnalytics() {
                     const json = await res.json();
                     setData(json);
                 }
-            } catch (error) {
-                console.error("Failed to fetch skills analytics", error);
-            } finally {
-                setLoading(false);
-            }
-        };
+    const fetchSkills = async () => {
+        try {
+            setLoading(true);
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+            const token = (session as any)?.accessToken;
 
+            const headers: HeadersInit = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            const url = new URL(`${API_URL}/advisors/analytics/skills`);
+            url.searchParams.append('type', type);
+            if (major) url.searchParams.append('major', major);
+            if (gradYear) url.searchParams.append('grad_year', gradYear);
+
+            const res = await fetch(url.toString(), { headers });
+            if (res.ok) {
+                const json = await res.json();
+                setData(json);
+            }
+        } catch (error) {
+            console.error("Failed to fetch skills analytics", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         if (status === 'authenticated') {
             fetchSkills();
         }
-    }, [status, major, gradYear]);
+    }, [status, major, gradYear, type]);
 
     if (status === 'loading') {
         return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
@@ -74,7 +96,7 @@ export default function SkillsAnalytics() {
 
     // A simple CSS-based word cloud implementation
     const renderWordCloud = (skills: SkillData[]) => {
-        if (skills.length === 0) return <div className="p-12 text-center text-gray-500">No skills data available.</div>;
+        if (skills.length === 0) return <div className="p-12 text-center text-gray-500">No {type} data available.</div>;
 
         // Find the max occurrence to scale fonts
         const maxCount = Math.max(...skills.map(s => s.missing_count));
@@ -87,11 +109,11 @@ export default function SkillsAnalytics() {
                     const fontSize = Math.max(1, ratio * 4) + 'rem';
 
                     // Assign semi-random colors from a fixed palette based on index
-                    const colors = [
-                        'text-amber-600', 'text-amber-500', 'text-amber-400',
-                        'text-[#0047BA]', 'text-[#002E5D]', 'text-blue-500',
-                        'text-gray-700', 'text-gray-500'
-                    ];
+                    const colors = 
+                        type === 'gaps' 
+                        ? ['text-amber-600', 'text-amber-500', 'text-amber-400', 'text-orange-500', 'text-gray-700']
+                        : ['text-[#0047BA]', 'text-blue-500', 'text-[#002E5D]', 'text-emerald-600', 'text-gray-700'];
+                    
                     const color = colors[i % colors.length];
 
                     return (
@@ -99,7 +121,7 @@ export default function SkillsAnalytics() {
                             key={s.skill}
                             className={`font-bold transition-transform hover:scale-110 cursor-default ${color}`}
                             style={{ fontSize }}
-                            title={`${s.missing_count} students missing this (${s.percentage}%)`}
+                            title={`${s.missing_count} students with this ${type === 'gaps' ? 'missing' : 'detected'} (${s.percentage}%)`}
                         >
                             {s.skill}
                         </div>
@@ -110,14 +132,14 @@ export default function SkillsAnalytics() {
     };
 
     const renderTable = (skills: SkillData[]) => {
-        if (skills.length === 0) return <div className="p-12 text-center text-gray-500">No skills data available.</div>;
+        if (skills.length === 0) return <div className="p-12 text-center text-gray-500">No {type} data available.</div>;
 
         return (
             <div className="overflow-x-auto min-h-[400px]">
                 <table className="w-full text-left border-collapse">
                     <thead>
                         <tr className="bg-gray-50/50 text-xs uppercase tracking-wider text-[#6E7CA0] border-b border-gray-100">
-                            <th className="p-6 font-semibold">Missing Skill / Keyword</th>
+                            <th className="p-6 font-semibold">{type === 'gaps' ? 'Missing Skill' : 'Found Skill'} / Keyword</th>
                             <th className="p-6 font-semibold text-right">Frequency</th>
                             <th className="p-6 font-semibold text-right">% of Students</th>
                         </tr>
@@ -125,10 +147,10 @@ export default function SkillsAnalytics() {
                     <tbody className="divide-y divide-gray-100">
                         {skills.map((s) => (
                             <tr key={s.skill} className="hover:bg-gray-50/50 transition-colors">
-                                <td className="p-6 font-bold text-[#002E5D]">{s.skill}</td>
+                                <td className={`p-6 font-bold ${type === 'gaps' ? 'text-amber-700' : 'text-[#002E5D]'}`}>{s.skill}</td>
                                 <td className="p-6 text-right font-mono text-gray-700">{s.missing_count}</td>
                                 <td className="p-6 text-right">
-                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${type === 'gaps' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'}`}>
                                         {s.percentage}%
                                     </span>
                                 </td>
@@ -150,17 +172,35 @@ export default function SkillsAnalytics() {
                         ← Back to Dashboard
                     </Link>
                     <h1 className="text-3xl font-bold flex items-center gap-3">
-                        <AlertTriangle className="w-8 h-8 text-amber-500" />
-                        Skills Gap Analysis
+                        {type === 'gaps' ? <AlertTriangle className="w-8 h-8 text-amber-500" /> : <LayoutGrid className="w-8 h-8 text-[#0047BA]" />}
+                        {type === 'gaps' ? 'Skills Gap Analysis' : 'Student Strengths Analysis'}
                     </h1>
                 </div>
 
-                <div className="glass-panel p-6 rounded-2xl mb-8 border border-gray-100 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
-                    <div className="flex flex-col sm:flex-row gap-4">
+                <div className="glass-panel p-6 rounded-2xl mb-8 border border-gray-100 shadow-sm flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+                    <div className="flex flex-col sm:flex-row gap-6 w-full lg:w-auto">
+                        <div className="flex flex-col">
+                            <label className="text-xs font-semibold text-[#6E7CA0] uppercase tracking-wider mb-2">Analysis Type</label>
+                            <div className="flex bg-gray-100 p-1 rounded-xl w-fit">
+                                <button
+                                    onClick={() => setType('gaps')}
+                                    className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${type === 'gaps' ? 'bg-amber-600 text-white shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
+                                >
+                                    Market Gaps
+                                </button>
+                                <button
+                                    onClick={() => setType('strengths')}
+                                    className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${type === 'strengths' ? 'bg-[#0047BA] text-white shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
+                                >
+                                    Common Strengths
+                                </button>
+                            </div>
+                        </div>
+
                         <div className="flex flex-col">
                             <label className="text-xs font-semibold text-[#6E7CA0] uppercase tracking-wider mb-2">Filter by Major</label>
                             <select
-                                className="border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-black focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                                className="border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-black focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm"
                                 value={major}
                                 onChange={(e) => setMajor(e.target.value)}
                             >

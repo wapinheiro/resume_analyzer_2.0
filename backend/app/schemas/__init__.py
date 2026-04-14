@@ -1,2 +1,2 @@
 from .resume import Resume, ResumeCreate
-from .analysis import Analysis
+from .analysis import Analysis, ResumeLink

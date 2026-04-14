@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, text
 from typing import List, Optional
 from datetime import datetime, timedelta
 
@@ -8,9 +8,106 @@ from app.api import deps
 from app.models.user import User
 from app.models.resume import Resume
 from app.models.analysis import Analysis
+from app.models.market_skill import MarketSkill
 from app.schemas import advisor as schemas
+from app.schemas import market_skill as skill_schemas
 
 router = APIRouter()
+
+# --- Market Skills Management (CRUD) ---
+
+@router.get("/market-skills", response_model=List[skill_schemas.MarketSkill])
+def list_market_skills(
+    db: Session = Depends(deps.get_db),
+    advisor_id: str = Depends(deps.get_current_advisor)
+):
+    """List all canonical market skills."""
+    return db.query(MarketSkill).order_by(MarketSkill.name).all()
+
+@router.post("/market-skills", response_model=skill_schemas.MarketSkill)
+def create_market_skill(
+    skill: skill_schemas.MarketSkillCreate,
+    db: Session = Depends(deps.get_db),
+    advisor_id: str = Depends(deps.get_current_advisor)
+):
+    """Add a new canonical skill to the reference dataset."""
+    db_skill = MarketSkill(**skill.model_dump())
+    db.add(db_skill)
+    try:
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise HTTPException(status_code=400, detail="Skill already exists or invalid data")
+    db.refresh(db_skill)
+    return db_skill
+
+@router.patch("/market-skills/{skill_id}", response_model=skill_schemas.MarketSkill)
+def update_market_skill(
+    skill_id: str,
+    skill_update: skill_schemas.MarketSkillUpdate,
+    db: Session = Depends(deps.get_db),
+    advisor_id: str = Depends(deps.get_current_advisor)
+):
+    """Update an existing canonical skill."""
+    import uuid
+    try:
+        skill_uuid = uuid.UUID(skill_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid Skill ID")
+
+    db_skill = db.query(MarketSkill).filter(MarketSkill.id == skill_uuid).first()
+    if not db_skill:
+        raise HTTPException(status_code=404, detail="Skill not found")
+
+    update_data = skill_update.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_skill, key, value)
+    
+    db.commit()
+    db.refresh(db_skill)
+    return db_skill
+
+@router.delete("/market-skills/{skill_id}")
+def delete_market_skill(
+    skill_id: str,
+    db: Session = Depends(deps.get_db),
+    advisor_id: str = Depends(deps.get_current_advisor)
+):
+    """Remove a skill from the reference dataset."""
+    import uuid
+    try:
+        skill_uuid = uuid.UUID(skill_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid Skill ID")
+
+    db_skill = db.query(MarketSkill).filter(MarketSkill.id == skill_uuid).first()
+    if not db_skill:
+        raise HTTPException(status_code=404, detail="Skill not found")
+
+    db.delete(db_skill)
+    db.commit()
+    return {"message": "Skill deleted successfully"}
+
+# --- Analytics & Dashboard ---
+
+@router.get("/filter-options", response_model=schemas.AdvisorFilterOptions)
+def get_filter_options(
+    db: Session = Depends(deps.get_db),
+    advisor_id: str = Depends(deps.get_current_advisor)
+):
+    """
+    Returns distinct values for majors, graduation years, and student statuses
+    currently present in the User table for students.
+    """
+    majors = db.query(User.major).filter(User.role == "student", User.major != None).distinct().all()
+    grad_years = db.query(User.graduation_year).filter(User.role == "student", User.graduation_year != None).distinct().all()
+    statuses = db.query(User.student_status).filter(User.role == "student", User.student_status != None).distinct().all()
+
+    return {
+        "majors": sorted([m[0] for m in majors]),
+        "grad_years": sorted([y[0] for y in grad_years]),
+        "student_statuses": sorted([s[0] for s in statuses])
+    }
 
 @router.get("/analytics", response_model=schemas.AdvisorAnalyticsOverview)
 def get_analytics_overview(
@@ -27,13 +124,27 @@ def get_analytics_overview(
     thirty_days_ago = datetime.utcnow() - timedelta(days=30)
     total_scans_30d = db.query(Analysis).filter(Analysis.created_at >= thirty_days_ago).count()
     
-    # 3. Top Missing Skill (Stubbed out until we parse JSON layers in DB)
-    top_missing_skill = "System Design" 
+    # 3. Top Detected Skill (Strengths)
+    strength_query = """
+    SELECT skill FROM (
+        SELECT json_array_elements_text(skills_detected) AS skill FROM analyses WHERE skills_detected IS NOT NULL
+    ) AS subq GROUP BY skill ORDER BY COUNT(*) DESC LIMIT 1;
+    """
+    strength_result = db.execute(text(strength_query)).scalar()
+    
+    # 4. Top Missing Skill (Gaps)
+    gap_query = """
+    SELECT skill FROM (
+        SELECT json_array_elements_text(skills_gaps) AS skill FROM analyses WHERE skills_gaps IS NOT NULL
+    ) AS subq GROUP BY skill ORDER BY COUNT(*) DESC LIMIT 1;
+    """
+    gap_result = db.execute(text(gap_query)).scalar()
     
     return {
         "average_score": float(avg_score or 0.0),
         "total_scans_30d": total_scans_30d,
-        "top_missing_skill": top_missing_skill
+        "top_missing_skill": gap_result if gap_result else "None Detected",
+        "top_detected_skill": strength_result if strength_result else "None Detected"
     }
 
 @router.get("/students", response_model=schemas.AdvisorStudentListResponse)
@@ -41,6 +152,9 @@ def list_students(
     skip: int = 0,
     limit: int = 100,
     search: Optional[str] = None,
+    major: Optional[str] = None,
+    graduation_year: Optional[int] = None,
+    student_status: Optional[str] = "active_student",
     db: Session = Depends(deps.get_db),
     advisor_id: str = Depends(deps.get_current_advisor)
 ):
@@ -53,6 +167,15 @@ def list_students(
         query = query.filter(
             (User.email.ilike(f"%{search}%")) | (User.name.ilike(f"%{search}%"))
         )
+    
+    if major:
+        query = query.filter(User.major == major)
+    
+    if graduation_year:
+        query = query.filter(User.graduation_year == graduation_year)
+        
+    if student_status and student_status != "all":
+        query = query.filter(User.student_status == student_status)
         
     total_count = query.count()
     users = query.offset(skip).limit(limit).all()
@@ -68,18 +191,27 @@ def list_students(
         if latest_resume:
              latest_analysis = db.query(Analysis).filter(Analysis.resume_id == latest_resume.id).order_by(Analysis.created_at.desc()).first()
              if latest_resume.client_info:
-                 major = latest_resume.client_info.get("major")
-                 grad_year = latest_resume.client_info.get("grad_year")
-             
+                 import json
+                 c_info = latest_resume.client_info
+                 if isinstance(c_info, str):
+                     try:
+                         c_info = json.loads(c_info)
+                     except Exception:
+                         c_info = {}
+                 
+                 major = c_info.get("major") if isinstance(c_info, dict) else None
+                 grad_year = c_info.get("grad_year") if isinstance(c_info, dict) else None
+                 
         student_data.append(schemas.AdvisorStudentSub(
             id=str(user.id),
             name=user.name,
             email=user.email,
             last_scan_date=latest_analysis.created_at if latest_analysis else None,
             latest_score=latest_analysis.rms_score if latest_analysis else None,
-            status="Pending",
-            major=major,
-            grad_year=grad_year
+            status="Reviewed" if latest_analysis else "Pending",
+            student_status=user.student_status,
+            major=user.major,
+            grad_year=user.graduation_year
         ))
         
     return {
@@ -98,18 +230,23 @@ def get_score_evolution(
 ):
     """
     Returns time-series data of average RMS scores for the evolution chart.
-    TODO: Implement filtering and correct time grouping (SQLite date functions).
+    Uses PostgreSQL TO_CHAR to group by month.
     """
-    # Stubbed data for Phase 2 frontend development
-    data = [
-        {"date": "2025-09", "average_score": 65.2, "count": 12},
-        {"date": "2025-10", "average_score": 70.1, "count": 45},
-        {"date": "2025-11", "average_score": 72.8, "count": 32},
-        {"date": "2025-12", "average_score": 71.0, "count": 15},
-        {"date": "2026-01", "average_score": 75.4, "count": 89},
-        {"date": "2026-02", "average_score": 82.1, "count": 41},
-    ]
-    insight = "Scores are trending upwards, with a significant spike in January likely due to Winter Career Fair preparation."
+    query = """
+    SELECT TO_CHAR(created_at, 'YYYY-MM') AS date, 
+           AVG(rms_score) AS average_score, 
+           COUNT(*) AS count 
+    FROM analyses 
+    WHERE created_at >= NOW() - INTERVAL '6 months' 
+    GROUP BY date ORDER BY date ASC;
+    """
+    results = db.execute(text(query)).fetchall()
+    
+    data = []
+    for row in results:
+        data.append({"date": row[0], "average_score": round(row[1], 1) if row[1] else 0, "count": row[2]})
+
+    insight = "Scores are calculated from the last 6 months of historical data."
     return {"data": data, "insight": insight}
 
 @router.get("/analytics/volume", response_model=schemas.AdvisorVolumeResponse)
@@ -121,39 +258,58 @@ def get_scan_volume(
     advisor_id: str = Depends(deps.get_current_advisor)
 ):
     """
-    Returns histogram data of total scans for the volume chart.
-    TODO: Implement real SQL aggregations.
+    Returns histogram data of total scans for the volume chart using PostgreSQL.
     """
-    # Stubbed data 
-    data = [
-        {"period": "2025-09", "scan_count": 120},
-        {"period": "2025-10", "scan_count": 350},
-        {"period": "2025-11", "scan_count": 210},
-        {"period": "2025-12", "scan_count": 95},
-        {"period": "2026-01", "scan_count": 680},
-        {"period": "2026-02", "scan_count": 420},
-    ]
+    query_str = """
+    SELECT TO_CHAR(created_at, 'YYYY-MM') AS period, 
+           COUNT(*) AS scan_count 
+    FROM analyses 
+    WHERE created_at >= NOW() - INTERVAL '6 months' 
+    GROUP BY period ORDER BY period ASC;
+    """
+    results = db.execute(text(query_str)).fetchall()
+    
+    data = []
+    for row in results:
+        data.append({"period": row[0], "scan_count": row[1]})
+        
     return {"data": data, "group_by": group_by}
 
 @router.get("/analytics/skills", response_model=schemas.AdvisorSkillsResponse)
-def get_skills_gap(
+def get_skills_distribution(
+    type: str = Query("gaps", regex="^(strengths|gaps)$"),
     major: Optional[str] = None,
     grad_year: Optional[int] = None,
     db: Session = Depends(deps.get_db),
     advisor_id: str = Depends(deps.get_current_advisor)
 ):
     """
-    Returns a frequency map of the most identified missing skills.
-    TODO: Implement JSON extraction from the Analysis table layers.
+    Returns a frequency map of either identified strengths or detected gaps.
     """
-    # Stubbed data representing "System Design", "Docker", etc.
-    data = [
-        {"skill": "System Design", "missing_count": 142, "percentage": 42.5},
-        {"skill": "Docker", "missing_count": 120, "percentage": 35.9},
-        {"skill": "Python", "missing_count": 89, "percentage": 26.6},
-        {"skill": "CI/CD", "missing_count": 65, "percentage": 19.4},
-        {"skill": "React", "missing_count": 52, "percentage": 15.5},
-    ]
+    target_column = "skills_detected" if type == "strengths" else "skills_gaps"
+    
+    query = f"""
+    SELECT skill, COUNT(*) as count
+    FROM (
+        SELECT json_array_elements_text({target_column}) AS skill 
+        FROM analyses 
+        WHERE {target_column} IS NOT NULL
+    ) AS subq
+    GROUP BY skill 
+    ORDER BY count DESC 
+    LIMIT 10;
+    """
+    results = db.execute(text(query)).fetchall()
+    
+    data = []
+    total = sum(row[1] for row in results) if results else 1
+    for row in results:
+        data.append({
+            "skill": row[0], 
+            "missing_count": row[1], 
+            "percentage": round((row[1] / total) * 100, 1) if total > 0 else 0
+        })
+        
     return {"data": data}
 
 @router.get("/students/{user_id}/analyses")
@@ -179,7 +335,11 @@ def get_student_analyses(
     resumes = db.query(Resume).filter(Resume.user_id == user_uuid).all()
     resume_ids = [r.id for r in resumes]
     
-    analyses = db.query(Analysis).filter(Analysis.resume_id.in_(resume_ids)).order_by(Analysis.created_at.desc()).all()
+    from sqlalchemy.orm import joinedload
+    analyses = db.query(Analysis)\
+        .filter(Analysis.resume_id.in_(resume_ids))\
+        .options(joinedload(Analysis.resume).joinedload(Resume.user))\
+        .order_by(Analysis.created_at.desc())\
+        .all()
     
-    # We can just return the raw SQLAlchemy models, FastAPI will serialize them
     return analyses

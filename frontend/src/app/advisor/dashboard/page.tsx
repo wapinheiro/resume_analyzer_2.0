@@ -15,14 +15,16 @@ type Student = {
     last_scan_date: string | null;
     latest_score: number | null;
     status: string;
+    student_status: string;
     major?: string;
-    grad_year?: string;
+    grad_year?: number;
 };
 
 type Analytics = {
     average_score: number;
     total_scans_30d: number;
     top_missing_skill: string | null;
+    top_detected_skill: string | null;
 };
 
 export default function AdvisorDashboard() {
@@ -35,20 +37,46 @@ export default function AdvisorDashboard() {
     const [search, setSearch] = useState('');
     const [filterMajor, setFilterMajor] = useState('');
     const [filterGradYear, setFilterGradYear] = useState('');
+    const [filterStatus, setFilterStatus] = useState('active_student');
     const [sortColumn, setSortColumn] = useState<'date' | 'score' | null>(null);
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+
+    const [filterOptions, setFilterOptions] = useState<{majors: string[], grad_years: number[], student_statuses: string[]}>({
+        majors: [],
+        grad_years: [],
+        student_statuses: []
+    });
 
     useEffect(() => {
         if (status === 'unauthenticated') {
             router.push('/');
+        } else if (status === 'authenticated') {
+            fetchFilterOptions();
         }
     }, [status, router]);
+
+    const fetchFilterOptions = async () => {
+        try {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+            const token = (session as any)?.accessToken;
+            const headers: HeadersInit = {};
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            const res = await fetch(`${API_URL}/advisors/filter-options`, { headers });
+            if (res.ok) {
+                const data = await res.json();
+                setFilterOptions(data);
+            }
+        } catch (error) {
+            console.error("Failed to fetch filter options:", error);
+        }
+    };
 
     useEffect(() => {
         if (status === 'authenticated') {
             fetchData();
         }
-    }, [search, status]);
+    }, [search, filterMajor, filterGradYear, filterStatus, status]);
 
     const fetchData = async () => {
         try {
@@ -66,6 +94,9 @@ export default function AdvisorDashboard() {
             // Construct URLs
             const studentUrl = new URL(`${API_URL}/advisors/students`);
             if (search) studentUrl.searchParams.append('search', search);
+            if (filterMajor) studentUrl.searchParams.append('major', filterMajor);
+            if (filterGradYear) studentUrl.searchParams.append('graduation_year', filterGradYear);
+            if (filterStatus) studentUrl.searchParams.append('student_status', filterStatus);
 
             const [studentsRes, analyticsRes] = await Promise.all([
                 fetch(studentUrl.toString(), { headers }),
@@ -92,20 +123,7 @@ export default function AdvisorDashboard() {
         return <div className="min-h-screen bg-background flex text-gray-700 items-center justify-center">Loading...</div>;
     }
 
-    const filteredStudents = students.filter(student => {
-        if (filterMajor && student.major !== filterMajor) return false;
-        if (filterGradYear && student.grad_year !== filterGradYear) return false;
-
-        // Also apply text search
-        if (search) {
-            const searchLower = search.toLowerCase();
-            const nameMatch = student.name?.toLowerCase().includes(searchLower) || false;
-            const emailMatch = student.email.toLowerCase().includes(searchLower);
-            if (!nameMatch && !emailMatch) return false;
-        }
-
-        return true;
-    });
+    const filteredStudents = students; // Filtering now happens on server
 
     const sortedAndFilteredStudents = [...filteredStudents].sort((a, b) => {
         if (!sortColumn) return 0;
@@ -144,25 +162,33 @@ export default function AdvisorDashboard() {
             <Navbar />
 
             <div className="pt-24 pb-12 px-6 max-w-7xl mx-auto">
-                <h1 className="text-3xl font-bold mb-8">Career Advisor Dashboard</h1>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                    <h1 className="text-3xl font-bold">Career Advisor Dashboard</h1>
+                    <Link 
+                        href="/advisor/market_skills" 
+                        className="flex items-center gap-2 bg-[#0047BA] text-white px-6 py-2 rounded-xl hover:bg-[#002E5D] transition-all shadow-md active:scale-95"
+                    >
+                        <AlertTriangle className="w-5 h-5" /> Manage Skills Table
+                    </Link>
+                </div>
 
                 {/* Analytics Overview Cards */}
                 {analytics && (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                         <Link href="/advisor/analytics/scores" className="block transform transition-transform hover:-translate-y-1">
-                            <div className="glass-panel p-6 rounded-2xl flex items-center gap-4 border border-transparent hover:border-blue-500/50">
+                            <div className="glass-panel p-6 rounded-2xl h-full flex items-center gap-4 border border-transparent hover:border-blue-500/50">
                                 <div className="p-4 bg-blue-600 rounded-xl text-white">
                                     <TrendingUp className="w-8 h-8" />
                                 </div>
                                 <div>
-                                    <p className="text-sm text-[#6E7CA0] font-medium">Avg RMS Score (All-time)</p>
+                                    <p className="text-sm text-[#6E7CA0] font-medium">Avg RMS Score</p>
                                     <p className="text-3xl font-bold text-[#002E5D]">{Math.round(analytics.average_score)}</p>
                                 </div>
                             </div>
                         </Link>
 
                         <Link href="/advisor/analytics/volume" className="block transform transition-transform hover:-translate-y-1">
-                            <div className="glass-panel p-6 rounded-2xl flex items-center gap-4 border border-transparent hover:border-blue-500/50">
+                            <div className="glass-panel p-6 rounded-2xl h-full flex items-center gap-4 border border-transparent hover:border-blue-500/50">
                                 <div className="p-4 bg-emerald-600 rounded-xl text-white">
                                     <Users className="w-8 h-8" />
                                 </div>
@@ -173,13 +199,25 @@ export default function AdvisorDashboard() {
                             </div>
                         </Link>
 
-                        <Link href="/advisor/analytics/skills" className="block transform transition-transform hover:-translate-y-1">
-                            <div className="glass-panel p-6 rounded-2xl flex items-center gap-4 border border-transparent hover:border-blue-500/50">
+                        <Link href="/advisor/analytics/skills?type=strengths" className="block transform transition-transform hover:-translate-y-1">
+                            <div className="glass-panel p-6 rounded-2xl h-full flex items-center gap-4 border border-transparent hover:border-[#0047BA]/50">
+                                <div className="p-4 bg-[#0047BA] rounded-xl text-white">
+                                    <Check className="w-8 h-8" />
+                                </div>
+                                <div>
+                                    <p className="text-sm text-[#6E7CA0] font-medium">Top Strength</p>
+                                    <p className="text-xl font-bold text-[#002E5D] truncate">{analytics.top_detected_skill || "N/A"}</p>
+                                </div>
+                            </div>
+                        </Link>
+
+                        <Link href="/advisor/analytics/skills?type=gaps" className="block transform transition-transform hover:-translate-y-1">
+                            <div className="glass-panel p-6 rounded-2xl h-full flex items-center gap-4 border border-transparent hover:border-amber-500/50">
                                 <div className="p-4 bg-amber-600 rounded-xl text-white">
                                     <AlertTriangle className="w-8 h-8" />
                                 </div>
                                 <div>
-                                    <p className="text-sm text-[#6E7CA0] font-medium">Top Missing Skill</p>
+                                    <p className="text-sm text-[#6E7CA0] font-medium">Top Market Gap</p>
                                     <p className="text-xl font-bold text-[#002E5D] truncate">{analytics.top_missing_skill || "N/A"}</p>
                                 </div>
                             </div>
@@ -206,11 +244,9 @@ export default function AdvisorDashboard() {
                                 onChange={(e) => setFilterMajor(e.target.value)}
                             >
                                 <option value="">All Majors</option>
-                                <option value="Computer Science">Computer Science</option>
-                                <option value="Information Systems">Information Systems</option>
-                                <option value="Cybersecurity">Cybersecurity</option>
-                                <option value="Accounting">Accounting</option>
-                                <option value="Finance">Finance</option>
+                                {filterOptions.majors.map(major => (
+                                    <option key={major} value={major}>{major}</option>
+                                ))}
                             </select>
                             <select
                                 className="border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-black focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm w-full sm:w-auto"
@@ -218,10 +254,19 @@ export default function AdvisorDashboard() {
                                 onChange={(e) => setFilterGradYear(e.target.value)}
                             >
                                 <option value="">All Years</option>
-                                <option value="2024">2024</option>
-                                <option value="2025">2025</option>
-                                <option value="2026">2026</option>
-                                <option value="2027">2027</option>
+                                {filterOptions.grad_years.map(year => (
+                                    <option key={year} value={year.toString()}>{year}</option>
+                                ))}
+                            </select>
+                            <select
+                                className="border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-black focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm w-full sm:w-auto"
+                                value={filterStatus}
+                                onChange={(e) => setFilterStatus(e.target.value)}
+                            >
+                                <option value="all">All Statuses</option>
+                                <option value="active_student">Active Students</option>
+                                <option value="alumni">Alumni</option>
+                                <option value="non_student">Staff/Testers</option>
                             </select>
                             <div className="relative w-full sm:w-auto">
                                 <input
