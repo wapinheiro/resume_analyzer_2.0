@@ -45,4 +45,4 @@ options:
 
 substitutions:
   _COMMIT_SHA: latest
-  _NEXT_PUBLIC_API_URL: https://resume-analyzer-backend-87294979859.us-central1.run.app
+  _NEXT_PUBLIC_API_URL: https://resume-analyzer-backend-87294979859.us-central1.run.app/api/v1
