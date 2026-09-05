@@ -2,6 +2,23 @@
 
 ---
 
+## 2026-09-05: Homepage Overhaul & Auth UX Deployment (Option C Live)
+
+### Achievements & Deployed Changes
+1.  **Full Option C Redesign Live on Cloud Run**:
+    -   Successfully built and deployed revision `resume-analyzer-frontend-00030-k99` to `https://resume-analyzer-frontend-87294979859.us-central1.run.app`.
+    -   Routing 100% of production traffic to the new revision.
+2.  **Frontend Components & UX Overhaul**:
+    -   **Hero Section**: Added gradient branding, FERPA compliance badges, and high-converting CTA upload zone.
+    -   **5-Layer Evaluation Framework Grid**: Installed `FrameworkGrid.tsx` detailing ATS, Core Spec, Impact, 6-Sec Storyline, and X-Factor.
+    -   **RMS Benchmark Teaser**: Installed `RMSBenchmarkTeaser.tsx` visualizing Market-Ready (90–100), Tourist (75–89), and Student (<75) risk tiers.
+    -   **Branded `/login` Page**: Redesigned sign-in experience with dark navy (`#002E5D`) aesthetic, OAuth buttons, and back-to-home navigation.
+3.  **Build & Next.js Fixes**:
+    -   Resolved NextAuth middleware standard JWT token evaluation on public home routes.
+    -   Fixed ESLint JSX quote escaping and Lucide icon imports across advisor analytics pages for clean production Docker builds.
+
+---
+
 ## 2026-09-05: Infrastructure Stabilization & Homepage Overhaul Plan
 
 ### Achievements & Infrastructure Fixes
