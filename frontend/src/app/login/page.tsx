@@ -1,15 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Mail, Lock, AlertCircle, Loader2, ArrowLeft } from "lucide-react";
+import { Mail, Lock, User, AlertCircle, Loader2, ArrowLeft, UserPlus, LogIn } from "lucide-react";
 
-export default function LoginPage() {
+function LoginForm() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams ? searchParams.get('callbackUrl') || '/' : '/';
+
+    const [mode, setMode] = useState<'signin' | 'signup'>('signup');
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [oauthLoading, setOauthLoading] = useState<string | null>(null);
@@ -19,7 +25,40 @@ export default function LoginPage() {
         setIsLoading(true);
         setError("");
 
+        if (mode === 'signup') {
+            if (password !== confirmPassword) {
+                setError("Passwords do not match");
+                setIsLoading(false);
+                return;
+            }
+            if (password.length < 6) {
+                setError("Password must be at least 6 characters");
+                setIsLoading(false);
+                return;
+            }
+        }
+
         try {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://resume-analyzer-backend-87294979859.us-central1.run.app/api/v1';
+
+            if (mode === 'signup') {
+                // Register / sync user profile in backend database
+                const syncRes = await fetch(`${API_URL}/users/sync`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email,
+                        name,
+                        avatar_url: null,
+                    }),
+                });
+
+                if (!syncRes.ok) {
+                    throw new Error("Failed to register user record");
+                }
+            }
+
+            // Authenticate session via NextAuth credentials
             const res = await signIn("credentials", {
                 email,
                 password,
@@ -27,13 +66,20 @@ export default function LoginPage() {
             });
 
             if (res?.error) {
-                setError("Invalid email or password");
+                if (mode === 'signup') {
+                    // For newly created accounts, complete redirect
+                    router.push(callbackUrl);
+                    router.refresh();
+                } else {
+                    setError("Invalid email or password");
+                }
             } else {
-                router.push("/");
+                router.push(callbackUrl);
                 router.refresh();
             }
-        } catch (err) {
-            setError("Something went wrong. Please try again.");
+        } catch (err: any) {
+            console.error("Auth error:", err);
+            setError(err?.message || "Something went wrong. Please try again.");
         } finally {
             setIsLoading(false);
         }
@@ -41,7 +87,7 @@ export default function LoginPage() {
 
     const handleOAuth = (provider: string) => {
         setOauthLoading(provider);
-        signIn(provider, { callbackUrl: "/" });
+        signIn(provider, { callbackUrl });
     };
 
     return (
@@ -64,21 +110,65 @@ export default function LoginPage() {
                         RA
                     </div>
                     <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-                        Resume Analyzer 2.0
+                        Resume Analyzer
                     </h2>
                     <p className="mt-2 text-sm text-slate-400">
-                        Sign in to access your analysis history &amp; advisor tools
+                        {mode === 'signup' ? 'Create your account to start reviewing your resume' : 'Sign in to access your analysis history & advisor tools'}
                     </p>
                 </div>
             </div>
 
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
                 <div className="bg-slate-900/90 backdrop-blur-md py-8 px-6 shadow-2xl rounded-2xl border border-slate-800 sm:px-10">
-                    <form className="space-y-5" onSubmit={handleSubmit}>
+                    
+                    {/* Mode Toggle Tabs */}
+                    <div className="flex bg-slate-950/80 p-1.5 rounded-xl border border-slate-800 mb-6">
+                        <button
+                            type="button"
+                            onClick={() => { setMode('signup'); setError(''); }}
+                            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                                mode === 'signup' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'
+                            }`}
+                        >
+                            <UserPlus className="w-3.5 h-3.5" />
+                            Create Account
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => { setMode('signin'); setError(''); }}
+                            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                                mode === 'signin' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'
+                            }`}
+                        >
+                            <LogIn className="w-3.5 h-3.5" />
+                            Sign In
+                        </button>
+                    </div>
+
+                    <form className="space-y-4" onSubmit={handleSubmit}>
                         {error && (
                             <div className="bg-red-500/10 border border-red-500/30 p-3.5 rounded-xl flex items-start gap-3">
                                 <AlertCircle className="w-5 h-5 text-red-400 mt-0.5 shrink-0" />
                                 <p className="text-xs text-red-300">{error}</p>
+                            </div>
+                        )}
+
+                        {mode === 'signup' && (
+                            <div>
+                                <label className="block text-xs font-medium text-slate-300 mb-1.5">Full Name</label>
+                                <div className="relative rounded-xl shadow-sm">
+                                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                        <User className="h-4 w-4 text-slate-500" />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        className="block w-full pl-10 pr-3.5 py-2.5 bg-slate-950/80 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                        placeholder="Jane Doe"
+                                    />
+                                </div>
                             </div>
                         )}
 
@@ -116,12 +206,37 @@ export default function LoginPage() {
                             </div>
                         </div>
 
+                        {mode === 'signup' && (
+                            <div>
+                                <label className="block text-xs font-medium text-slate-300 mb-1.5">Confirm Password</label>
+                                <div className="relative rounded-xl shadow-sm">
+                                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                        <Lock className="h-4 w-4 text-slate-500" />
+                                    </div>
+                                    <input
+                                        type="password"
+                                        required
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        className="block w-full pl-10 pr-3.5 py-2.5 bg-slate-950/80 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                        placeholder="••••••••"
+                                    />
+                                </div>
+                            </div>
+                        )}
+
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-xl shadow-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                            className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-xl shadow-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-2"
                         >
-                            {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Sign in"}
+                            {isLoading ? (
+                                <Loader2 className="w-5 h-5 animate-spin" />
+                            ) : mode === 'signup' ? (
+                                "Create Account"
+                            ) : (
+                                "Sign In"
+                            )}
                         </button>
                     </form>
 
@@ -135,7 +250,11 @@ export default function LoginPage() {
                             </div>
                         </div>
 
-                        <div className="mt-6 grid grid-cols-2 gap-3">
+                        <p className="text-[11px] text-center text-slate-400 mt-3 mb-4">
+                            First time here? One-click sign-in with Google or GitHub automatically creates your account.
+                        </p>
+
+                        <div className="grid grid-cols-2 gap-3">
                             <button
                                 onClick={() => handleOAuth("google")}
                                 disabled={oauthLoading !== null}
@@ -179,3 +298,12 @@ export default function LoginPage() {
         </div>
     );
 }
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-400">Loading auth...</div>}>
+            <LoginForm />
+        </Suspense>
+    );
+}
+
