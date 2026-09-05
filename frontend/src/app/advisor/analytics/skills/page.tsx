@@ -58,31 +58,12 @@ export default function SkillsAnalytics() {
                     const json = await res.json();
                     setData(json);
                 }
-    const fetchSkills = async () => {
-        try {
-            setLoading(true);
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
-            const token = (session as any)?.accessToken;
-
-            const headers: HeadersInit = { 'Content-Type': 'application/json' };
-            if (token) headers['Authorization'] = `Bearer ${token}`;
-
-            const url = new URL(`${API_URL}/advisors/analytics/skills`);
-            url.searchParams.append('type', type);
-            if (major) url.searchParams.append('major', major);
-            if (gradYear) url.searchParams.append('grad_year', gradYear);
-
-            const res = await fetch(url.toString(), { headers });
-            if (res.ok) {
-                const json = await res.json();
-                setData(json);
+            } catch (error) {
+                console.error("Failed to fetch skills analytics", error);
+            } finally {
+                setLoading(false);
             }
-        } catch (error) {
-            console.error("Failed to fetch skills analytics", error);
-        } finally {
-            setLoading(false);
-        }
-    };
+        };
 
     useEffect(() => {
         if (status === 'authenticated') {

@@ -1,3 +1,27 @@
+# Resume Analyzer 2.0 - Project Diary
+
+---
+
+## 2026-09-05: Infrastructure Stabilization & Homepage Overhaul Plan
+
+### Achievements & Infrastructure Fixes
+1.  **GCP Billing & Edge Restoration**:
+    -   Re-enabled GCP Billing account on project `gen-lang-client-0141528519`.
+    -   Resolved Cloud Run 500 errors and Google Frontend edge rate-limiting (`429 Rate exceeded`).
+    -   Configured Cloud Run `--min-instances=1` on `resume-analyzer-backend` to eliminate cold start database timeouts.
+    -   Verified end-to-end database connectivity between Cloud Run and Cloud SQL PostgreSQL.
+
+### Strategic Plan: Homepage & Auth UX Overhaul (Option C)
+1.  **Hero Section & Value Proposition**:
+    -   Upgrade hero headline to clearly communicate the candidate transformation ("From CS Student to Market-Ready Engineer").
+    -   Add trust & compliance badges (*"FERPA Compliant • Privacy-First • Built for BYU CS Students"*).
+2.  **5-Layer Framework Showcase**:
+    -   Interactive/visual 5-card breakdown of Layer 1 (ATS), Layer 2 (Core Spec), Layer 3 (Impact & CAR), Layer 4 (6-Sec Storyline), and Layer 5 (X-Factor).
+3.  **RMS Benchmark Teaser**:
+    -   Visual hireability index breakdown (**90-100 Market Ready**, **75-89 The Tourist**, **<75 The Student**).
+4.  **Personalized Logged-in Dashboard & Auth UX**:
+    -   Dynamic home page view for authenticated users displaying recent resume analyses & Advisor Scheduling CTA.
+    -   Brand up `/login` page with BYU CS theme accents (`#002E5D`), logo, and polished UX.
 
 ---
 
@@ -25,7 +49,6 @@ The web application is **fully functional**.
 -   The frontend displays real, personalized scores and feedback.
 -   Data is persisted in the PostgreSQL database (`analyses` table), including the full raw JSON for future datasets.
 
-### Next Steps (Phase 4)
--   **Production Hardening**: Replace the "Stub" S3 upload with real AWS S3 or Cloud Storage.
--   **Authentication**: Add user accounts so "Recent Activity" is actually persisted per user (currently session/local only).
--   **Comparison**: Allow comparing two resumes side-by-side.
+### Next Steps (Phase 4 & v2.5)
+-   **Homepage & Auth UX Overhaul**: Upgrade landing page, 5-layer framework showcase, RMS benchmarks, and personalized user dashboard.
+-   **PDF Export**: Implement PDF export for optimized resume output.
