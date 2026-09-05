@@ -2,6 +2,22 @@
 
 ---
 
+## 2026-09-05: Mandatory Auth Gating & NextAuth Session Fix Deployed
+
+### Achievements & Deployed Changes
+1.  **Mandatory Sign-In/Sign-Up Policy Enforcement**:
+    -   Unauthenticated visitors now see a prominent **"Sign In to Review Your Resume"** gate card with a direct **"Log In or Create Account"** button routing to `/login`.
+    -   Drag-and-drop and upload click actions automatically redirect unauthenticated users to `/login`.
+    -   Authenticated users unlock the active PDF upload zone and personalized welcome banner.
+2.  **NextAuth Session & Backend Model Fixes**:
+    -   Added `NEXTAUTH_SECRET` fallback to eliminate `500 Internal Server Error` on `/api/auth/session` in Cloud Run.
+    -   Configured model fallback to `gemini-1.5-flash` in `GeminiService`.
+3.  **Production Deployment Revisions**:
+    -   **Backend**: Revision `resume-analyzer-backend-00039-2l6` live on Cloud Run.
+    -   **Frontend**: Revision `resume-analyzer-frontend-00033-drg` live on Cloud Run.
+
+---
+
 ## 2026-09-05: Homepage Hero Copy & Branding Refinements Deployed
 
 ### Achievements & Deployed Changes
