@@ -1,4 +1,20 @@
-# Resume Analyzer 2.0 - Project Diary
+# Resume Analyzer - Project Diary
+
+---
+
+## 2026-09-05: Homepage Hero Copy & Branding Refinements Deployed
+
+### Achievements & Deployed Changes
+1.  **Refined Production Deployment Live**:
+    -   Successfully built and deployed revision `resume-analyzer-frontend-00031-x9c` to `https://resume-analyzer-frontend-87294979859.us-central1.run.app`.
+    -   Serving 100% of production traffic.
+2.  **Hero & Brand Refinements**:
+    -   **Navbar & Brand**: Dropped `2.0` suffix to unify brand as `Resume Analyzer`.
+    -   **Eyebrow Pill**: Updated top pill text to `BYU Computer Science • A Thread tool`.
+    -   **Headline**: Simplified headline to `Resume Analyzer`.
+    -   **Feature List**: Converted subheadline into a clear 4-item bullet list with SVG icons (*A 5-part review, An overall score, What your resume emphasizes, An optimized version you can use*).
+    -   **Trust Badges**: Removed FERPA/PII/BYU CS badges row for concise messaging.
+    -   **Upload Box**: Updated call-to-action title to `Upload Resume to Review`.
 
 ---
 
