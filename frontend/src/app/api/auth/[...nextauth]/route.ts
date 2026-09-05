@@ -59,7 +59,7 @@ const authOptions: NextAuthOptions = {
     session: {
         strategy: "jwt",
     },
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: process.env.NEXTAUTH_SECRET || "byu-resume-analyzer-nextauth-secret-key-2026",
     callbacks: {
         async signIn({ user, account, profile }) {
             if (!user.email) return false;

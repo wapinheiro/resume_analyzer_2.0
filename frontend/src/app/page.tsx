@@ -8,7 +8,7 @@ import { FrameworkGrid } from '@/components/home/FrameworkGrid';
 import { RMSBenchmarkTeaser } from '@/components/home/RMSBenchmarkTeaser';
 import { useSession } from 'next-auth/react';
 import { analyzeResume } from '@/services/api';
-import { Search, Hash, User, Sparkles, Calendar } from 'lucide-react';
+import { Search, Hash, User, Sparkles, Calendar, Lock, LogIn, ArrowRight } from 'lucide-react';
 
 export default function Home() {
     const { data: session } = useSession();
@@ -19,6 +19,11 @@ export default function Home() {
     const router = useRouter();
 
     const handleFile = async (file: File) => {
+        if (!session?.user) {
+            router.push('/login?callbackUrl=/');
+            return;
+        }
+
         if (file.type !== 'application/pdf') {
             alert('Please upload a PDF file.');
             return;
@@ -43,6 +48,10 @@ export default function Home() {
     };
 
     const handleClick = () => {
+        if (!session?.user) {
+            router.push('/login?callbackUrl=/');
+            return;
+        }
         if (!isAnalyzing) fileInputRef.current?.click();
     };
 
@@ -51,6 +60,10 @@ export default function Home() {
     const handleDrop = (e: React.DragEvent) => {
         e.preventDefault();
         setIsDragging(false);
+        if (!session?.user) {
+            router.push('/login?callbackUrl=/');
+            return;
+        }
         const file = e.dataTransfer.files?.[0];
         if (file) handleFile(file);
     };
@@ -106,7 +119,7 @@ export default function Home() {
                         </ul>
                     </div>
 
-                    {/* Authenticated Banner */}
+                    {/* Authenticated Welcome Banner */}
                     {session?.user && (
                         <div className="w-full max-w-2xl mb-8 bg-blue-950/40 border border-blue-500/30 rounded-2xl p-4 sm:p-6 text-left flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
                             <div>
@@ -131,50 +144,76 @@ export default function Home() {
                         </div>
                     )}
 
-                    {/* Mega-Button Upload Zone */}
-                    <div
-                        id="upload-zone"
-                        onClick={handleClick}
-                        onDragOver={handleDragOver}
-                        onDragLeave={handleDragLeave}
-                        onDrop={handleDrop}
-                        className={`w-full max-w-xl border-2 border-dashed rounded-3xl p-10 sm:p-14 flex flex-col items-center justify-center gap-6 transition-all duration-300 cursor-pointer shadow-2xl relative backdrop-blur-md
-                            ${isAnalyzing ? 'border-blue-500/60 bg-blue-500/10 cursor-wait' : ''}
-                            ${isDragging ? 'border-blue-400 bg-blue-500/20 scale-[1.02]' : ''}
-                            ${!isAnalyzing && !isDragging ? 'border-slate-700/80 bg-slate-900/70 hover:border-blue-500/70 hover:bg-slate-900/90' : ''}
-                        `}
-                    >
-                        <input
-                            type="file"
-                            ref={fileInputRef}
-                            onChange={handleFileChange}
-                            className="hidden"
-                            accept="application/pdf"
-                        />
-
-                        {isAnalyzing ? (
-                            <div className="py-4 flex flex-col items-center text-center">
-                                <div className="w-14 h-14 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4" />
-                                <p className="text-blue-400 font-semibold text-lg animate-pulse mb-1">{loadingStep}</p>
-                                <p className="text-xs text-slate-400">Generating your 5-part review &amp; score...</p>
+                    {/* Conditional Upload Box: Unauthenticated vs Authenticated */}
+                    {!session?.user ? (
+                        <div
+                            id="upload-zone"
+                            onClick={() => router.push('/login?callbackUrl=/')}
+                            className="w-full max-w-xl border-2 border-dashed border-blue-500/40 rounded-3xl p-10 sm:p-12 flex flex-col items-center justify-center gap-5 transition-all duration-300 cursor-pointer shadow-2xl relative backdrop-blur-md bg-slate-900/80 hover:border-blue-400 hover:bg-slate-900/95 group"
+                        >
+                            <div className="w-16 h-16 rounded-2xl bg-blue-600/10 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-inner group-hover:scale-110 transition-transform">
+                                <Lock className="w-8 h-8" />
                             </div>
-                        ) : (
-                            <>
-                                <div className="w-16 h-16 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shadow-inner">
-                                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                                    </svg>
+                            <div className="text-center max-w-md">
+                                <p className="text-xl font-bold text-white mb-2">Sign In to Review Your Resume</p>
+                                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6">
+                                    Sign in with Google, GitHub, or Email to upload your resume, calculate your overall score, and store your analysis history.
+                                </p>
+                                <Link
+                                    href="/login?callbackUrl=/"
+                                    className="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-white bg-[#0047BA] hover:bg-blue-600 rounded-xl transition-all shadow-lg shadow-blue-500/25"
+                                >
+                                    <LogIn className="w-4 h-4" />
+                                    <span>Log In or Create Account</span>
+                                    <ArrowRight className="w-4 h-4" />
+                                </Link>
+                            </div>
+                        </div>
+                    ) : (
+                        <div
+                            id="upload-zone"
+                            onClick={handleClick}
+                            onDragOver={handleDragOver}
+                            onDragLeave={handleDragLeave}
+                            onDrop={handleDrop}
+                            className={`w-full max-w-xl border-2 border-dashed rounded-3xl p-10 sm:p-14 flex flex-col items-center justify-center gap-6 transition-all duration-300 cursor-pointer shadow-2xl relative backdrop-blur-md
+                                ${isAnalyzing ? 'border-blue-500/60 bg-blue-500/10 cursor-wait' : ''}
+                                ${isDragging ? 'border-blue-400 bg-blue-500/20 scale-[1.02]' : ''}
+                                ${!isAnalyzing && !isDragging ? 'border-slate-700/80 bg-slate-900/70 hover:border-blue-500/70 hover:bg-slate-900/90' : ''}
+                            `}
+                        >
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                                className="hidden"
+                                accept="application/pdf"
+                            />
+
+                            {isAnalyzing ? (
+                                <div className="py-4 flex flex-col items-center text-center">
+                                    <div className="w-14 h-14 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4" />
+                                    <p className="text-blue-400 font-semibold text-lg animate-pulse mb-1">{loadingStep}</p>
+                                    <p className="text-xs text-slate-400">Generating your 5-part review &amp; score...</p>
                                 </div>
-                                <div className="text-center">
-                                    <p className="text-xl font-bold text-white mb-1.5">Upload Resume to Review</p>
-                                    <p className="text-xs sm:text-sm text-slate-400">Drag &amp; drop or click to select a PDF file</p>
-                                </div>
-                                <div className="px-3.5 py-1.5 rounded-full bg-slate-800/80 border border-slate-700 text-[11px] font-medium text-slate-400">
-                                    PDF format • &lt; 10MB
-                                </div>
-                            </>
-                        )}
-                    </div>
+                            ) : (
+                                <>
+                                    <div className="w-16 h-16 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shadow-inner">
+                                        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                                        </svg>
+                                    </div>
+                                    <div className="text-center">
+                                        <p className="text-xl font-bold text-white mb-1.5">Upload Resume to Review</p>
+                                        <p className="text-xs sm:text-sm text-slate-400">Drag &amp; drop or click to select a PDF file</p>
+                                    </div>
+                                    <div className="px-3.5 py-1.5 rounded-full bg-slate-800/80 border border-slate-700 text-[11px] font-medium text-slate-400">
+                                        PDF format • &lt; 10MB
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
 
