@@ -57,7 +57,7 @@ export default function AdvisorDashboard() {
 
     const fetchFilterOptions = async () => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://resume-analyzer-backend-87294979859.us-central1.run.app/api/v1';
             const token = (session as any)?.accessToken;
             const headers: HeadersInit = {};
             if (token) headers['Authorization'] = `Bearer ${token}`;
@@ -81,7 +81,7 @@ export default function AdvisorDashboard() {
     const fetchData = async () => {
         try {
             setLoading(true);
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://resume-analyzer-backend-87294979859.us-central1.run.app/api/v1';
             const token = (session as any)?.accessToken;
 
             const headers: HeadersInit = {

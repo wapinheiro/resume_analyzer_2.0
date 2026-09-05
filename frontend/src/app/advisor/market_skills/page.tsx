@@ -43,7 +43,7 @@ export default function MarketSkillsManagement() {
     const fetchSkills = async () => {
         try {
             setLoading(true);
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://resume-analyzer-backend-87294979859.us-central1.run.app/api/v1';
             const token = (session as any)?.accessToken;
             const headers: HeadersInit = { 'Content-Type': 'application/json' };
             if (token) headers['Authorization'] = `Bearer ${token}`;
@@ -68,7 +68,7 @@ export default function MarketSkillsManagement() {
 
     const handleCreate = async () => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://resume-analyzer-backend-87294979859.us-central1.run.app/api/v1';
             const token = (session as any)?.accessToken;
             const headers: HeadersInit = { 'Content-Type': 'application/json' };
             if (token) headers['Authorization'] = `Bearer ${token}`;
@@ -96,7 +96,7 @@ export default function MarketSkillsManagement() {
         if (!confirm("Are you sure you want to delete this skill from the reference dataset?")) return;
 
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://resume-analyzer-backend-87294979859.us-central1.run.app/api/v1';
             const token = (session as any)?.accessToken;
             const headers: HeadersInit = {};
             if (token) headers['Authorization'] = `Bearer ${token}`;
@@ -121,7 +121,7 @@ export default function MarketSkillsManagement() {
 
     const handleUpdate = async (id: string) => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://resume-analyzer-backend-87294979859.us-central1.run.app/api/v1';
             const token = (session as any)?.accessToken;
             const headers: HeadersInit = { 'Content-Type': 'application/json' };
             if (token) headers['Authorization'] = `Bearer ${token}`;

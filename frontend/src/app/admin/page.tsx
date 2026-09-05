@@ -30,7 +30,7 @@ export default function AdminDashboard() {
     const fetchUsers = async () => {
         setIsLoading(true);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"}/users`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://resume-analyzer-backend-87294979859.us-central1.run.app/api/v1"}/users`, {
                 headers: {
                     "Authorization": `Bearer ${(session as any)?.accessToken}`
                 }
@@ -49,7 +49,7 @@ export default function AdminDashboard() {
     const handleRoleChange = async (userId: string, newRole: string) => {
         setSavingId(userId);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1"}/users/${userId}/role`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://resume-analyzer-backend-87294979859.us-central1.run.app/api/v1"}/users/${userId}/role`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

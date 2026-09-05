@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://resume-analyzer-backend-87294979859.us-central1.run.app/api/v1';
 
 export async function analyzeResume(file: File, token?: string, onProgress?: (msg: string) => void) {
     const formData = new FormData();

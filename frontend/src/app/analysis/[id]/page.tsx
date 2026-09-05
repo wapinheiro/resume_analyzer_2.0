@@ -48,7 +48,7 @@ export default function HistoricalAnalysisPage() {
 
             try {
                 setLoading(true);
-                const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+                const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://resume-analyzer-backend-87294979859.us-central1.run.app/api/v1';
                 const token = (session as any)?.accessToken;
                 const headers: HeadersInit = { 'Content-Type': 'application/json' };
                 if (token) headers['Authorization'] = `Bearer ${token}`;
@@ -155,7 +155,7 @@ export default function HistoricalAnalysisPage() {
                                 onClick={async () => {
                                     setConfirming(true);
                                     try {
-                                        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+                                        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://resume-analyzer-backend-87294979859.us-central1.run.app/api/v1';
                                         const token = (session as any)?.accessToken;
                                         const headers: HeadersInit = { 'Content-Type': 'application/json' };
                                         if (token) headers['Authorization'] = `Bearer ${token}`;
@@ -204,7 +204,7 @@ export default function HistoricalAnalysisPage() {
                     <button
                         onClick={async () => {
                             try {
-                                const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+                                const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://resume-analyzer-backend-87294979859.us-central1.run.app/api/v1';
                                 const token = (session as any)?.accessToken;
                                 const headers: HeadersInit = {};
                                 if (token) headers['Authorization'] = `Bearer ${token}`;

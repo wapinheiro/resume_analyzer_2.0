@@ -17,7 +17,7 @@ const authOptions: NextAuthOptions = {
                 }
 
                 try {
-                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'}/users/login`, {
+                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://resume-analyzer-backend-87294979859.us-central1.run.app/api/v1'}/users/login`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
@@ -66,7 +66,7 @@ const authOptions: NextAuthOptions = {
 
             try {
                 // Sync user with FastAPI backend
-                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'}/users/sync`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://resume-analyzer-backend-87294979859.us-central1.run.app/api/v1'}/users/sync`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
