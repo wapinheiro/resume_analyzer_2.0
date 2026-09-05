@@ -8,7 +8,7 @@ import { FrameworkGrid } from '@/components/home/FrameworkGrid';
 import { RMSBenchmarkTeaser } from '@/components/home/RMSBenchmarkTeaser';
 import { useSession } from 'next-auth/react';
 import { analyzeResume } from '@/services/api';
-import { Shield, Lock, GraduationCap, Calendar, Sparkles, ArrowRight } from 'lucide-react';
+import { Search, Hash, User, Sparkles, Calendar } from 'lucide-react';
 
 export default function Home() {
     const { data: session } = useSession();
@@ -75,34 +75,35 @@ export default function Home() {
                     {/* Top Pill */}
                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold uppercase tracking-wider mb-6 shadow-sm">
                         <Sparkles className="w-3.5 h-3.5" />
-                        <span>BYU CS Career Platform • 2026 Hiring Standards</span>
+                        <span>BYU Computer Science • A Thread tool</span>
                     </div>
 
                     <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight max-w-3xl">
-                        From CS Student to <br />
-                        <span className="bg-gradient-to-r from-blue-400 via-sky-300 to-indigo-300 bg-clip-text text-transparent">
-                            Market-Ready Engineer
-                        </span>
+                        Resume Analyzer
                     </h1>
 
-                    <p className="text-base sm:text-xl text-slate-300 max-w-2xl mb-8 leading-relaxed">
-                        Eliminate recruiter hiring risk with research-backed 5-layer resume auditing, CAR formula bullet optimization, and quantitative Risk-Mitigation Scoring.
-                    </p>
-
-                    {/* Trust Badges */}
-                    <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs text-slate-400 mb-12">
-                        <span className="inline-flex items-center gap-1.5">
-                            <Shield className="w-4 h-4 text-emerald-400" />
-                            FERPA Compliant
-                        </span>
-                        <span className="inline-flex items-center gap-1.5">
-                            <Lock className="w-4 h-4 text-blue-400" />
-                            Privacy First (No PII Stored)
-                        </span>
-                        <span className="inline-flex items-center gap-1.5">
-                            <GraduationCap className="w-4 h-4 text-indigo-400" />
-                            Built for BYU CS
-                        </span>
+                    <div className="text-center max-w-xl mb-10">
+                        <p className="text-base sm:text-lg font-medium text-slate-200 mb-4">
+                            Upload your resume and get:
+                        </p>
+                        <ul className="text-sm sm:text-base text-slate-300 space-y-2.5 inline-block text-left">
+                            <li className="flex items-center gap-3">
+                                <Search className="w-4 h-4 text-blue-400 shrink-0" />
+                                <span>A 5-part review</span>
+                            </li>
+                            <li className="flex items-center gap-3">
+                                <Hash className="w-4 h-4 text-indigo-400 shrink-0" />
+                                <span>An overall score</span>
+                            </li>
+                            <li className="flex items-center gap-3">
+                                <User className="w-4 h-4 text-sky-400 shrink-0" />
+                                <span>What your resume emphasizes</span>
+                            </li>
+                            <li className="flex items-center gap-3">
+                                <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+                                <span>An optimized version you can use</span>
+                            </li>
+                        </ul>
                     </div>
 
                     {/* Authenticated Banner */}
@@ -113,7 +114,7 @@ export default function Home() {
                                     <span>Welcome back, {session.user.name || session.user.email}</span>
                                 </h3>
                                 <p className="text-xs text-slate-400 mt-1">
-                                    Ready to re-audit your resume or review advisor feedback?
+                                    Ready to re-review your resume or check advisor feedback?
                                 </p>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
@@ -155,7 +156,7 @@ export default function Home() {
                             <div className="py-4 flex flex-col items-center text-center">
                                 <div className="w-14 h-14 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4" />
                                 <p className="text-blue-400 font-semibold text-lg animate-pulse mb-1">{loadingStep}</p>
-                                <p className="text-xs text-slate-400">Evaluating 5-layer framework &amp; calculating RMS score...</p>
+                                <p className="text-xs text-slate-400">Generating your 5-part review &amp; score...</p>
                             </div>
                         ) : (
                             <>
@@ -165,7 +166,7 @@ export default function Home() {
                                     </svg>
                                 </div>
                                 <div className="text-center">
-                                    <p className="text-xl font-bold text-white mb-1.5">Upload Resume to Audit</p>
+                                    <p className="text-xl font-bold text-white mb-1.5">Upload Resume to Review</p>
                                     <p className="text-xs sm:text-sm text-slate-400">Drag &amp; drop or click to select a PDF file</p>
                                 </div>
                                 <div className="px-3.5 py-1.5 rounded-full bg-slate-800/80 border border-slate-700 text-[11px] font-medium text-slate-400">
