@@ -65,11 +65,10 @@ export default function SkillsAnalytics() {
             }
         };
 
-    useEffect(() => {
         if (status === 'authenticated') {
             fetchSkills();
         }
-    }, [status, major, gradYear, type]);
+    }, [status, session, major, gradYear, type]);
 
     if (status === 'loading') {
         return <div className="min-h-screen flex items-center justify-center">Loading...</div>;

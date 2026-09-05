@@ -186,7 +186,7 @@ export default function Home() {
             {/* Footer */}
             <footer className="border-t border-slate-800/80 py-12 px-6 text-center">
                 <p className="text-sm font-serif italic text-slate-400 tracking-wide mb-2">
-                    "making weak things become strong"
+                    &quot;making weak things become strong&quot;
                 </p>
                 <p className="text-xs text-slate-500">
                     BYU Computer Science Career Development Platform &copy; 2026

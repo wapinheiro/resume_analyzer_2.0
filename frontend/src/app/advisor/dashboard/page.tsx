@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Navbar } from '@/components/ui/Navbar';
 import Link from 'next/link';
-import { Users, TrendingUp, AlertTriangle, ChevronRight, ArrowDown, ArrowUp } from 'lucide-react';
+import { Users, TrendingUp, AlertTriangle, ChevronRight, ArrowDown, ArrowUp, Check } from 'lucide-react';
 import { format } from 'date-fns';
 
 type Student = {

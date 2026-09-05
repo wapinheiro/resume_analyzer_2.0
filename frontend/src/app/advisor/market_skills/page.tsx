@@ -343,7 +343,7 @@ export default function MarketSkillsManagement() {
                                 {skills.length === 0 && !loading && (
                                     <tr>
                                         <td colSpan={5} className="p-12 text-center text-gray-500">
-                                            No canonical skills registered. Click "Add New Skill" to begin seeding.
+                                            No canonical skills registered. Click &quot;Add New Skill&quot; to begin seeding.
                                         </td>
                                     </tr>
                                 )}
