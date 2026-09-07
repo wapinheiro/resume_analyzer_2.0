@@ -7,7 +7,6 @@ interface Layer {
     title: string;
     weight: string;
     badgeColor: string;
-    icon: string;
     summary: string;
     checklist: string[];
 }
@@ -15,67 +14,62 @@ interface Layer {
 const LAYERS: Layer[] = [
     {
         number: 1,
-        title: "Foundation (ATS Integrity)",
+        title: "Formatting & Readability",
         weight: "20% Weight",
         badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
-        icon: "🛡️",
-        summary: "Ensures your resume passes machine gatekeepers and initial recruiter scans without layout glitches.",
+        summary: "Checks that resume scanners and recruiters can easily read your file, with clear contact info and a clean layout.",
         checklist: [
-            "Single-column, reverse-chronological layout",
-            "Clickable LinkedIn & pinned GitHub links",
-            "Clean contact info & standard typography"
+            "Clean, single-column layout",
+            "Clickable LinkedIn & GitHub links",
+            "Clear section headers & typography"
         ]
     },
     {
         number: 2,
-        title: "Core Spec (Technical Readiness)",
+        title: "Technical Skills & Tools",
         weight: "15% Weight",
         badgeColor: "bg-cyan-50 text-cyan-700 border-cyan-200",
-        icon: "⚡",
-        summary: "Evaluates technical skills against software engineering hiring standards.",
+        summary: "Checks that your programming languages, frameworks, databases, and tools are clearly listed and easy to find.",
         checklist: [
-            "Skills categorized (Languages, Frameworks, Cloud, DBs)",
-            "High-demand technical stack (AWS, Docker, Pytest, SQL)",
-            "Eliminates legacy noise & soft-skill fillers"
+            "Skills grouped by category (Languages, Frameworks, DBs)",
+            "Focused on core engineering skills",
+            "No soft-skill filler words"
         ]
     },
     {
         number: 3,
-        title: "Impact Layer (Tone & Metrics)",
+        title: "Action Bullets & Results",
         weight: "25% Weight",
         badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
-        icon: "📈",
-        summary: "Transforms bullets from 'duty descriptions' into quantified engineering accomplishments.",
+        summary: "Looks for strong action verbs and specific results (numbers, percentages, scale) to show what you built and accomplished.",
         checklist: [
-            "Challenge-Action-Result (CAR) bullet formula",
-            "Strong active verbs (Engineered, Automated, Scaled)",
-            "3+ hard metrics per role (%, $, scale, latency)"
+            "Action verbs (Built, Engineered, Scaled, Automated)",
+            "Numbers and metrics showing real results",
+            "Clear outcomes for each project or role"
         ]
     },
     {
         number: 4,
-        title: "Storyline (Narrative Signal)",
+        title: "Clear Role Focus",
         weight: "25% Weight",
         badgeColor: "bg-purple-50 text-purple-700 border-purple-200",
-        icon: "🎯",
-        summary: "Establishes a clear specialist identity (e.g. Backend, Systems, Full-Stack).",
+        summary: "Makes sure your experience and projects point toward a clear focus area (like Backend, Full-Stack, or Systems Engineering).",
         checklist: [
-            "Clear domain label (e.g., Backend Engineer)",
-            "Cohesive 'Red Thread' across projects & skills",
+            "Clear primary focus area (e.g., Backend Engineer)",
+            "Projects that support your main target role",
             "Eliminates off-target or irrelevant distractions"
         ]
     },
     {
         number: 5,
-        title: "The X-Factor (Agency & Growth)",
+        title: "Projects & Initiative",
         weight: "15% Weight",
         badgeColor: "bg-amber-50 text-amber-700 border-amber-200",
-        icon: "🚀",
-        summary: "Demonstrates high agency, technical trade-offs, and critical thinking.",
+        summary: "Highlights personal side projects and problem-solving beyond required classwork to show curiosity and initiative.",
         checklist: [
-            "Unassigned personal projects built out of curiosity",
-            "Engineering reasoning & trade-off explanations",
-            "Teaching, mentorship, and non-technical translation"
+            "Personal or unassigned side projects",
+            "Explanations of why you chose specific tools",
+            "Demonstrates technical curiosity"
         ]
     }
 ];
@@ -85,13 +79,13 @@ export function FrameworkGrid() {
         <section className="w-full max-w-6xl mx-auto py-16 px-4">
             <div className="text-center mb-12">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-[#002E5D] text-xs font-semibold uppercase tracking-wider mb-4">
-                    BYU CS Evaluation Rubric
+                    BYU CS Resume Review Guide
                 </div>
                 <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#002E5D] mb-4">
-                    The 5-Layered Analysis Framework
+                    The 5 Resume Checks
                 </h2>
                 <p className="text-slate-600 max-w-2xl mx-auto text-base">
-                    Every resume is systematically audited through 5 evaluation layers to identify weaknesses and strengthen technical hiring signals.
+                    Your resume is checked across 5 key areas to make sure it covers what technical recruiters look for.
                 </p>
             </div>
 
@@ -108,7 +102,7 @@ export function FrameworkGrid() {
                                 </span>
                             </div>
                             <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-[#0047BA] transition-colors">
-                                Layer {layer.number}: {layer.title}
+                                {layer.number}. {layer.title}
                             </h3>
                             <p className="text-sm text-slate-600 mb-6 leading-relaxed">
                                 {layer.summary}
@@ -133,16 +127,16 @@ export function FrameworkGrid() {
                 {/* Summary Card */}
                 <div className="bg-gradient-to-br from-blue-50 via-sky-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 flex flex-col justify-center text-center items-center shadow-md">
                     <h3 className="text-xl font-bold text-[#002E5D] mb-2">
-                        Instant 6-Second Audit
+                        Instant Resume Review
                     </h3>
                     <p className="text-sm text-slate-600 leading-relaxed mb-6">
-                        Get clear, actionable before &amp; after rewrites that turn weak bullet points into market-ready evidence.
+                        Get clear feedback and suggested rewrites to turn simple bullet points into strong technical accomplishments.
                     </p>
                     <a
                         href="#upload-zone"
                         className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-white bg-[#0047BA] hover:bg-blue-700 rounded-xl transition-all shadow-md shadow-blue-500/20"
                     >
-                        Audit Your Resume Now
+                        Review Your Resume Now
                     </a>
                 </div>
             </div>
