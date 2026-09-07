@@ -17,7 +17,7 @@ const LAYERS: Layer[] = [
         number: 1,
         title: "Foundation (ATS Integrity)",
         weight: "20% Weight",
-        badgeColor: "bg-blue-500/10 text-blue-400 border-blue-500/30",
+        badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
         icon: "🛡️",
         summary: "Ensures your resume passes machine gatekeepers and initial recruiter scans without layout glitches.",
         checklist: [
@@ -30,7 +30,7 @@ const LAYERS: Layer[] = [
         number: 2,
         title: "Core Spec (Technical Readiness)",
         weight: "15% Weight",
-        badgeColor: "bg-cyan-500/10 text-cyan-400 border-cyan-500/30",
+        badgeColor: "bg-cyan-50 text-cyan-700 border-cyan-200",
         icon: "⚡",
         summary: "Proves shelf-ready readiness for the 2026 software engineering market.",
         checklist: [
@@ -43,7 +43,7 @@ const LAYERS: Layer[] = [
         number: 3,
         title: "Impact Layer (Tone & Metrics)",
         weight: "25% Weight",
-        badgeColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
+        badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
         icon: "📈",
         summary: "Transforms bullets from 'duty descriptions' into quantified engineering accomplishments.",
         checklist: [
@@ -56,7 +56,7 @@ const LAYERS: Layer[] = [
         number: 4,
         title: "Storyline (Narrative Signal)",
         weight: "25% Weight",
-        badgeColor: "bg-purple-500/10 text-purple-400 border-purple-500/30",
+        badgeColor: "bg-purple-50 text-purple-700 border-purple-200",
         icon: "🎯",
         summary: "Establishes a crisp specialist identity in the recruiter's 6-second scan.",
         checklist: [
@@ -69,7 +69,7 @@ const LAYERS: Layer[] = [
         number: 5,
         title: "The X-Factor (Agency & Growth)",
         weight: "15% Weight",
-        badgeColor: "bg-amber-500/10 text-amber-400 border-amber-500/30",
+        badgeColor: "bg-amber-50 text-amber-700 border-amber-200",
         icon: "🚀",
         summary: "Demonstrates high agency, technical trade-offs, and critical thinking.",
         checklist: [
@@ -84,13 +84,13 @@ export function FrameworkGrid() {
     return (
         <section className="w-full max-w-6xl mx-auto py-16 px-4">
             <div className="text-center mb-12">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold uppercase tracking-wider mb-4">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-[#002E5D] text-xs font-semibold uppercase tracking-wider mb-4">
                     Research-Backed Evaluation
                 </div>
-                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-white mb-4">
+                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#002E5D] mb-4">
                     The 5-Layered Analysis Framework
                 </h2>
-                <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-base">
+                <p className="text-slate-600 max-w-2xl mx-auto text-base">
                     Every resume is systematically audited through 5 sequential layers to eliminate recruiter risk and maximize hireability.
                 </p>
             </div>
@@ -99,28 +99,27 @@ export function FrameworkGrid() {
                 {LAYERS.map((layer) => (
                     <div
                         key={layer.number}
-                        className="group relative bg-slate-900/60 border border-slate-800 rounded-2xl p-6 hover:border-blue-500/50 transition-all duration-300 shadow-xl flex flex-col justify-between"
+                        className="group relative bg-white border border-slate-200/80 rounded-2xl p-6 hover:border-blue-400 hover:shadow-xl transition-all duration-300 shadow-md flex flex-col justify-between"
                     >
                         <div>
-                            <div className="flex items-center justify-between mb-4">
-                                <span className="text-3xl">{layer.icon}</span>
+                            <div className="flex items-center justify-end mb-4">
                                 <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${layer.badgeColor}`}>
                                     {layer.weight}
                                 </span>
                             </div>
-                            <h3 className="text-lg font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">
+                            <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-[#0047BA] transition-colors">
                                 Layer {layer.number}: {layer.title}
                             </h3>
-                            <p className="text-sm text-slate-400 mb-6 leading-relaxed">
+                            <p className="text-sm text-slate-600 mb-6 leading-relaxed">
                                 {layer.summary}
                             </p>
                         </div>
 
-                        <div className="border-t border-slate-800/80 pt-4 mt-auto">
+                        <div className="border-t border-slate-100 pt-4 mt-auto">
                             <ul className="space-y-2">
                                 {layer.checklist.map((item, idx) => (
-                                    <li key={idx} className="flex items-start text-xs text-slate-300 gap-2">
-                                        <svg className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <li key={idx} className="flex items-start text-xs text-slate-700 gap-2">
+                                        <svg className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                         </svg>
                                         <span>{item}</span>
@@ -132,19 +131,16 @@ export function FrameworkGrid() {
                 ))}
 
                 {/* Summary Card */}
-                <div className="bg-gradient-to-br from-blue-900/40 via-slate-900 to-indigo-900/40 border border-blue-500/30 rounded-2xl p-6 flex flex-col justify-center text-center items-center shadow-xl">
-                    <div className="w-14 h-14 rounded-full bg-blue-500/20 border border-blue-400/40 flex items-center justify-center text-2xl mb-4 text-blue-400">
-                        ⚡
-                    </div>
-                    <h3 className="text-xl font-bold text-white mb-2">
+                <div className="bg-gradient-to-br from-blue-50 via-sky-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 flex flex-col justify-center text-center items-center shadow-md">
+                    <h3 className="text-xl font-bold text-[#002E5D] mb-2">
                         Instant 6-Second Audit
                     </h3>
-                    <p className="text-sm text-slate-300 leading-relaxed mb-6">
+                    <p className="text-sm text-slate-600 leading-relaxed mb-6">
                         Get clear, actionable before &amp; after rewrites that turn weak bullet points into market-ready evidence.
                     </p>
                     <a
                         href="#upload-zone"
-                        className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-xl transition-all shadow-lg shadow-blue-500/25"
+                        className="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-white bg-[#0047BA] hover:bg-blue-700 rounded-xl transition-all shadow-md shadow-blue-500/20"
                     >
                         Audit Your Resume Now
                     </a>

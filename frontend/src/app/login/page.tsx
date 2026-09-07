@@ -91,177 +91,49 @@ function LoginForm() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
             {/* Ambient glowing background shapes */}
-            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute bottom-10 right-10 w-80 h-80 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-100/50 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-10 right-10 w-80 h-80 bg-indigo-100/40 rounded-full blur-3xl pointer-events-none" />
 
             <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
                 <Link
                     href="/"
-                    className="inline-flex items-center text-xs font-semibold text-slate-400 hover:text-blue-400 mb-6 transition-colors gap-1.5"
+                    className="inline-flex items-center text-xs font-semibold text-slate-500 hover:text-[#0047BA] mb-6 transition-colors gap-1.5"
                 >
                     <ArrowLeft className="w-4 h-4" />
                     Back to Home
                 </Link>
 
                 <div className="text-center">
-                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-600/20 border border-blue-500/30 text-blue-400 font-black text-xl mb-3 shadow-lg shadow-blue-500/10">
+                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-50 border border-blue-200 text-[#002E5D] font-black text-xl mb-3 shadow-md shadow-blue-500/5">
                         RA
                     </div>
-                    <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                    <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#002E5D]">
                         Resume Analyzer
                     </h2>
-                    <p className="mt-2 text-sm text-slate-400">
+                    <p className="mt-2 text-sm text-slate-600">
                         {mode === 'signup' ? 'Create your account to start reviewing your resume' : 'Sign in to access your analysis history & advisor tools'}
                     </p>
                 </div>
             </div>
 
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
-                <div className="bg-slate-900/90 backdrop-blur-md py-8 px-6 shadow-2xl rounded-2xl border border-slate-800 sm:px-10">
+                <div className="bg-white py-8 px-6 shadow-xl rounded-2xl border border-slate-200/80 sm:px-10">
                     
-                    {/* Mode Toggle Tabs */}
-                    <div className="flex bg-slate-950/80 p-1.5 rounded-xl border border-slate-800 mb-6">
-                        <button
-                            type="button"
-                            onClick={() => { setMode('signup'); setError(''); }}
-                            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
-                                mode === 'signup' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'
-                            }`}
-                        >
-                            <UserPlus className="w-3.5 h-3.5" />
-                            Create Account
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => { setMode('signin'); setError(''); }}
-                            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
-                                mode === 'signin' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'
-                            }`}
-                        >
-                            <LogIn className="w-3.5 h-3.5" />
-                            Sign In
-                        </button>
-                    </div>
-
-                    <form className="space-y-4" onSubmit={handleSubmit}>
-                        {error && (
-                            <div className="bg-red-500/10 border border-red-500/30 p-3.5 rounded-xl flex items-start gap-3">
-                                <AlertCircle className="w-5 h-5 text-red-400 mt-0.5 shrink-0" />
-                                <p className="text-xs text-red-300">{error}</p>
-                            </div>
-                        )}
-
-                        {mode === 'signup' && (
-                            <div>
-                                <label className="block text-xs font-medium text-slate-300 mb-1.5">Full Name</label>
-                                <div className="relative rounded-xl shadow-sm">
-                                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                        <User className="h-4 w-4 text-slate-500" />
-                                    </div>
-                                    <input
-                                        type="text"
-                                        required
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                        className="block w-full pl-10 pr-3.5 py-2.5 bg-slate-950/80 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                        placeholder="Jane Doe"
-                                    />
-                                </div>
-                            </div>
-                        )}
-
-                        <div>
-                            <label className="block text-xs font-medium text-slate-300 mb-1.5">Email address</label>
-                            <div className="relative rounded-xl shadow-sm">
-                                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                    <Mail className="h-4 w-4 text-slate-500" />
-                                </div>
-                                <input
-                                    type="email"
-                                    required
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="block w-full pl-10 pr-3.5 py-2.5 bg-slate-950/80 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                    placeholder="you@byu.edu"
-                                />
-                            </div>
-                        </div>
-
-                        <div>
-                            <label className="block text-xs font-medium text-slate-300 mb-1.5">Password</label>
-                            <div className="relative rounded-xl shadow-sm">
-                                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                    <Lock className="h-4 w-4 text-slate-500" />
-                                </div>
-                                <input
-                                    type="password"
-                                    required
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="block w-full pl-10 pr-3.5 py-2.5 bg-slate-950/80 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                    placeholder="••••••••"
-                                />
-                            </div>
-                        </div>
-
-                        {mode === 'signup' && (
-                            <div>
-                                <label className="block text-xs font-medium text-slate-300 mb-1.5">Confirm Password</label>
-                                <div className="relative rounded-xl shadow-sm">
-                                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                        <Lock className="h-4 w-4 text-slate-500" />
-                                    </div>
-                                    <input
-                                        type="password"
-                                        required
-                                        value={confirmPassword}
-                                        onChange={(e) => setConfirmPassword(e.target.value)}
-                                        className="block w-full pl-10 pr-3.5 py-2.5 bg-slate-950/80 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                        placeholder="••••••••"
-                                    />
-                                </div>
-                            </div>
-                        )}
-
-                        <button
-                            type="submit"
-                            disabled={isLoading}
-                            className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-xl shadow-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-2"
-                        >
-                            {isLoading ? (
-                                <Loader2 className="w-5 h-5 animate-spin" />
-                            ) : mode === 'signup' ? (
-                                "Create Account"
-                            ) : (
-                                "Sign In"
-                            )}
-                        </button>
-                    </form>
-
-                    <div className="mt-6">
-                        <div className="relative">
-                            <div className="absolute inset-0 flex items-center">
-                                <div className="w-full border-t border-slate-800" />
-                            </div>
-                            <div className="relative flex justify-center text-xs">
-                                <span className="px-3 bg-slate-900 text-slate-400 font-medium">Or continue with</span>
-                            </div>
-                        </div>
-
-                        <p className="text-[11px] text-center text-slate-400 mt-3 mb-4">
-                            First time here? One-click sign-in with Google or GitHub automatically creates your account.
+                    {/* Top: Default One-Click Social OAuth Options */}
+                    <div className="space-y-3 mb-6">
+                        <p className="text-xs font-semibold text-center text-slate-600">
+                            Fastest One-Click Sign-In
                         </p>
-
                         <div className="grid grid-cols-2 gap-3">
                             <button
                                 onClick={() => handleOAuth("google")}
                                 disabled={oauthLoading !== null}
-                                className="w-full flex justify-center items-center py-2.5 px-4 border border-slate-800 rounded-xl shadow-sm bg-slate-950 hover:bg-slate-800 text-xs font-semibold text-slate-200 disabled:opacity-50 transition-all"
+                                className="w-full flex justify-center items-center py-2.5 px-4 border border-slate-200 rounded-xl shadow-sm bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 disabled:opacity-50 transition-all group"
                             >
                                 {oauthLoading === "google" ? (
-                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                    <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
                                 ) : (
                                     <>
                                         <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24">
@@ -278,10 +150,10 @@ function LoginForm() {
                             <button
                                 onClick={() => handleOAuth("github")}
                                 disabled={oauthLoading !== null}
-                                className="w-full flex justify-center items-center py-2.5 px-4 border border-slate-800 rounded-xl shadow-sm bg-slate-950 hover:bg-slate-800 text-xs font-semibold text-slate-200 disabled:opacity-50 transition-all"
+                                className="w-full flex justify-center items-center py-2.5 px-4 border border-slate-800 rounded-xl shadow-sm bg-slate-900 hover:bg-slate-800 text-xs font-semibold text-white disabled:opacity-50 transition-all"
                             >
                                 {oauthLoading === "github" ? (
-                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                    <Loader2 className="w-4 h-4 animate-spin text-white" />
                                 ) : (
                                     <>
                                         <svg className="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
@@ -293,6 +165,135 @@ function LoginForm() {
                             </button>
                         </div>
                     </div>
+
+                    {/* Divider */}
+                    <div className="relative mb-6">
+                        <div className="absolute inset-0 flex items-center">
+                            <div className="w-full border-t border-slate-200" />
+                        </div>
+                        <div className="relative flex justify-center text-xs">
+                            <span className="px-3 bg-white text-slate-500 font-medium">Or continue with email</span>
+                        </div>
+                    </div>
+
+                    {/* Mode Toggle Tabs */}
+                    <div className="flex bg-slate-100 p-1.5 rounded-xl border border-slate-200 mb-6">
+                        <button
+                            type="button"
+                            onClick={() => { setMode('signup'); setError(''); }}
+                            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                                mode === 'signup' ? 'bg-[#0047BA] text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                            }`}
+                        >
+                            <UserPlus className="w-3.5 h-3.5" />
+                            Create Account
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => { setMode('signin'); setError(''); }}
+                            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                                mode === 'signin' ? 'bg-[#0047BA] text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
+                            }`}
+                        >
+                            <LogIn className="w-3.5 h-3.5" />
+                            Sign In
+                        </button>
+                    </div>
+
+                    <form className="space-y-4" onSubmit={handleSubmit}>
+                        {error && (
+                            <div className="bg-red-50 border border-red-200 p-3.5 rounded-xl flex items-start gap-3">
+                                <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 shrink-0" />
+                                <p className="text-xs text-red-700">{error}</p>
+                            </div>
+                        )}
+
+                        {mode === 'signup' && (
+                            <div>
+                                <label className="block text-xs font-medium text-slate-700 mb-1.5">Full Name</label>
+                                <div className="relative rounded-xl shadow-sm">
+                                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                        <User className="h-4 w-4 text-slate-400" />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        className="block w-full pl-10 pr-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                                        placeholder="Jane Doe"
+                                    />
+                                </div>
+                            </div>
+                        )}
+
+                        <div>
+                            <label className="block text-xs font-medium text-slate-700 mb-1.5">Email address</label>
+                            <div className="relative rounded-xl shadow-sm">
+                                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                    <Mail className="h-4 w-4 text-slate-400" />
+                                </div>
+                                <input
+                                    type="email"
+                                    required
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="block w-full pl-10 pr-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                                    placeholder="you@byu.edu"
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-medium text-slate-700 mb-1.5">Password</label>
+                            <div className="relative rounded-xl shadow-sm">
+                                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                    <Lock className="h-4 w-4 text-slate-400" />
+                                </div>
+                                <input
+                                    type="password"
+                                    required
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="block w-full pl-10 pr-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                                    placeholder="••••••••"
+                                />
+                            </div>
+                        </div>
+
+                        {mode === 'signup' && (
+                            <div>
+                                <label className="block text-xs font-medium text-slate-700 mb-1.5">Confirm Password</label>
+                                <div className="relative rounded-xl shadow-sm">
+                                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                        <Lock className="h-4 w-4 text-slate-400" />
+                                    </div>
+                                    <input
+                                        type="password"
+                                        required
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        className="block w-full pl-10 pr-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                                        placeholder="••••••••"
+                                    />
+                                </div>
+                            </div>
+                        )}
+
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-semibold text-white bg-[#0047BA] hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-2"
+                        >
+                            {isLoading ? (
+                                <Loader2 className="w-5 h-5 animate-spin" />
+                            ) : mode === 'signup' ? (
+                                "Create Account"
+                            ) : (
+                                "Sign In"
+                            )}
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

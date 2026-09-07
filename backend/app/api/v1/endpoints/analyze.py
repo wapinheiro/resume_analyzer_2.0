@@ -94,42 +94,23 @@ async def analyze_resume(
             # Initialize Gemini
             gemini = services.GeminiService()
             
-            if gemini.model:
-                # Inject market reference into prompt
-                analysis_data = await gemini.analyze_resume(text, market_ref_str=market_ref_str)
-                
-                # Create Analysis Record
-                db_analysis = models.Analysis(
-                    resume_id=db_resume.id,
-                    rms_score=analysis_data.get("rms_score", 0),
-                    cpi=analysis_data.get("cpi", "Unknown"),
-                    confidence_score=analysis_data.get("confidence_score"),
-                    confidence_reasoning=analysis_data.get("confidence_reasoning"),
-                    predicted_grad_date=analysis_data.get("predicted_grad_date"),
-                    major=analysis_data.get("major"),
-                    skills_detected=analysis_data.get("skills_detected", []),
-                    skills_gaps=analysis_data.get("skills_gaps", []),
-                    top_risks=analysis_data.get("top_risks", []),
-                    raw_json=analysis_data
-                )
-            else:
-                # Mock Fallback
-                yield json.dumps({"type": "log", "message": "Using Mock AI Service..."}) + "\n"
-                mock_layers = {
-                    "format": {"score": 8, "status": "good", "issues": []},
-                    "impact": {"score": 4, "status": "critical", "issues": [{"type": "Weak Verb", "fix": "Use 'Architected'"}]}
-                }
-                db_analysis = models.Analysis(
-                    resume_id=db_resume.id,
-                    rms_score=62,
-                    cpi="Full Stack Developer (Mock)",
-                    predicted_grad_date="May 2026",
-                    major="Computer Science",
-                    skills_detected=["Python", "React", "FastAPI"],
-                    skills_gaps=["RAG", "Kubernetes"],
-                    top_risks=[{"type": "Weak Verbs", "issue": "Used 'Helped' instead of 'Architected'"}, {"type": "Missing Metrics", "issue": "No quantifiable impact"}],
-                    raw_json={"layers": mock_layers}
-                )
+            # Inject market reference into prompt
+            analysis_data = await gemini.analyze_resume(text, market_ref_str=market_ref_str)
+            
+            # Create Analysis Record
+            db_analysis = models.Analysis(
+                resume_id=db_resume.id,
+                rms_score=analysis_data.get("rms_score", 0),
+                cpi=analysis_data.get("cpi", "Unknown"),
+                confidence_score=analysis_data.get("confidence_score"),
+                confidence_reasoning=analysis_data.get("confidence_reasoning"),
+                predicted_grad_date=analysis_data.get("predicted_grad_date"),
+                major=analysis_data.get("major"),
+                skills_detected=analysis_data.get("skills_detected", []),
+                skills_gaps=analysis_data.get("skills_gaps", []),
+                top_risks=analysis_data.get("top_risks", []),
+                raw_json=analysis_data
+            )
 
             # 5. Finalize
             db.add(db_analysis)

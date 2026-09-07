@@ -25,7 +25,9 @@ export function Navbar() {
                         </Link>
                     </div>
                     <div className="hidden md:block">
-                        <div className="ml-10 flex items-center space-x-4">
+                            <Link href="/how-it-works" className="text-white/80 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                                How It Works
+                            </Link>
                             {role === 'admin' && (
                                 <Link href="/admin" className="text-white hover:text-blue-200 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                                     Admin Panel
@@ -36,7 +38,7 @@ export function Navbar() {
                                     Advisor Dashboard
                                 </Link>
                             )}
-                            {hasAnalysis && role !== 'admin' && role !== 'advisor' && (
+                            {session?.user && hasAnalysis && role !== 'admin' && role !== 'advisor' && (
                                 <Link href="/dashboard" className="text-white/80 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
                                     Dashboard
                                 </Link>
@@ -45,7 +47,6 @@ export function Navbar() {
                         </div>
                     </div>
                 </div>
-            </div>
         </nav>
     );
 }
