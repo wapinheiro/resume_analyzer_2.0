@@ -12,7 +12,7 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$PROJECT_ROOT"
 
 # --- Test 1: OAuth Configuration Audit ---
-echo "--- [1/4] Auditing OAuth Environment & Deployment Manifests ---"
+echo "--- [1/5] Auditing OAuth Environment & Deployment Manifests ---"
 
 CLOUDBUILD_FILE="$PROJECT_ROOT/frontend/cloudbuild.yaml"
 if ! grep -q "GOOGLE_CLIENT_ID=" "$CLOUDBUILD_FILE"; then
@@ -36,7 +36,7 @@ fi
 echo "✅ OAuth Manifest Audit Passed."
 
 # --- Test 2: NextAuth Provider Structure Validation ---
-echo "--- [2/4] Validating NextAuth Provider Config ---"
+echo "--- [2/5] Validating NextAuth Provider Config ---"
 
 node -e '
 const fs = require("fs");
@@ -52,14 +52,20 @@ if (!route.includes("process.env.GOOGLE_CLIENT_ID")) {
 console.log("✅ NextAuth GoogleProvider configuration verified.");
 '
 
-# --- Test 3: Backend Auth API Integration Tests ---
-echo "--- [3/4] Running Backend User Auth Sync Tests ---"
+# --- Test 3: Backend User Sync Tests ---
+echo "--- [3/5] Running Backend User Auth Sync Tests ---"
 venv/bin/python3 -m pytest backend/tests/api/test_users.py -v
 
 echo "✅ Backend User Auth Sync Tests Passed."
 
-# --- Test 4: Frontend Next.js Build Verification ---
-echo "--- [4/4] Verifying Frontend Production Build ---"
+# --- Test 4: Backend JWT Token Verification Tests ---
+echo "--- [4/5] Running Backend JWT Token Verification Tests ---"
+venv/bin/python3 -m pytest backend/tests/api/test_jwt_token_verification.py -v
+
+echo "✅ Backend JWT Token Verification Tests Passed."
+
+# --- Test 5: Frontend Next.js Build Verification ---
+echo "--- [5/5] Verifying Frontend Production Build ---"
 cd "$PROJECT_ROOT/frontend"
 npm run build
 cd "$PROJECT_ROOT"
