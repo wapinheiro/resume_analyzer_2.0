@@ -112,7 +112,7 @@ export default function Dashboard() {
             <Navbar />
 
             <div className="pt-24 pb-12 px-6 max-w-7xl mx-auto">
-                <h1 className="text-3xl font-bold mb-8">
+                <h1 className="text-3xl font-bold mb-8 text-[#002E5D]">
                     {candidateName ? `Welcome back, ${candidateName.split(' ')[0]}` : 'Student Dashboard'}
                 </h1>
 

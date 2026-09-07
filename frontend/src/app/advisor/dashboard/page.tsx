@@ -163,7 +163,7 @@ export default function AdvisorDashboard() {
 
             <div className="pt-24 pb-12 px-6 max-w-7xl mx-auto">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                    <h1 className="text-3xl font-bold">Career Advisor Dashboard</h1>
+                    <h1 className="text-3xl font-bold text-[#002E5D]">Career Advisor Dashboard</h1>
                     <Link 
                         href="/advisor/market_skills" 
                         className="flex items-center gap-2 bg-[#0047BA] text-white px-6 py-2 rounded-xl hover:bg-[#002E5D] transition-all shadow-md active:scale-95"
@@ -236,7 +236,7 @@ export default function AdvisorDashboard() {
                         </div>
                     )}
                     <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                        <h2 className="text-xl font-semibold">Student Roster</h2>
+                        <h2 className="text-xl font-semibold text-[#002E5D]">Student Roster</h2>
                         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                             <select
                                 className="border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-black focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm w-full sm:w-auto"
