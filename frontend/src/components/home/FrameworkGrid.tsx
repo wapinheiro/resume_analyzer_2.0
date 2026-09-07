@@ -32,10 +32,10 @@ const LAYERS: Layer[] = [
         weight: "15% Weight",
         badgeColor: "bg-cyan-50 text-cyan-700 border-cyan-200",
         icon: "⚡",
-        summary: "Proves shelf-ready readiness for the 2026 software engineering market.",
+        summary: "Evaluates technical skills against software engineering hiring standards.",
         checklist: [
             "Skills categorized (Languages, Frameworks, Cloud, DBs)",
-            "High-signal tech (AI/RAG, AWS, Docker, Pytest)",
+            "High-demand technical stack (AWS, Docker, Pytest, SQL)",
             "Eliminates legacy noise & soft-skill fillers"
         ]
     },
@@ -58,11 +58,11 @@ const LAYERS: Layer[] = [
         weight: "25% Weight",
         badgeColor: "bg-purple-50 text-purple-700 border-purple-200",
         icon: "🎯",
-        summary: "Establishes a crisp specialist identity in the recruiter's 6-second scan.",
+        summary: "Establishes a clear specialist identity (e.g. Backend, Systems, Full-Stack).",
         checklist: [
-            "Instant 6-second label (e.g., Backend Engineer)",
+            "Clear domain label (e.g., Backend Engineer)",
             "Cohesive 'Red Thread' across projects & skills",
-            "Eliminates off-target, high-cognitive-load noise"
+            "Eliminates off-target or irrelevant distractions"
         ]
     },
     {
@@ -85,13 +85,13 @@ export function FrameworkGrid() {
         <section className="w-full max-w-6xl mx-auto py-16 px-4">
             <div className="text-center mb-12">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-[#002E5D] text-xs font-semibold uppercase tracking-wider mb-4">
-                    Research-Backed Evaluation
+                    BYU CS Evaluation Rubric
                 </div>
                 <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#002E5D] mb-4">
                     The 5-Layered Analysis Framework
                 </h2>
                 <p className="text-slate-600 max-w-2xl mx-auto text-base">
-                    Every resume is systematically audited through 5 sequential layers to eliminate recruiter risk and maximize hireability.
+                    Every resume is systematically audited through 5 evaluation layers to identify weaknesses and strengthen technical hiring signals.
                 </p>
             </div>
 

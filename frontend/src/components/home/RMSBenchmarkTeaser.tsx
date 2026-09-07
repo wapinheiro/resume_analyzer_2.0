@@ -33,7 +33,7 @@ export function RMSBenchmarkTeaser() {
                             </div>
                             <h3 className="text-lg font-bold text-slate-900 mb-2">Market Ready Engineer</h3>
                             <p className="text-xs text-slate-600 leading-relaxed mb-4">
-                                Flawless ATS compliance, 100% CAR formula bullets, clear specialist narrative, and proven 2026 tech stack.
+                                Flawless ATS compliance, 100% CAR formula bullets, clear specialist narrative, and categorized technical stack.
                             </p>
                         </div>
                         <div className="text-xs text-emerald-700 font-semibold flex items-center gap-1.5 pt-3 border-t border-emerald-200">

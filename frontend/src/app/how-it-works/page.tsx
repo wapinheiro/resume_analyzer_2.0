@@ -21,14 +21,14 @@ export default function HowItWorksPage() {
 
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-[#002E5D] text-xs font-semibold uppercase tracking-wider mb-4 shadow-sm">
                     <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
-                    <span>Research-Backed Evaluation Methodology</span>
+                    <span>BYU Computer Science Evaluation Rubric</span>
                 </div>
 
                 <h1 className="text-3xl sm:text-5xl font-extrabold text-[#002E5D] mb-4 tracking-tight">
                     How Resume Analyzer Evaluates Your Resume
                 </h1>
                 <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-                    Designed specifically for the 2026 Computer Science job market, our engine audits your resume using 5 sequential layers, quantitative risk scoring, and recruiter cognitive benchmarks.
+                    Built for BYU Computer Science students, this tool audits your resume using 5 structured review layers, quantitative root-mean-square (RMS) risk scoring, and technical resume standards.
                 </p>
             </div>
 
@@ -69,7 +69,7 @@ export default function HowItWorksPage() {
                     </div>
 
                     <p className="text-slate-600 mb-8 leading-relaxed">
-                        Technical recruiters audit resumes in a predictable 5-step pass. Our system simulates this exact recruiter decision-making loop:
+                        Resumes are evaluated through a structured 5-step review process. The evaluation pipeline follows this systematic rubric:
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -107,7 +107,7 @@ export default function HowItWorksPage() {
                             </div>
                             <h3 className="text-lg font-bold text-slate-900 mb-2">Layer 2: Core Spec (Technical Readiness)</h3>
                             <p className="text-sm text-slate-600 mb-4 leading-relaxed">
-                                Evaluates technical skill categories against 2026 CS market signals (Languages, Frameworks, Cloud, Databases), flagging missing high-demand tools.
+                                Evaluates technical skill categories (Languages, Frameworks, Cloud, Databases) against standard CS domain expectations, flagging missing technical skills.
                             </p>
                             <ul className="space-y-1.5 text-xs text-slate-700">
                                 <li className="flex items-center gap-2">
@@ -155,7 +155,7 @@ export default function HowItWorksPage() {
                             </div>
                             <h3 className="text-lg font-bold text-slate-900 mb-2">Layer 4: Storyline (Narrative Signal)</h3>
                             <p className="text-sm text-slate-600 mb-4 leading-relaxed">
-                                Checks whether a recruiter can immediately bucket your candidate profile into a clear specialist identity within a 6-second glance.
+                                Evaluates how clearly your candidate profile communicates a specific technical specialization (e.g. Backend, Systems, Full-Stack).
                             </p>
                             <ul className="space-y-1.5 text-xs text-slate-700">
                                 <li className="flex items-center gap-2">
@@ -221,7 +221,7 @@ export default function HowItWorksPage() {
                             </span>
                             <h4 className="text-sm font-bold text-slate-900 mb-2">Market Ready Engineer</h4>
                             <p className="text-xs text-slate-600 leading-relaxed">
-                                Flawless ATS compliance, 100% CAR formula bullets, clear specialist narrative, and proven 2026 tech stack. Yields highest recruiter response rates.
+                                Flawless ATS compliance, 100% CAR formula bullets, clear specialist narrative, and categorized technical stack.
                             </p>
                         </div>
 
