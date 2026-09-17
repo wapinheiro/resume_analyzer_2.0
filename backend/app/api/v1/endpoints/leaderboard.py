@@ -10,20 +10,6 @@ from app.models.analysis import Analysis
 
 router = APIRouter()
 
-# Default High Score Entries for Initial Launch / Padding
-DEFAULT_MOCK_LEADERBOARD = [
-    {"rank": 1, "score": 99, "name": "Wagner Pinheiro", "major": "Computer Science", "badge": "MARKET READY", "year": "Senior"},
-    {"rank": 2, "score": 97, "name": "Ryan Richards", "major": "Computer Science", "badge": "MARKET READY", "year": "Junior"},
-    {"rank": 3, "score": 96, "name": "James Teuscher", "major": "Cybersecurity", "badge": "MARKET READY", "year": "Senior"},
-    {"rank": 4, "score": 95, "name": "Sarah Kim", "major": "Data Science", "badge": "INTERN READY", "year": "Sophomore"},
-    {"rank": 5, "score": 94, "name": "Tyler Bennett", "major": "Computer Science", "badge": "INTERN READY", "year": "Senior"},
-    {"rank": 6, "score": 93, "name": "Michael Miller", "major": "Computer Science", "badge": "INTERN READY", "year": "Junior"},
-    {"rank": 7, "score": 92, "name": "Will Johnson", "major": "Cybersecurity", "badge": "INTERN READY", "year": "Senior"},
-    {"rank": 8, "score": 91, "name": "Steven Vance", "major": "Data Science", "badge": "INTERN READY", "year": "Freshman"},
-    {"rank": 9, "score": 90, "name": "William Hostettler", "major": "Computer Science", "badge": "INTERN READY", "year": "Senior"},
-    {"rank": 10, "score": 89, "name": "Taylor Reynolds", "major": "Computer Science", "badge": "TOURIST", "year": "Junior"},
-]
-
 def format_badge(rms_score: int) -> str:
     if rms_score >= 90:
         return "MARKET READY"
@@ -103,27 +89,9 @@ def get_leaderboard(
     except Exception as e:
         print(f"Error querying leaderboard DB: {e}")
 
-    # If DB rows are fewer than limit, supplement with fallback high score entries
-    if len(leaderboard_results) < limit:
-        filtered_defaults = [
-            d for d in DEFAULT_MOCK_LEADERBOARD
-            if major == "ALL" or
-               (major == "CS" and d["major"] == "Computer Science") or
-               (major == "CYBER" and d["major"] == "Cybersecurity") or
-               (major == "DS" and d["major"] == "Data Science")
-        ]
-        
-        existing_names = {r["name"] for r in leaderboard_results}
-        for d in filtered_defaults:
-            if len(leaderboard_results) >= limit:
-                break
-            if d["name"] not in existing_names:
-                d_copy = dict(d)
-                d_copy["rank"] = len(leaderboard_results) + 1
-                leaderboard_results.append(d_copy)
-
     return {
         "major_filter": major,
         "total_returned": len(leaderboard_results),
         "leaderboard": leaderboard_results
     }
+

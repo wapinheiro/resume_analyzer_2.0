@@ -20,19 +20,6 @@ interface LeaderboardEntry {
     year: string;
 }
 
-const DEFAULT_LEADERBOARD: LeaderboardEntry[] = [
-    { rank: 1, score: 99, name: 'Wagner Pinheiro', major: 'Computer Science', badge: 'MARKET READY', year: 'Senior' },
-    { rank: 2, score: 97, name: 'Ryan Richards', major: 'Computer Science', badge: 'MARKET READY', year: 'Junior' },
-    { rank: 3, score: 96, name: 'James Teuscher', major: 'Cybersecurity', badge: 'MARKET READY', year: 'Senior' },
-    { rank: 4, score: 95, name: 'Sarah Kim', major: 'Data Science', badge: 'INTERN READY', year: 'Sophomore' },
-    { rank: 5, score: 94, name: 'Tyler Bennett', major: 'Computer Science', badge: 'INTERN READY', year: 'Senior' },
-    { rank: 6, score: 93, name: 'Michael Miller', major: 'Computer Science', badge: 'INTERN READY', year: 'Junior' },
-    { rank: 7, score: 92, name: 'Will Johnson', major: 'Cybersecurity', badge: 'INTERN READY', year: 'Senior' },
-    { rank: 8, score: 91, name: 'Steven Vance', major: 'Data Science', badge: 'INTERN READY', year: 'Freshman' },
-    { rank: 9, score: 90, name: 'William Hostettler', major: 'Computer Science', badge: 'INTERN READY', year: 'Senior' },
-    { rank: 10, score: 89, name: 'Taylor Reynolds', major: 'Computer Science', badge: 'TOURIST', year: 'Junior' },
-];
-
 interface LeaderboardProps {
     onActionClick?: () => void;
 }
@@ -40,7 +27,7 @@ interface LeaderboardProps {
 export function Leaderboard({ onActionClick }: LeaderboardProps) {
     const [selectedMajor, setSelectedMajor] = useState<string>('ALL');
     const [isCRTMode, setIsCRTMode] = useState<boolean>(true);
-    const [scores, setScores] = useState<LeaderboardEntry[]>(DEFAULT_LEADERBOARD);
+    const [scores, setScores] = useState<LeaderboardEntry[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
@@ -49,18 +36,10 @@ export function Leaderboard({ onActionClick }: LeaderboardProps) {
             setIsLoading(true);
             const data = await fetchLeaderboard(selectedMajor);
             if (isMounted) {
-                if (data && data.leaderboard && data.leaderboard.length > 0) {
+                if (data && data.leaderboard) {
                     setScores(data.leaderboard);
                 } else {
-                    // Fallback filtering on default list if server has no entries for major
-                    const filtered = DEFAULT_LEADERBOARD.filter(entry => {
-                        if (selectedMajor === 'ALL') return true;
-                        if (selectedMajor === 'CS') return entry.major === 'Computer Science';
-                        if (selectedMajor === 'CYBER') return entry.major === 'Cybersecurity';
-                        if (selectedMajor === 'DS') return entry.major === 'Data Science';
-                        return true;
-                    }).map((item, idx) => ({ ...item, rank: idx + 1 }));
-                    setScores(filtered);
+                    setScores([]);
                 }
                 setIsLoading(false);
             }
@@ -198,33 +177,42 @@ export function Leaderboard({ onActionClick }: LeaderboardProps) {
                             </tr>
                         </thead>
                         <tbody>
-                            {scores.map((entry) => (
-                                <tr
-                                    key={`${entry.rank}-${entry.name}`}
-                                    className={`border-b border-blue-950/40 hover:bg-blue-900/30 transition-colors ${getRankColor(entry.rank)}`}
-                                >
-                                    <td className="py-1.5 px-2.5 font-bold">
-                                        {entry.rank === 1 ? '🥇 1ST' : entry.rank === 2 ? '🥈 2ND' : entry.rank === 3 ? '🥉 3RD' : `${entry.rank}TH`}
-                                    </td>
-                                    <td className="py-1.5 px-2.5 font-bold text-amber-300">
-                                        {entry.score}/100
-                                    </td>
-                                    <td className="py-1.5 px-2.5 font-semibold">
-                                        {entry.name}
-                                    </td>
-                                    <td className="py-1.5 px-2.5 text-slate-300 text-xs">
-                                        {entry.major}
-                                    </td>
-                                    <td className="py-1.5 px-2.5">
-                                        <span className={`px-2 py-0.5 rounded text-[10px] border font-sans font-semibold tracking-wide ${getBadgeStyle(entry.badge)}`}>
-                                            {entry.badge}
-                                        </span>
-                                    </td>
-                                    <td className="py-1.5 px-2.5 text-right text-slate-400 text-xs">
-                                        {entry.year}
+                            {scores.length === 0 ? (
+                                <tr>
+                                    <td colSpan={6} className="py-8 text-center text-slate-400 font-mono">
+                                        <p className="text-amber-400 text-sm font-bold mb-1">🎮 NO LEADERBOARD ENTRIES YET</p>
+                                        <p className="text-xs text-slate-400">Be the first BYU student to audit your resume and claim rank #1!</p>
                                     </td>
                                 </tr>
-                            ))}
+                            ) : (
+                                scores.map((entry) => (
+                                    <tr
+                                        key={`${entry.rank}-${entry.name}`}
+                                        className={`border-b border-blue-950/40 hover:bg-blue-900/30 transition-colors ${getRankColor(entry.rank)}`}
+                                    >
+                                        <td className="py-1.5 px-2.5 font-bold">
+                                            {entry.rank === 1 ? '🥇 1ST' : entry.rank === 2 ? '🥈 2ND' : entry.rank === 3 ? '🥉 3RD' : `${entry.rank}TH`}
+                                        </td>
+                                        <td className="py-1.5 px-2.5 font-bold text-amber-300">
+                                            {entry.score}/100
+                                        </td>
+                                        <td className="py-1.5 px-2.5 font-semibold">
+                                            {entry.name}
+                                        </td>
+                                        <td className="py-1.5 px-2.5 text-slate-300 text-xs">
+                                            {entry.major}
+                                        </td>
+                                        <td className="py-1.5 px-2.5">
+                                            <span className={`px-2 py-0.5 rounded text-[10px] border font-sans font-semibold tracking-wide ${getBadgeStyle(entry.badge)}`}>
+                                                {entry.badge}
+                                            </span>
+                                        </td>
+                                        <td className="py-1.5 px-2.5 text-right text-slate-400 text-xs">
+                                            {entry.year}
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
                     </table>
                 </div>
