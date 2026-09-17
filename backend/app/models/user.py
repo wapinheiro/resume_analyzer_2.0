@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 import uuid
 
-from sqlalchemy import DateTime, String, Integer
+from sqlalchemy import DateTime, String, Integer, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -19,8 +19,10 @@ class User(Base):
     major: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     graduation_year: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     student_status: Mapped[str] = mapped_column(String, default="active_student")
+    leaderboard_opt_in: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     last_login: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
     
     # Relationships
     resumes = relationship("Resume", back_populates="user")
+

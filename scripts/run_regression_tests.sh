@@ -25,6 +25,12 @@ if ! grep -q "GOOGLE_CLIENT_SECRET=" "$CLOUDBUILD_FILE"; then
     exit 1
 fi
 
+BACKEND_CLOUDBUILD_FILE="$PROJECT_ROOT/backend/cloudbuild.yaml"
+if ! grep -q "NEXTAUTH_SECRET=" "$BACKEND_CLOUDBUILD_FILE"; then
+    echo "❌ REGRESSION FAIL: NEXTAUTH_SECRET secret mapping is missing from backend/cloudbuild.yaml!"
+    exit 1
+fi
+
 ENV_LOCAL="$PROJECT_ROOT/frontend/.env.local"
 if [ -f "$ENV_LOCAL" ]; then
     if ! grep -q "GOOGLE_CLIENT_ID=" "$ENV_LOCAL" || [ -z "$(grep GOOGLE_CLIENT_ID= "$ENV_LOCAL" | cut -d= -f2)" ]; then
@@ -33,7 +39,7 @@ if [ -f "$ENV_LOCAL" ]; then
     fi
 fi
 
-echo "✅ OAuth Manifest Audit Passed."
+echo "✅ OAuth & Secret Manifest Audit Passed."
 
 # --- Test 2: NextAuth Provider Structure Validation ---
 echo "--- [2/5] Validating NextAuth Provider Config ---"

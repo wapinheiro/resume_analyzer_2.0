@@ -8,6 +8,8 @@ import { useSession } from 'next-auth/react';
 import { analyzeResume } from '@/services/api';
 import { Search, Hash, User, Sparkles, Calendar, Lock, LogIn, ArrowRight } from 'lucide-react';
 
+import { Leaderboard } from '@/components/ui/Leaderboard';
+
 export default function Home() {
     const { data: session } = useSession();
     const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -76,22 +78,25 @@ export default function Home() {
         <main className="min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white">
             <Navbar />
 
-            {/* Hero Section */}
-            <div className="relative isolate pt-12 pb-16 overflow-hidden">
+            {/* Hero Section - Leaderboard First */}
+            <div className="relative isolate pt-8 pb-16 overflow-hidden">
                 {/* Subtle light background glow */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-tr from-blue-100/60 via-sky-50/40 to-indigo-100/60 blur-3xl pointer-events-none -z-10" />
 
-                <div className="mx-auto max-w-4xl px-6 pt-12 sm:pt-16 pb-12 text-center flex flex-col items-center">
+                <div className="mx-auto max-w-5xl px-4 sm:px-6 pt-6 sm:pt-10 pb-8 text-center flex flex-col items-center">
 
-                    {/* Top Pill */}
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200/80 text-[#002E5D] text-xs font-semibold uppercase tracking-wider mb-6 shadow-sm">
-                        <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-                        <span>BYU Computer Science • A Thread tool</span>
+                    {/* 1. TOP HERO: LEADERBOARD COMPONENT */}
+                    <div className="w-full mb-8">
+                        <Leaderboard onActionClick={() => {
+                            const uploadEl = document.getElementById('upload-zone');
+                            if (uploadEl) uploadEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }} />
                     </div>
 
-                    <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-[#002E5D] mb-6 leading-tight max-w-3xl">
-                        Resume Analyzer
+                    <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-[#002E5D] mb-4 leading-tight max-w-3xl">
+                        BYU CS Resume Analyzer
                     </h1>
+
 
                     <div className="text-center max-w-xl mb-10">
                         <p className="text-base sm:text-lg font-medium text-slate-700 mb-4">

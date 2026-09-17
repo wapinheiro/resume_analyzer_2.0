@@ -36,7 +36,7 @@ steps:
       - '--min-instances=0'
       - '--max-instances=10'
       - '--set-env-vars=GCS_BUCKET_NAME=byu-resumes-bucket,BACKEND_CORS_ORIGINS=["https://resume-analyzer-frontend-87294979859.us-central1.run.app"]'
-      - '--set-secrets=GOOGLE_API_KEY=GEMINI_API_KEY:latest,DATABASE_URL=DATABASE_URL:latest'
+      - '--set-secrets=GOOGLE_API_KEY=GEMINI_API_KEY:latest,DATABASE_URL=DATABASE_URL:latest,NEXTAUTH_SECRET=NEXTAUTH_SECRET:latest'
       - '--add-cloudsql-instances=gen-lang-client-0141528519:us-central1:resume-analyzer-db'
 
 images:

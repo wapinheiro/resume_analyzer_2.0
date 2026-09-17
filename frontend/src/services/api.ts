@@ -78,3 +78,17 @@ export async function analyzeResume(file: File, token?: string, onProgress?: (ms
 
     return resultData;
 }
+
+export async function fetchLeaderboard(major: string = 'ALL') {
+    try {
+        const response = await fetch(`${API_URL}/leaderboard?major=${major}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch leaderboard');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+        return null;
+    }
+}
+
