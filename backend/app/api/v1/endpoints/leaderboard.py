@@ -107,12 +107,18 @@ def get_leaderboard(
 
         db_rows = query.order_by(latest_score_subquery.c.latest_rms.desc(), User.name.asc()).limit(limit).all()
 
+        current_rank = 1
         for idx, (user, latest_rms, latest_predicted_grad_date) in enumerate(db_rows, start=1):
             name_parts = (user.name or "BYU Student").split()
             formatted_name = user.name if len(name_parts) <= 1 else f"{name_parts[0]} {name_parts[-1][0]}."
             
+            if idx == 1:
+                current_rank = 1
+            elif latest_rms < db_rows[idx - 2][1]:
+                current_rank = idx
+
             leaderboard_results.append({
-                "rank": idx,
+                "rank": current_rank,
                 "score": latest_rms,
                 "name": formatted_name,
                 "major": user.major or "Computer Science",
