@@ -115,15 +115,20 @@ export function Leaderboard({ onActionClick }: LeaderboardProps) {
             <div className={`relative rounded-2xl border-2 border-[#002E5D] bg-[#000E1A] p-3 sm:p-5 shadow-2xl overflow-hidden
                 ${isCRTMode ? 'shadow-cyan-900/20 ring-1 ring-cyan-500/30' : ''}`}
             >
-                {/* CRT Scanline Filter Overlay */}
+                {/* CRT Scanline Filter & Monitor Glass Overlay */}
                 {isCRTMode && (
-                    <div 
-                        className="pointer-events-none absolute inset-0 z-20 opacity-20"
-                        style={{
-                            backgroundImage: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%)',
-                            backgroundSize: '100% 4px'
-                        }}
-                    />
+                    <>
+                        <div 
+                            className="pointer-events-none absolute inset-0 z-20 mix-blend-overlay opacity-50"
+                            style={{
+                                backgroundImage: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.7) 50%)',
+                                backgroundSize: '100% 4px'
+                            }}
+                        />
+                        <div 
+                            className="pointer-events-none absolute inset-0 z-20 shadow-[inset_0_0_40px_rgba(0,255,255,0.18)] border border-cyan-500/30 rounded-2xl"
+                        />
+                    </>
                 )}
 
                 {/* Compact Arcade Header */}
