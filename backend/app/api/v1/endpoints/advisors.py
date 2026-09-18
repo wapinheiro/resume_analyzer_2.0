@@ -159,9 +159,26 @@ def list_students(
     advisor_id: str = Depends(deps.get_current_advisor)
 ):
     """
-    Returns a paginated list of all students with their latest scan data.
+    Returns a paginated list of all students with their best RMS score and scan data.
     """
-    query = db.query(User).filter(User.role == "student")
+    # Subquery to find max rms_score and latest scan date per user
+    max_score_subquery = (
+        db.query(
+            Resume.user_id.label("user_id"),
+            func.max(Analysis.rms_score).label("max_rms"),
+            func.max(Analysis.created_at).label("latest_scan_at")
+        )
+        .join(Analysis, Analysis.resume_id == Resume.id)
+        .filter(Resume.user_id.isnot(None))
+        .group_by(Resume.user_id)
+        .subquery()
+    )
+
+    query = (
+        db.query(User, max_score_subquery.c.max_rms, max_score_subquery.c.latest_scan_at)
+        .outerjoin(max_score_subquery, User.id == max_score_subquery.c.user_id)
+        .filter(User.role == "student")
+    )
     
     if search:
         query = query.filter(
@@ -178,37 +195,17 @@ def list_students(
         query = query.filter(User.student_status == student_status)
         
     total_count = query.count()
-    users = query.offset(skip).limit(limit).all()
+    db_rows = query.order_by(max_score_subquery.c.max_rms.desc().nullslast(), User.name.asc()).offset(skip).limit(limit).all()
     
-    # For each user, fetch their latest analysis (N+1 query issue here, but fine for MVP)
     student_data = []
-    for user in users:
-        # Get latest resume for this user
-        latest_resume = db.query(Resume).filter(Resume.user_id == user.id).order_by(Resume.uploaded_at.desc()).first()
-        latest_analysis = None
-        major = None
-        grad_year = None
-        if latest_resume:
-             latest_analysis = db.query(Analysis).filter(Analysis.resume_id == latest_resume.id).order_by(Analysis.created_at.desc()).first()
-             if latest_resume.client_info:
-                 import json
-                 c_info = latest_resume.client_info
-                 if isinstance(c_info, str):
-                     try:
-                         c_info = json.loads(c_info)
-                     except Exception:
-                         c_info = {}
-                 
-                 major = c_info.get("major") if isinstance(c_info, dict) else None
-                 grad_year = c_info.get("grad_year") if isinstance(c_info, dict) else None
-                 
+    for user, max_rms, latest_scan_at in db_rows:
         student_data.append(schemas.AdvisorStudentSub(
             id=str(user.id),
             name=user.name,
             email=user.email,
-            last_scan_date=latest_analysis.created_at if latest_analysis else None,
-            latest_score=latest_analysis.rms_score if latest_analysis else None,
-            status="Reviewed" if latest_analysis else "Pending",
+            last_scan_date=latest_scan_at,
+            latest_score=max_rms,
+            status="Reviewed" if max_rms is not None else "Pending",
             student_status=user.student_status,
             major=user.major,
             grad_year=user.graduation_year

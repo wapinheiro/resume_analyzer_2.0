@@ -38,7 +38,7 @@ export default function AdvisorDashboard() {
     const [filterMajor, setFilterMajor] = useState('');
     const [filterGradYear, setFilterGradYear] = useState('');
     const [filterStatus, setFilterStatus] = useState('active_student');
-    const [sortColumn, setSortColumn] = useState<'date' | 'score' | null>(null);
+    const [sortColumn, setSortColumn] = useState<'date' | 'score' | null>('score');
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
     const [filterOptions, setFilterOptions] = useState<{majors: string[], grad_years: number[], student_statuses: string[]}>({
