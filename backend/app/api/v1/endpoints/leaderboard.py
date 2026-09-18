@@ -1,4 +1,5 @@
 from typing import List, Optional
+from datetime import datetime
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func
@@ -21,8 +22,10 @@ def format_badge(rms_score: int) -> str:
 def format_year(grad_year: Optional[int]) -> str:
     if not grad_year:
         return "Student"
-    current_year = 2026
-    diff = grad_year - current_year
+    now = datetime.now()
+    # Academic year ends in Spring. Starting in August (month >= 8), the graduating Senior class is now.year + 1
+    target_senior_year = now.year + (1 if now.month >= 8 else 0)
+    diff = grad_year - target_senior_year
     if diff <= 0:
         return "Senior"
     elif diff == 1:
