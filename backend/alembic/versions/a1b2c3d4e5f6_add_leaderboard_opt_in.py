@@ -19,10 +19,9 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    with op.batch_alter_table('users', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('leaderboard_opt_in', sa.Boolean(), server_default='true', nullable=False))
+    op.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS leaderboard_opt_in BOOLEAN DEFAULT TRUE;")
 
 
 def downgrade() -> None:
-    with op.batch_alter_table('users', schema=None) as batch_op:
-        batch_op.drop_column('leaderboard_opt_in')
+    op.execute("ALTER TABLE users DROP COLUMN IF EXISTS leaderboard_opt_in;")
+
