@@ -57,6 +57,15 @@ export default function AdvisorStudentView() {
         }
     }, [params?.id, status]);
 
+    const [selectedAnalysisId, setSelectedAnalysisId] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (analyses.length > 0 && !selectedAnalysisId) {
+            const best = [...analyses].sort((a, b) => (b.rms_score || 0) - (a.rms_score || 0))[0];
+            setSelectedAnalysisId(best?.id || analyses[0].id);
+        }
+    }, [analyses]);
+
     if (loading || status === 'loading') {
         return <div className="min-h-screen bg-background flex items-center justify-center text-gray-700">Loading student data...</div>;
     }
@@ -76,8 +85,11 @@ export default function AdvisorStudentView() {
         );
     }
 
-    // Use the most recent analysis for display
-    const data = analyses[0];
+    // Use selected analysis (defaulting to highest score scan) for display
+    const data = analyses.find(a => a.id === selectedAnalysisId) || analyses[0];
+    const maxScore = Math.max(...analyses.map(a => a.rms_score || 0));
+    const isBestScore = (data.rms_score || 0) === maxScore;
+
     const layers = data.raw_json?.layers || {};
 
     const layerList = Object.entries(layers).map(([key, value]: [string, any]) => ({
@@ -98,8 +110,8 @@ export default function AdvisorStudentView() {
             <Navbar />
 
             <div className="flex-1 pt-24 pb-12 px-6 max-w-7xl mx-auto w-full">
-                <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-4">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
+                    <div className="flex items-center gap-4 flex-wrap">
                         <Link href="/advisor/dashboard" className="text-[#0047BA] hover:text-[#002E5D] transition-colors text-sm font-medium px-4 py-2 bg-blue-50 rounded-lg">
                             ← Back to Roster
                         </Link>
@@ -138,16 +150,42 @@ export default function AdvisorStudentView() {
                         </button>
                     </div>
 
-                    <div className="text-right">
-                        <p className="text-sm text-[#6E7CA0] font-medium">Scan Date</p>
-                        <p className="font-semibold text-[#002E5D]">{format(new Date(data.created_at), 'MMM d, yyyy h:mm a')}</p>
+                    <div className="flex items-center gap-3 text-right">
+                        <div>
+                            <p className="text-xs text-[#6E7CA0] font-medium mb-1">Select Scan ({analyses.length} Total)</p>
+                            <select
+                                value={data.id}
+                                onChange={(e) => setSelectedAnalysisId(e.target.value)}
+                                className="px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-xs font-semibold text-[#002E5D] shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            >
+                                {analyses.map((item, idx) => {
+                                    const itemScore = item.rms_score || 0;
+                                    const isItemBest = itemScore === maxScore;
+                                    const label = isItemBest 
+                                        ? `🏆 Best Score: ${itemScore}/100 (${format(new Date(item.created_at), 'MMM d, h:mm a')})`
+                                        : `Scan #${analyses.length - idx}: ${itemScore}/100 (${format(new Date(item.created_at), 'MMM d, h:mm a')})`;
+                                    return (
+                                        <option key={item.id} value={item.id}>
+                                            {label}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                        </div>
                     </div>
                 </div>
 
                 {/* Global Stats: CPI & Top Risks */}
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
-                    <div className="glass-panel p-6 rounded-2xl lg:col-span-1 border-emerald-500/20 shadow-sm border">
-                        <h3 className="text-xs font-bold text-[#6E7CA0] uppercase tracking-wider mb-2">RMS Score</h3>
+                    <div className="glass-panel p-6 rounded-2xl lg:col-span-1 border-emerald-500/20 shadow-sm border relative overflow-hidden">
+                        <div className="flex items-center justify-between mb-2">
+                            <h3 className="text-xs font-bold text-[#6E7CA0] uppercase tracking-wider">RMS Score</h3>
+                            {isBestScore && (
+                                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                                    🏆 Peak Score
+                                </span>
+                            )}
+                        </div>
                         <p className="text-4xl font-bold text-emerald-600 mb-2">{score}</p>
                         <p className="text-sm text-[#6E7CA0]">Marketability Score</p>
                     </div>
