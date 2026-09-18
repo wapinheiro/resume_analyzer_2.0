@@ -61,8 +61,7 @@ export default function AdvisorStudentView() {
 
     useEffect(() => {
         if (analyses.length > 0 && !selectedAnalysisId) {
-            const best = [...analyses].sort((a, b) => (b.rms_score || 0) - (a.rms_score || 0))[0];
-            setSelectedAnalysisId(best?.id || analyses[0].id);
+            setSelectedAnalysisId(analyses[0].id);
         }
     }, [analyses]);
 
@@ -160,10 +159,14 @@ export default function AdvisorStudentView() {
                             >
                                 {analyses.map((item, idx) => {
                                     const itemScore = item.rms_score || 0;
+                                    const isLatest = idx === 0;
                                     const isItemBest = itemScore === maxScore;
-                                    const label = isItemBest 
-                                        ? `🏆 Best Score: ${itemScore}/100 (${format(new Date(item.created_at), 'MMM d, h:mm a')})`
-                                        : `Scan #${analyses.length - idx}: ${itemScore}/100 (${format(new Date(item.created_at), 'MMM d, h:mm a')})`;
+                                    const prefix = isLatest 
+                                        ? "⚡ Latest Active Scan" 
+                                        : isItemBest 
+                                        ? "🏆 Peak Historical Score" 
+                                        : `Scan #${analyses.length - idx}`;
+                                    const label = `${prefix}: ${itemScore}/100 (${format(new Date(item.created_at), 'MMM d, h:mm a')})`;
                                     return (
                                         <option key={item.id} value={item.id}>
                                             {label}

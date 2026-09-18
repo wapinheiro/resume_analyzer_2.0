@@ -39,16 +39,16 @@ def get_leaderboard(
     db: Session = Depends(get_db)
 ):
     """
-    Returns the top N active BYU CS students ranked by highest RMS Resume Marketability Score.
+    Returns the top N active BYU CS students ranked by their latest RMS Resume Marketability Score.
     """
     leaderboard_results = []
     
     try:
-        # Subquery to find max rms_score per user
-        max_score_subquery = (
+        # Subquery to find the latest analysis timestamp per user
+        latest_timestamp_subquery = (
             db.query(
                 Resume.user_id.label("user_id"),
-                func.max(Analysis.rms_score).label("max_rms")
+                func.max(Analysis.created_at).label("latest_created_at")
             )
             .join(Analysis, Analysis.resume_id == Resume.id)
             .filter(Resume.user_id.isnot(None))
@@ -56,10 +56,25 @@ def get_leaderboard(
             .subquery()
         )
 
-        # Query top users
+        # Subquery to get the latest analysis score per user
+        latest_score_subquery = (
+            db.query(
+                Resume.user_id.label("user_id"),
+                Analysis.rms_score.label("latest_rms")
+            )
+            .join(Analysis, Analysis.resume_id == Resume.id)
+            .join(
+                latest_timestamp_subquery,
+                (Resume.user_id == latest_timestamp_subquery.c.user_id) &
+                (Analysis.created_at == latest_timestamp_subquery.c.latest_created_at)
+            )
+            .subquery()
+        )
+
+        # Query top users ranked by latest scan score
         query = (
-            db.query(User, max_score_subquery.c.max_rms)
-            .join(max_score_subquery, User.id == max_score_subquery.c.user_id)
+            db.query(User, latest_score_subquery.c.latest_rms)
+            .join(latest_score_subquery, User.id == latest_score_subquery.c.user_id)
             .filter(User.role == "student")
             .filter(User.leaderboard_opt_in == True)
         )
@@ -72,18 +87,18 @@ def get_leaderboard(
         elif major == "DS":
             query = query.filter(User.major.ilike("%Data Science%"))
 
-        db_rows = query.order_by(max_score_subquery.c.max_rms.desc()).limit(limit).all()
+        db_rows = query.order_by(latest_score_subquery.c.latest_rms.desc(), User.name.asc()).limit(limit).all()
 
-        for idx, (user, max_rms) in enumerate(db_rows, start=1):
+        for idx, (user, latest_rms) in enumerate(db_rows, start=1):
             name_parts = (user.name or "BYU Student").split()
             formatted_name = user.name if len(name_parts) <= 1 else f"{name_parts[0]} {name_parts[-1][0]}."
             
             leaderboard_results.append({
                 "rank": idx,
-                "score": max_rms,
+                "score": latest_rms,
                 "name": formatted_name,
                 "major": user.major or "Computer Science",
-                "badge": format_badge(max_rms),
+                "badge": format_badge(latest_rms),
                 "year": format_year(user.graduation_year)
             })
     except Exception as e:

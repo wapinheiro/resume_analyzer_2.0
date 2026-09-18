@@ -159,14 +159,13 @@ def list_students(
     advisor_id: str = Depends(deps.get_current_advisor)
 ):
     """
-    Returns a paginated list of all students with their best RMS score and scan data.
+    Returns a paginated list of all students with their latest scan score and date.
     """
-    # Subquery to find max rms_score and latest scan date per user
-    max_score_subquery = (
+    # Subquery to find latest analysis timestamp per user
+    latest_timestamp_subquery = (
         db.query(
             Resume.user_id.label("user_id"),
-            func.max(Analysis.rms_score).label("max_rms"),
-            func.max(Analysis.created_at).label("latest_scan_at")
+            func.max(Analysis.created_at).label("latest_created_at")
         )
         .join(Analysis, Analysis.resume_id == Resume.id)
         .filter(Resume.user_id.isnot(None))
@@ -174,9 +173,25 @@ def list_students(
         .subquery()
     )
 
+    # Subquery to get latest analysis score per user
+    latest_score_subquery = (
+        db.query(
+            Resume.user_id.label("user_id"),
+            Analysis.rms_score.label("latest_rms"),
+            Analysis.created_at.label("latest_scan_at")
+        )
+        .join(Analysis, Analysis.resume_id == Resume.id)
+        .join(
+            latest_timestamp_subquery,
+            (Resume.user_id == latest_timestamp_subquery.c.user_id) &
+            (Analysis.created_at == latest_timestamp_subquery.c.latest_created_at)
+        )
+        .subquery()
+    )
+
     query = (
-        db.query(User, max_score_subquery.c.max_rms, max_score_subquery.c.latest_scan_at)
-        .outerjoin(max_score_subquery, User.id == max_score_subquery.c.user_id)
+        db.query(User, latest_score_subquery.c.latest_rms, latest_score_subquery.c.latest_scan_at)
+        .outerjoin(latest_score_subquery, User.id == latest_score_subquery.c.user_id)
         .filter(User.role == "student")
     )
     
@@ -195,17 +210,17 @@ def list_students(
         query = query.filter(User.student_status == student_status)
         
     total_count = query.count()
-    db_rows = query.order_by(max_score_subquery.c.max_rms.desc().nullslast(), User.name.asc()).offset(skip).limit(limit).all()
+    db_rows = query.order_by(latest_score_subquery.c.latest_rms.desc().nullslast(), User.name.asc()).offset(skip).limit(limit).all()
     
     student_data = []
-    for user, max_rms, latest_scan_at in db_rows:
+    for user, latest_rms, latest_scan_at in db_rows:
         student_data.append(schemas.AdvisorStudentSub(
             id=str(user.id),
             name=user.name,
             email=user.email,
             last_scan_date=latest_scan_at,
-            latest_score=max_rms,
-            status="Reviewed" if max_rms is not None else "Pending",
+            latest_score=latest_rms,
+            status="Reviewed" if latest_rms is not None else "Pending",
             student_status=user.student_status,
             major=user.major,
             grad_year=user.graduation_year

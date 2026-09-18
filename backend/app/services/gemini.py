@@ -59,6 +59,16 @@ class GeminiService:
                             response_text = response_text.replace("```", "").strip()
                         
                         data = json.loads(response_text)
+                        # Ensure mathematical integrity: sum of 5 layers (each 0-10) * 2 = 0-100 RMS score
+                        layers = data.get("layers", {})
+                        if isinstance(layers, dict) and layers:
+                            layer_sum = sum(
+                                layers.get(k, {}).get("score", 0)
+                                for k in ["format", "core", "impact", "story", "xfactor"]
+                                if isinstance(layers.get(k), dict)
+                            )
+                            data["rms_score"] = layer_sum * 2
+
                         logger.info(f"Successfully generated analysis with model {model_name}")
                         return data
                     except Exception as model_err:
@@ -69,7 +79,15 @@ class GeminiService:
                 logger.error(f"Gemini API execution error: {e}")
 
         logger.warning("Gemini API unavailable or quota reached. Generating fallback structured analysis.")
-        return self._generate_fallback_analysis(resume_text)
+        fallback = self._generate_fallback_analysis(resume_text)
+        layers = fallback.get("layers", {})
+        if isinstance(layers, dict) and layers:
+            fallback["rms_score"] = sum(
+                layers.get(k, {}).get("score", 0)
+                for k in ["format", "core", "impact", "story", "xfactor"]
+                if isinstance(layers.get(k), dict)
+            ) * 2
+        return fallback
 
     def _generate_fallback_analysis(self, resume_text: str) -> Dict[str, Any]:
         lines = [line.strip() for line in resume_text.splitlines() if line.strip()]
