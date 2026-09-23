@@ -12,6 +12,7 @@ class AdvisorStudentSub(BaseModel):
     student_status: str = "active_student" # New DB field
     major: Optional[str] = None
     grad_year: Optional[int] = None
+    class_year: Optional[str] = None
 
 class AdvisorStudentListResponse(BaseModel):
     students: List[AdvisorStudentSub]
@@ -53,4 +54,5 @@ class AdvisorSkillsResponse(BaseModel):
 class AdvisorFilterOptions(BaseModel):
     majors: List[str]
     grad_years: List[int]
+    class_years: List[str] = ["Freshman", "Sophomore", "Junior", "Senior", "Unspecified"]
     student_statuses: List[str]

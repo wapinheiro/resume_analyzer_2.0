@@ -40,7 +40,8 @@ def test_get_students_list(advisor_client, db: Session):
         id=uuid.uuid4(),
         email="test_student_list@example.com",
         name="Test List Student",
-        role="student"
+        role="student",
+        graduation_year=2027
     )
     db.add(dummy_student)
     db.commit()
@@ -50,7 +51,13 @@ def test_get_students_list(advisor_client, db: Session):
     data = response.json()
     assert "students" in data
     assert "total_count" in data
-    
+
+    # Test filtering by classification year
+    response_class = advisor_client.get("/api/v1/advisors/students?class_year=Senior")
+    assert response_class.status_code == 200
+    data_class = response_class.json()
+    assert "students" in data_class
+
     # Clean up
     db.delete(dummy_student)
     db.commit()

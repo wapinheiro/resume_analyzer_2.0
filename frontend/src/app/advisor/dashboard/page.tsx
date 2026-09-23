@@ -18,6 +18,7 @@ type Student = {
     student_status: string;
     major?: string;
     grad_year?: number;
+    class_year?: string;
 };
 
 type Analytics = {
@@ -36,14 +37,15 @@ export default function AdvisorDashboard() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [filterMajor, setFilterMajor] = useState('');
-    const [filterGradYear, setFilterGradYear] = useState('');
+    const [filterClassYear, setFilterClassYear] = useState('');
     const [filterStatus, setFilterStatus] = useState('active_student');
     const [sortColumn, setSortColumn] = useState<'date' | 'score' | null>('score');
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
-    const [filterOptions, setFilterOptions] = useState<{majors: string[], grad_years: number[], student_statuses: string[]}>({
+    const [filterOptions, setFilterOptions] = useState<{majors: string[], grad_years: number[], class_years?: string[], student_statuses: string[]}>({
         majors: [],
         grad_years: [],
+        class_years: ["Freshman", "Sophomore", "Junior", "Senior", "Unspecified"],
         student_statuses: []
     });
 
@@ -76,7 +78,7 @@ export default function AdvisorDashboard() {
         if (status === 'authenticated') {
             fetchData();
         }
-    }, [search, filterMajor, filterGradYear, filterStatus, status]);
+    }, [search, filterMajor, filterClassYear, filterStatus, status]);
 
     const fetchData = async () => {
         try {
@@ -95,7 +97,7 @@ export default function AdvisorDashboard() {
             const studentUrl = new URL(`${API_URL}/advisors/students`);
             if (search) studentUrl.searchParams.append('search', search);
             if (filterMajor) studentUrl.searchParams.append('major', filterMajor);
-            if (filterGradYear) studentUrl.searchParams.append('graduation_year', filterGradYear);
+            if (filterClassYear) studentUrl.searchParams.append('class_year', filterClassYear);
             if (filterStatus) studentUrl.searchParams.append('student_status', filterStatus);
 
             const [studentsRes, analyticsRes] = await Promise.all([
@@ -250,12 +252,12 @@ export default function AdvisorDashboard() {
                             </select>
                             <select
                                 className="border border-gray-400 rounded-lg px-4 py-2 bg-transparent text-black focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm w-full sm:w-auto"
-                                value={filterGradYear}
-                                onChange={(e) => setFilterGradYear(e.target.value)}
+                                value={filterClassYear}
+                                onChange={(e) => setFilterClassYear(e.target.value)}
                             >
-                                <option value="">All Years</option>
-                                {filterOptions.grad_years.map(year => (
-                                    <option key={year} value={year.toString()}>{year}</option>
+                                <option value="">All Classification Years</option>
+                                {(filterOptions.class_years || ["Freshman", "Sophomore", "Junior", "Senior", "Unspecified"]).map(year => (
+                                    <option key={year} value={year}>{year}</option>
                                 ))}
                             </select>
                             <select
@@ -319,7 +321,9 @@ export default function AdvisorDashboard() {
                                     <tr key={student.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
                                         <td className="p-6">
                                             <div className="font-medium text-[#002E5D]">{student.name || "Unknown"}</div>
-                                            <div className="text-sm text-[#6E7CA0]">{student.email}</div>
+                                            <div className="text-sm text-[#6E7CA0]">
+                                                {student.email} {student.class_year ? `• ${student.class_year}` : student.major ? `• ${student.major}` : ''}
+                                            </div>
                                         </td>
                                         <td className="p-6 text-sm">
                                             {student.last_scan_date ? format(new Date(student.last_scan_date), 'MMM d, yyyy') : 'Never'}

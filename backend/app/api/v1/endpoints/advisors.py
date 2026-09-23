@@ -11,6 +11,7 @@ from app.models.analysis import Analysis
 from app.models.market_skill import MarketSkill
 from app.schemas import advisor as schemas
 from app.schemas import market_skill as skill_schemas
+from app.api.v1.endpoints.leaderboard import format_year
 
 router = APIRouter()
 
@@ -96,8 +97,7 @@ def get_filter_options(
     advisor_id: str = Depends(deps.get_current_advisor)
 ):
     """
-    Returns distinct values for majors, graduation years, and student statuses
-    currently present in the User table for students.
+    Returns available filter options for majors, grad years, class years, and student statuses.
     """
     majors = db.query(User.major).filter(User.role == "student", User.major != None).distinct().all()
     grad_years = db.query(User.graduation_year).filter(User.role == "student", User.graduation_year != None).distinct().all()
@@ -106,6 +106,7 @@ def get_filter_options(
     return {
         "majors": sorted([m[0] for m in majors]),
         "grad_years": sorted([y[0] for y in grad_years]),
+        "class_years": ["Freshman", "Sophomore", "Junior", "Senior", "Unspecified"],
         "student_statuses": sorted([s[0] for s in statuses])
     }
 
@@ -154,12 +155,14 @@ def list_students(
     search: Optional[str] = None,
     major: Optional[str] = None,
     graduation_year: Optional[int] = None,
+    class_year: Optional[str] = None,
     student_status: Optional[str] = "active_student",
     db: Session = Depends(deps.get_db),
     advisor_id: str = Depends(deps.get_current_advisor)
 ):
     """
-    Returns a paginated list of all students with their latest scan score and date.
+    Returns a paginated list of all students with their latest scan score, date, and classification year.
+    Supports filtering by major, graduation_year, class_year, and student_status.
     """
     # Subquery to find latest analysis timestamp per user
     latest_timestamp_subquery = (
@@ -173,12 +176,13 @@ def list_students(
         .subquery()
     )
 
-    # Subquery to get latest analysis score per user
+    # Subquery to get latest analysis score & predicted grad date per user
     latest_score_subquery = (
         db.query(
             Resume.user_id.label("user_id"),
             Analysis.rms_score.label("latest_rms"),
-            Analysis.created_at.label("latest_scan_at")
+            Analysis.created_at.label("latest_scan_at"),
+            Analysis.predicted_grad_date.label("latest_predicted_grad_date")
         )
         .join(Analysis, Analysis.resume_id == Resume.id)
         .join(
@@ -190,7 +194,12 @@ def list_students(
     )
 
     query = (
-        db.query(User, latest_score_subquery.c.latest_rms, latest_score_subquery.c.latest_scan_at)
+        db.query(
+            User,
+            latest_score_subquery.c.latest_rms,
+            latest_score_subquery.c.latest_scan_at,
+            latest_score_subquery.c.latest_predicted_grad_date
+        )
         .outerjoin(latest_score_subquery, User.id == latest_score_subquery.c.user_id)
         .filter(User.role == "student")
     )
@@ -209,11 +218,21 @@ def list_students(
     if student_status and student_status != "all":
         query = query.filter(User.student_status == student_status)
         
-    total_count = query.count()
-    db_rows = query.order_by(latest_score_subquery.c.latest_rms.desc().nullslast(), User.name.asc()).offset(skip).limit(limit).all()
+    db_rows = query.order_by(latest_score_subquery.c.latest_rms.desc().nullslast(), User.name.asc()).all()
+    
+    filtered_rows = []
+    for user, latest_rms, latest_scan_at, latest_predicted_grad_date in db_rows:
+        calculated_class_year = format_year(user.graduation_year, latest_predicted_grad_date)
+        if class_year and class_year.lower() != "all":
+            if calculated_class_year.lower() != class_year.lower():
+                continue
+        filtered_rows.append((user, latest_rms, latest_scan_at, calculated_class_year))
+        
+    total_count = len(filtered_rows)
+    paginated_rows = filtered_rows[skip : skip + limit]
     
     student_data = []
-    for user, latest_rms, latest_scan_at in db_rows:
+    for user, latest_rms, latest_scan_at, calculated_class_year in paginated_rows:
         student_data.append(schemas.AdvisorStudentSub(
             id=str(user.id),
             name=user.name,
@@ -223,7 +242,8 @@ def list_students(
             status="Reviewed" if latest_rms is not None else "Pending",
             student_status=user.student_status,
             major=user.major,
-            grad_year=user.graduation_year
+            grad_year=user.graduation_year,
+            class_year=calculated_class_year
         ))
         
     return {
