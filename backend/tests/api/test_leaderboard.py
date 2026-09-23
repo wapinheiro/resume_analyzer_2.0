@@ -4,7 +4,9 @@ def test_get_leaderboard(client):
     data = response.json()
     assert "leaderboard" in data
     assert "major_filter" in data
+    assert "year_filter" in data
     assert data["major_filter"] == "ALL"
+    assert data["year_filter"] == "ALL"
 
     # Test filtering by major
     response_cs = client.get("/api/v1/leaderboard?major=CS")
@@ -12,4 +14,12 @@ def test_get_leaderboard(client):
     data_cs = response_cs.json()
     assert data_cs["major_filter"] == "CS"
     assert "leaderboard" in data_cs
+
+    # Test filtering by year
+    response_junior = client.get("/api/v1/leaderboard?year=JUNIOR")
+    assert response_junior.status_code == 200
+    data_junior = response_junior.json()
+    assert data_junior["year_filter"] == "JUNIOR"
+    assert "leaderboard" in data_junior
+
 

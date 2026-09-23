@@ -26,6 +26,7 @@ interface LeaderboardProps {
 
 export function Leaderboard({ onActionClick }: LeaderboardProps) {
     const [selectedMajor, setSelectedMajor] = useState<string>('ALL');
+    const [selectedYear, setSelectedYear] = useState<string>('ALL');
     const [isCRTMode, setIsCRTMode] = useState<boolean>(true);
     const [scores, setScores] = useState<LeaderboardEntry[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -34,7 +35,7 @@ export function Leaderboard({ onActionClick }: LeaderboardProps) {
         let isMounted = true;
         const loadScores = async () => {
             setIsLoading(true);
-            const data = await fetchLeaderboard(selectedMajor);
+            const data = await fetchLeaderboard(selectedMajor, selectedYear);
             if (isMounted) {
                 if (data && data.leaderboard) {
                     setScores(data.leaderboard);
@@ -47,7 +48,7 @@ export function Leaderboard({ onActionClick }: LeaderboardProps) {
 
         loadScores();
         return () => { isMounted = false; };
-    }, [selectedMajor]);
+    }, [selectedMajor, selectedYear]);
 
     const handleAction = (e?: React.MouseEvent) => {
         if (e) {
@@ -145,26 +146,54 @@ export function Leaderboard({ onActionClick }: LeaderboardProps) {
                         </div>
                     </div>
 
-                    {/* Compact Major Filter Tabs */}
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                        {[
-                            { id: 'ALL', label: 'ALL MAJORS' },
-                            { id: 'CS', label: 'COMP SCI' },
-                            { id: 'CYBER', label: 'CYBER' },
-                            { id: 'DS', label: 'DATA SCI' },
-                        ].map(tab => (
-                            <button
-                                key={tab.id}
-                                type="button"
-                                onClick={() => setSelectedMajor(tab.id)}
-                                className={`px-2.5 py-0.5 rounded text-[11px] font-mono transition-all cursor-pointer z-10
-                                    ${selectedMajor === tab.id
-                                        ? 'bg-cyan-400 text-black font-bold shadow-md shadow-cyan-400/20'
-                                        : 'bg-blue-950/60 border border-blue-900/60 text-slate-300 hover:border-cyan-500/50'}`}
-                            >
-                                {tab.label}
-                            </button>
-                        ))}
+                    {/* Filter Tabs Container */}
+                    <div className="flex flex-col gap-2 w-full md:w-auto">
+                        {/* Major Filter Tabs */}
+                        <div className="flex items-center gap-1.5 flex-wrap justify-start md:justify-end">
+                            <span className="text-[10px] font-mono text-cyan-400/80 mr-0.5 font-bold tracking-wider">MAJOR:</span>
+                            {[
+                                { id: 'ALL', label: 'ALL MAJORS' },
+                                { id: 'CS', label: 'COMP SCI' },
+                                { id: 'CYBER', label: 'CYBER' },
+                                { id: 'DS', label: 'DATA SCI' },
+                            ].map(tab => (
+                                <button
+                                    key={tab.id}
+                                    type="button"
+                                    onClick={() => setSelectedMajor(tab.id)}
+                                    className={`px-2 py-0.5 rounded text-[10px] font-mono transition-all cursor-pointer z-10
+                                        ${selectedMajor === tab.id
+                                            ? 'bg-cyan-400 text-black font-bold shadow-md shadow-cyan-400/20'
+                                            : 'bg-blue-950/60 border border-blue-900/60 text-slate-300 hover:border-cyan-500/50'}`}
+                                >
+                                    {tab.label}
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Year / Class Standing Filter Tabs */}
+                        <div className="flex items-center gap-1.5 flex-wrap justify-start md:justify-end">
+                            <span className="text-[10px] font-mono text-amber-400/80 mr-0.5 font-bold tracking-wider">YEAR:</span>
+                            {[
+                                { id: 'ALL', label: 'ALL YEARS' },
+                                { id: 'FRESHMAN', label: 'FRESHMAN' },
+                                { id: 'SOPHOMORE', label: 'SOPHOMORE' },
+                                { id: 'JUNIOR', label: 'JUNIOR' },
+                                { id: 'SENIOR', label: 'SENIOR' },
+                            ].map(tab => (
+                                <button
+                                    key={tab.id}
+                                    type="button"
+                                    onClick={() => setSelectedYear(tab.id)}
+                                    className={`px-2 py-0.5 rounded text-[10px] font-mono transition-all cursor-pointer z-10
+                                        ${selectedYear === tab.id
+                                            ? 'bg-amber-400 text-black font-bold shadow-md shadow-amber-400/20'
+                                            : 'bg-blue-950/60 border border-blue-900/60 text-slate-300 hover:border-amber-500/50'}`}
+                                >
+                                    {tab.label}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 </div>
 

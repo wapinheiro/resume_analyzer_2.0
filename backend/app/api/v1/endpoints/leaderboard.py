@@ -52,11 +52,13 @@ def format_year(grad_year: Optional[int], predicted_grad_date: Optional[str] = N
 @router.get("")
 def get_leaderboard(
     major: str = Query("ALL", regex="^(ALL|CS|CYBER|DS)$"),
+    year: str = Query("ALL", regex="^(ALL|FRESHMAN|SOPHOMORE|JUNIOR|SENIOR)$"),
     limit: int = Query(10, ge=1, le=50),
     db: Session = Depends(get_db)
 ):
     """
     Returns the top N active BYU CS students ranked by their latest RMS Resume Marketability Score.
+    Supports filtering by major and class standing year.
     """
     leaderboard_results = []
     
@@ -105,16 +107,23 @@ def get_leaderboard(
         elif major == "DS":
             query = query.filter(User.major.ilike("%Data Science%"))
 
-        db_rows = query.order_by(latest_score_subquery.c.latest_rms.desc(), User.name.asc()).limit(limit).all()
+        db_rows = query.order_by(latest_score_subquery.c.latest_rms.desc(), User.name.asc()).all()
+
+        filtered_rows = []
+        for user, latest_rms, latest_predicted_grad_date in db_rows:
+            formatted_year = format_year(user.graduation_year, latest_predicted_grad_date)
+            if year != "ALL" and formatted_year.upper() != year.upper():
+                continue
+            filtered_rows.append((user, latest_rms, latest_predicted_grad_date, formatted_year))
 
         current_rank = 1
-        for idx, (user, latest_rms, latest_predicted_grad_date) in enumerate(db_rows, start=1):
+        for idx, (user, latest_rms, latest_predicted_grad_date, formatted_year) in enumerate(filtered_rows[:limit], start=1):
             name_parts = (user.name or "BYU Student").split()
             formatted_name = user.name if len(name_parts) <= 1 else f"{name_parts[0]} {name_parts[-1][0]}."
             
             if idx == 1:
                 current_rank = 1
-            elif latest_rms < db_rows[idx - 2][1]:
+            elif latest_rms < filtered_rows[idx - 2][1]:
                 current_rank = idx
 
             leaderboard_results.append({
@@ -123,13 +132,14 @@ def get_leaderboard(
                 "name": formatted_name,
                 "major": user.major or "Computer Science",
                 "badge": format_badge(latest_rms),
-                "year": format_year(user.graduation_year, latest_predicted_grad_date)
+                "year": formatted_year
             })
     except Exception as e:
         print(f"Error querying leaderboard DB: {e}")
 
     return {
         "major_filter": major,
+        "year_filter": year,
         "total_returned": len(leaderboard_results),
         "leaderboard": leaderboard_results
     }
